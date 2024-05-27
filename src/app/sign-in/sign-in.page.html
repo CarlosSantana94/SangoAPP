@@ -1,0 +1,77 @@
+<ion-header>
+    <ion-toolbar>
+        <!--
+        <ion-buttons slot="start" mode="md">
+            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+        </ion-buttons>
+-->
+        <ion-title></ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="logo">
+        <img  src="assets/imgs/logo_sango.png">
+    </div>
+    <div class="form">
+     <!--   <ion-list lines="none">
+            <ion-item lines="none">
+                <div class="item_inner d-flex">
+                    <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
+                    <div class="input_box">
+                        <ion-label position="floating">{{'Email_or_Phone_Number' | translate}}</ion-label>
+                        <ion-input mode="md" type="email" [(ngModel)]="email"></ion-input>
+                    </div>
+                </div>
+            </ion-item>
+
+            <ion-item lines="none">
+                &lt;!&ndash;                    <ion-label position="fixed">{{'mobile_number' | translate}}</ion-label>&ndash;&gt;
+                <div class="item_inner d-flex">
+                    <ion-icon class="zmdi zmdi-lock ion-text-start"></ion-icon>
+                    <div class="input_box d-flex">
+                        <div style="width: 100%">
+                            <ion-label position="floating">{{'password' | translate}}</ion-label>
+                            <ion-input mode="md" type="password" [(ngModel)]="password"></ion-input>
+                        </div>
+                        <h5 class="end" (click)="forgot_password()">{{'Forgot' | translate}}</h5>
+                    </div>
+                </div>
+            </ion-item>
+
+        </ion-list>
+        <ion-button disabled="true" size="large" shape="block" class="btn" (click)="tabs()">{{'Sign_in' | translate}}</ion-button>-->
+
+        <div class="quick_signin">
+            <h4 class="ion-text-center">Inicio de sesión con:</h4>
+            <ion-row>
+
+                <!--<ion-col size="6">
+                    <ion-button size="large" shape="block" class="btn facebook" (click)="loginWithFacebook()">
+                        <img slot="start" src="assets/imgs/fb.png">
+                        {{'facebook' | translate}}
+                    </ion-button>
+                </ion-col>-->
+
+                <ion-col size="12">
+                    <ion-button fill="outline" size="large" shape="block" class="btn google" (click)="loginWithGoogle()">
+                        <img slot="start" src="assets/imgs/google.png">
+                        {{'google' | translate}}
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </div>
+    </div>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+    <h4 class="ion-text-center">Si aún no estas registrado</h4>
+
+    <ion-button disabled="true" fill="outline" size="large" shape="block" class="btn" (click)="resiter_now()">
+        Regístrate
+    </ion-button>
+
+<h5 class="ion-text-center" *ngIf="servidor" >v0.0.3-{{versionAPI}}<ion-icon style="color: #29af5d" name="radio-button-on-outline"></ion-icon></h5>
+<h5 class="ion-text-center" *ngIf="!servidor" >v0.0.3<ion-icon style="color: #ed576b" name="radio-button-on-outline"></ion-icon></h5>
+
+</ion-footer>
