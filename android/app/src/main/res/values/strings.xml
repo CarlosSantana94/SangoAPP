@@ -4,4 +4,5 @@
     <string name="title_activity_main">SANGO</string>
     <string name="package_name">com.bucapps.sango</string>
     <string name="custom_url_scheme">com.bucapps.sango</string>
+    <string name="server_client_id">726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com</string>
 </resources>

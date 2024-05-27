@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "726792798295",
+    "project_id": "sango-tintorerias",
+    "storage_bucket": "sango-tintorerias.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726792798295:android:0827a002f961acc83e2312",
+        "android_client_info": {
+          "package_name": "com.bucapps.sango"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726792798295-vp6ntedo7mpo9timmleossonhi99dvn4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bucapps.sango",
+            "certificate_hash": "b26f23dbb13916dde0b3db555ce4593875052c4a"
+          }
+        },
+        {
+          "client_id": "726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5e7KCj5VkRiwbHbhVWavZM9uTIrLIxEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -23,6 +23,9 @@
             </intent-filter>
 
         </activity>
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyALWK0kZF2PYTt6lc7Hr2gkBgt2Du_DJ6Y" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
