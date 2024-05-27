@@ -23,9 +23,6 @@
             </intent-filter>
 
         </activity>
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyALWK0kZF2PYTt6lc7Hr2gkBgt2Du_DJ6Y" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -39,11 +36,6 @@
     </application>
 
     <!-- Permissions -->
-
-   <uses-feature android:name="android.hardware.location.gps" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

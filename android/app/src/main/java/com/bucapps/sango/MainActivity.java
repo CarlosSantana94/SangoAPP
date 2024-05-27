@@ -1,6 +1,4 @@
-package io.ionic.starter;
-
-import android.os.Bundle;
+package com.bucapps.sango;
 
 import com.getcapacitor.BridgeActivity;
 
