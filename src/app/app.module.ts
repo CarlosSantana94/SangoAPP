@@ -14,6 +14,8 @@ import {IonicStorageModule} from '@ionic/storage-angular';
 import { APP_CONFIG, BaseAppConfig } from './app.config';
 import { HttpInterceptorService } from './http-interceptor.service';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -39,10 +41,11 @@ export function HttpLoaderFactory(http: HttpClient) {
         { provide: APP_CONFIG, useValue: BaseAppConfig },
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true },
+        CallNumber,
         Geolocation,
-        CallNumber
+        NativeGeocoder,
   ],
   bootstrap: [AppComponent],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
 })
 export class AppModule {}

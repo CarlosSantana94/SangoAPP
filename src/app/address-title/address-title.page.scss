@@ -1,0 +1,183 @@
+ion-footer {
+    position: absolute;
+    //    bottom: -100%;
+    bottom: 0%;
+    left: 0;
+    width: 100%;
+    transition: all .3s;
+
+    .form {
+        transition: all .5s;
+        background: var(--white);
+
+        ion-icon {
+            &.zmdi-close {
+                color: var(--text-light);
+                font-weight: 500;
+                display: block;
+                margin-left: auto;
+                font-size: 1.2rem;
+                padding-top: 10px;
+            }
+        }
+
+        ion-list {
+            h3 {
+                color: var(--text-light) !important;
+                font-size: 0.73rem !important;
+                font-weight: 400;
+                margin-bottom: 10px !important;
+                letter-spacing: 0.5px !important;
+                margin: 0;
+            }
+
+            .address_title {
+                ion-row {
+                    ion-col {
+                        ion-item {
+                            padding: 8px 10px !important;
+                            border-radius: 7px;
+                            margin: 0;
+                            border: 1px solid rgba(204, 204, 204, 0.6) !important;
+                            margin-bottom: 20px;
+
+                            &::after {
+                                display: none;
+
+                            }
+
+                            ion-label {
+                                width: 100% !important;
+                                position: relative;
+                                max-width: 100% !important;
+                                white-space: normal;
+                                margin: 0 !important;
+                                transform: unset !important;
+
+                                .img_container {
+                                    width: 100%;
+                                    display: flex;
+                                    align-items: center;
+
+                                    .img_box {
+                                        position: relative;
+                                        width: 21px;
+                                        height: 21px;
+                                        overflow: hidden;
+                                        margin-right: 10px;
+
+                                        img {
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            right: 0;
+                                            bottom: 0;
+                                            margin: auto;
+                                            width: 0;
+                                            height: 0;
+                                            display: block;
+
+                                            &:nth-child(odd) {
+                                                width: 100%;
+                                                height: auto;
+                                            }
+                                        }
+                                    }
+
+                                    h2 {
+                                        margin: 0;
+                                        font-weight: 500;
+                                        font-size: 0.75rem;
+                                        color: var(--text-black);
+                                        text-transform: none;
+                                        position: relative;
+                                        top: 1px;
+                                        letter-spacing: 0 !important;
+                                    }
+                                }
+                            }
+
+                            ion-radio {
+                                position: absolute;
+                                z-index: 999;
+                                width: 100%;
+                                height: 100%;
+                                margin: 0;
+                                --color: var(--transparent) !important;
+                                --color-checked: var(--transparent) !important;
+                            }
+
+                            &::before {
+                                content: '';
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                bottom: 0;
+                                right: 0;
+                                width: 0;
+                                height: 0;
+                                margin: auto;
+                                background: var(--primary);
+                                transition: all .3s;
+                                border-radius: 7px;
+                            }
+
+                            &.item-radio-checked {
+                                border-color: var(--transparent) !important;
+
+                                &::before {
+                                    width: 100%;
+                                    height: 100%;
+                                }
+
+                                ion-label {
+                                    .img_container {
+                                        .img_box {
+                                            img {
+                                                &:nth-child(even) {
+                                                    width: 100%;
+                                                    height: auto;
+                                                }
+
+                                                &:nth-child(odd) {
+                                                    width: 0;
+                                                    height: 0;
+                                                }
+                                            }
+                                        }
+
+                                        h2 {
+                                            color: var(--white);
+                                        }
+                                    }
+
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            ion-item {
+                margin-bottom: 20px;
+
+                &::after {
+                    display: none;
+                }
+
+                &.item-input {
+                    h3 {
+                        margin-bottom: 6px !important;
+                    }
+                }
+
+            }
+        }
+    }
+
+    &.active {
+        bottom: 0;
+    }
+}

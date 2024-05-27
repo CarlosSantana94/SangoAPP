@@ -1,0 +1,79 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+        </ion-buttons>
+        <ion-title style="color: black">
+            {{nombreServicio}}<span style="color: #4c8dff; padding-top: 5px"> <ion-icon
+                name="caret-forward-outline"></ion-icon> </span>{{nombreOpcion}}
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-row>
+        <ion-header style="padding-left: 16px; color: #3c5a9a">
+            Seleccione sus prendas
+        </ion-header>
+    </ion-row>
+    <div *ngFor="let prenda of subPrendas; trackBy: trackByFn">
+        <div style="width: 50%;
+         float: left;
+
+         white-space: nowrap;
+         overflow:hidden !important;
+         text-overflow: ellipsis;">
+
+            <ion-card style="min-height: 420px">
+
+                <img [src]=prenda.img (click)="abrirModal(prenda.img)">
+                <ion-card-header>
+                    <ion-card-subtitle style="font-size: .9em; color: black;
+  overflow: hidden;white-space: initial;">{{prenda.nombre}}</ion-card-subtitle>
+                    <ion-card-title style="color: #29af5d">${{prenda.precio}}</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    {{prenda.descripcion}}
+                    <ion-row style="padding-top: 5px">
+                        <ion-col>
+                            <ion-button class="vertical-center" size="small" (click)="removerPrenda(prenda.id)"
+                                        *ngIf="prenda.cantidad>0">
+                                <ion-icon name="remove-outline"></ion-icon>
+                            </ion-button>
+                        </ion-col>
+                        <ion-col><h1 class="vertical-center">{{prenda.cantidad}}</h1></ion-col>
+                        <ion-col>
+                            <ion-button class="vertical-center" size="small" (click)="agregarPrenda(prenda.id)">
+                                <ion-icon name="add-outline"></ion-icon>
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+
+            </ion-card>
+        </div>
+    </div>
+</ion-content>
+
+
+<ion-footer>
+    <ion-toolbar>
+        <ion-buttons slot="start" *ngIf="carrito.cantidad>0">
+            <ion-button (click)="goToCart()">
+                <ion-badge style="margin-right: 6px">{{carrito.cantidad}}</ion-badge>
+                Prendas
+            </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+            <ion-button (click)="irAEnvios()">Continuar
+                <ion-icon name="caret-forward-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+
+        <ion-title style="color: #29af5d">${{carrito.total}}</ion-title>
+    </ion-toolbar>
+</ion-footer>
+
+
+
+

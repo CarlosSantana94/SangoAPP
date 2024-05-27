@@ -1,0 +1,41 @@
+.container {
+  background: #528aba;
+  color: #fff;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: -1;
+  height: 80px;
+
+  img {
+    display: block;
+    margin: 145px 0px 0px 0px;
+    background: white;
+  }
+
+  h2 {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    z-index: 1;
+    font-size: 1.2em;
+    transform: translate(-50%, -50%);
+    text-shadow: 1px 1px 2px #383838, 0 0 1em #383838, 0 0 0.2em #383838;
+    color: #ffffff;
+    border-radius: 80px;
+    width: 100%;
+    text-align: center;
+  }
+}
+ion-item {
+  margin-top: 5px;
+  margin-bottom: 16px;
+  margin-left: 8px;
+  margin-right: 8px;
+
+  border-radius: 50px;
+  box-shadow: 1px 2px 5px #8dd1f8;
+}
+

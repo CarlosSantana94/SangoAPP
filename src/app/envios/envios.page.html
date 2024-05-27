@@ -1,0 +1,66 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+        </ion-buttons>
+        <ion-title>¿Cuando recogemos tus prendas?</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <img src="assets/imgs/portadas 2-01.jpg"/>
+        <ion-card-header>
+            <ion-item>
+                <ion-label>Recolección</ion-label>
+                <ion-select [(ngModel)]="fechaRecoleccionSeleccionada"
+                            (ionChange)="escogerFechaRecoleccion(fechaRecoleccionSeleccionada)">
+                    <ion-select-option [value]="rec"
+                                       *ngFor="let rec of fechasRecoleccion">{{rec.fechaFormat}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item *ngIf="fechaRecoleccionSeleccionada!=''">
+                <h3 style="color: #4d90fe">{{fechaRecoleccionSeleccionada.fechaFormat}}</h3>
+            </ion-item>
+        </ion-card-header>
+        <ion-card-header *ngIf="fechaRecoleccionSeleccionada!=''">
+            <ion-item>
+                <ion-label>Entrega</ion-label>
+                <ion-select [(ngModel)]="fechaEntregaSeleccionada"
+                            (ionChange)="escogerFechaEntrega(fechaEntregaSeleccionada)">
+                    <ion-select-option [value]="ent"
+                                       *ngFor="let ent of fechasEntrega">{{ent.fechaFormat}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item *ngIf="fechaEntregaSeleccionada!=''">
+                <h3 style="color: #4d90fe">{{fechaEntregaSeleccionada.fechaFormat}}</h3>
+            </ion-item>
+        </ion-card-header>
+        <ion-card-content *ngIf="fechaRecoleccionSeleccionada!='' && fechaEntregaSeleccionada!='' ">
+            <h5>
+                Texto informativo ****
+            </h5>
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+
+
+<ion-footer>
+    <ion-toolbar>
+        <ion-buttons slot="start" *ngIf="carrito.cantidad>0">
+            <ion-button (click)="irACarrito()">
+                <ion-badge style="margin-right: 6px" >{{carrito.cantidad}}</ion-badge>
+                Prendas
+            </ion-button>
+        </ion-buttons>
+        <ion-buttons slot="end">
+            <ion-button (click)="irADirecciones()"
+                        *ngIf="fechaRecoleccionSeleccionada!='' && fechaEntregaSeleccionada!='' ">Continuar
+                <ion-icon name="caret-forward-outline" color="red"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+
+        <ion-title style="color: #29af5d">${{carrito.total}}</ion-title>
+    </ion-toolbar>
+</ion-footer>
+

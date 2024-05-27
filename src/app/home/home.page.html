@@ -46,7 +46,7 @@
     <h4 style="background-color: transparent; padding-left: 20px" *ngIf="nombre!=='undefined'">Hola, {{nombre}}</h4>
     <h4 style="background-color: transparent; padding-left: 20px" *ngIf="nombre==='undefined'">Bienvenido!</h4>
     <div class="services">
-        <h2>Servicios <span style="float: right"> <ion-button (click)="llamar()"><ion-icon
+        <h2>Servicios <span style="float: right"> <ion-button href="tel:+52 33-3122-1189" ><ion-icon
                 name="call-outline"></ion-icon> 33-31-22-11-89</ion-button></span></h2>
 
 
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="service" (click)="seleccionarSeccion('Blancos Y Hogar')">
+            <div class="service" (click)="seleccionarSeccion('Blancos y hogar')">
                 <div class="img_box">
                     <img src="assets/imgs/portadas-04.jpg">
                 </div>
@@ -123,6 +123,8 @@
                     </h2>
                     <h2 class="d-flex" *ngIf="orden.estado==='Creada'"><span class="end" style="color: #3eb31c">Programada para recolección<ion-icon
                             name="car-outline"></ion-icon></span></h2>
+                            <h2 class="d-flex" *ngIf="orden.estado==='SolicitaCancelacion'"><span class="end" style="color: #b3381c">Solicita Cancelacion<ion-icon
+                                name="close-circle-outline"></ion-icon></span></h2>
                     <h2 class="d-flex" *ngIf="orden.estado==='Recolectada'"><span class="end" style="color: #3c5a9a">En manos de Sango Tintoreria<ion-icon
                             name="hand-left-outline"></ion-icon></span></h2>
                     <h2 class="d-flex" *ngIf="orden.estado==='Entrega'"><span class="end" style="color: #a52de0">Listas para ser entregadas<ion-icon

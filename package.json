@@ -32,6 +32,7 @@
     "@capacitor/keyboard": "6.0.0",
     "@capacitor/status-bar": "6.0.0",
     "@codetrix-studio/capacitor-google-auth": "^3.3.6",
+    "@ionic-native/core": "^5.36.0",
     "@ionic-native/geolocation": "^5.36.0",
     "@ionic-native/native-geocoder": "^5.36.0",
     "@ionic-native/splash-screen": "^5.36.0",

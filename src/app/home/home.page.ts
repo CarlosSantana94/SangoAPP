@@ -86,7 +86,7 @@ export class HomePage implements OnInit {
         this.rest.getCarrito().subscribe(carrito => {
             this.carrito = carrito;
             console.log(this.carrito);
-            if (!isNaN(this.carrito.id)) {
+            if (isNaN(this.carrito.id)) {
                 this.obtenerCarrito();
             }
         }); 
@@ -96,6 +96,8 @@ export class HomePage implements OnInit {
         this.nombre = localStorage.getItem('display');
         this.rest.getServicios().subscribe(data => {
             this.servicios = data;
+            console.log(data);
+            
         });
 
         this.rest.getPedidos().subscribe(data => {
