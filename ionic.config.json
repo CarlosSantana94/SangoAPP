@@ -1,0 +1,8 @@
+{
+  "name": "SangoPRuebaAppflow",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "1f6a548d"
+}
