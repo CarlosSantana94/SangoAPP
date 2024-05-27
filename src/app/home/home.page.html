@@ -1,0 +1,146 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="primary" (click)="goToCart()" *ngIf="carrito.cantidad>0">
+            <ion-icon slot="icon-only" ios="cart-outline" md="cart-outline"></ion-icon>
+            <ion-button>
+                <ion-badge style="background-color: #6780ab">{{carrito.cantidad}}</ion-badge>
+            </ion-button>
+        </ion-buttons>
+
+        <ion-title><strong>Sango </strong>Tintorerias</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg_color" fullscreen>
+
+    <div class="banner">
+        <ion-slides pager="true" loop="true">
+            <ion-slide>
+                <div class="img_box center_img">
+                    <img src="assets/imgs/lavanderiapiernas.png" class="crop_img">
+                </div>
+                <div class="text_box">
+                    <h1>Envio <br>Gratis</h1>
+                </div>
+            </ion-slide>
+            <!--<ion-slide (click)="offers()">
+                <div class="img_box center_img">
+                    <img src="assets/imgs/SIN%20COSTO%20DE%20ENVIO.gif" class="crop_img">
+                </div>
+
+            </ion-slide>-->
+
+            <!--<ion-slide (click)="offers()">
+                <div class="img_box center_img">
+                    <img src="assets/imgs/banner.png" class="crop_img">
+                </div>
+                <div class="text_box">
+                    <h2>Flat 50% off on <br>First Order</h2>
+                    <h3 class="d-flex">{{'view_all_offers' | translate}}
+                        <ion-icon class="zmdi zmdi-arrow-right end ion-text-end"></ion-icon>
+                    </h3>
+                </div>
+            </ion-slide>-->
+        </ion-slides>
+    </div>
+    <h4 style="background-color: transparent; padding-left: 20px" *ngIf="nombre!=='undefined'">Hola, {{nombre}}</h4>
+    <h4 style="background-color: transparent; padding-left: 20px" *ngIf="nombre==='undefined'">Bienvenido!</h4>
+    <div class="services">
+        <h2>Servicios <span style="float: right"> <ion-button (click)="llamar()"><ion-icon
+                name="call-outline"></ion-icon> 33-31-22-11-89</ion-button></span></h2>
+
+
+        <div class="scroll-x">
+            <div class="service" (click)="seleccionarSeccion('Tintoreria')">
+                <div class="img_box">
+                    <img src="assets/imgs/portadas-06.jpg">
+                </div>
+
+            </div>
+
+            <div class="service" (click)="seleccionarSeccion('Planchado')">
+                <div class="img_box">
+                    <img src="assets/imgs/portadas-05.jpg">
+                </div>
+
+            </div>
+            <div class="service" (click)="seleccionarSeccion('Lavanderia')">
+                <div class="img_box">
+                    <img src="assets/imgs/portadas-02.jpg">
+                </div>
+            </div>
+
+            <div class="service" (click)="seleccionarSeccion('Blancos Y Hogar')">
+                <div class="img_box">
+                    <img src="assets/imgs/portadas-04.jpg">
+                </div>
+            </div>
+
+
+            <div class="service" (click)="seleccionarSeccion('Teñidos')">
+                <div class="img_box">
+                    <img src="assets/imgs/portadas-03.jpg">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <ion-list lines="none">
+        <!--<h1 class="d-flex">Tus Ordenes <span
+                class="end">{{'Past_Orders' | translate}}</span></h1>-->
+
+
+        <ion-item class="no_order" *ngIf="!tieneOrdenes">
+            <div class="item_inner d-flex">
+                <div class="text_box">
+                    <h2>No se han realizado <span>ordenes</span>. Seleccione un servicio para continuar</h2>
+                </div>
+            </div>
+        </ion-item>
+
+
+        <!--   <ion-item class="no_login">
+               <div class="item_inner d-flex">
+                   <div class="img_box">
+                    <ion-icon class="zmdi zmdi-account-add ion-text-center"></ion-icon>
+                   </div>
+                   <div class="text_box">
+                       <h2>{{'login_sign_up_to_view_orders' | translate}}</h2>
+                   </div>
+               </div>
+           </ion-item>
+   -->
+
+        <ion-item (click)="order_info(orden.id)" *ngFor="let orden of ordenes">
+            <div class="item_inner d-flex">
+                <div class="img_box">
+                    <img src="assets/imgs/confirmed.png">
+                </div>
+                <div class="text_box">
+                    <h2 class="d-flex">Orden #{{orden.id}} <span class="end"
+                                                                 style="color: #29af5d">${{orden.total}}</span>
+                    </h2>
+                    <h2 class="d-flex" *ngIf="orden.estado==='Creada'"><span class="end" style="color: #3eb31c">Programada para recolección<ion-icon
+                            name="car-outline"></ion-icon></span></h2>
+                    <h2 class="d-flex" *ngIf="orden.estado==='Recolectada'"><span class="end" style="color: #3c5a9a">En manos de Sango Tintoreria<ion-icon
+                            name="hand-left-outline"></ion-icon></span></h2>
+                    <h2 class="d-flex" *ngIf="orden.estado==='Entrega'"><span class="end" style="color: #a52de0">Listas para ser entregadas<ion-icon
+                            name="hand-left-outline"></ion-icon></span></h2>
+                    <h2 class="d-flex" *ngIf="orden.estado==='Finalizada'"><span class="end" style="color: #9a9a9a">Orden Entregada<ion-icon
+                            name="checkmark-outline"></ion-icon></span></h2>
+                    <h3 class="d-flex"><span class="end">Recoleccion {{orden.recoleccion | date:'dd/MM/yyyy'}} </span>
+                    </h3>
+                    <h3 class="d-flex">Prendas: {{orden.cantidadPrendas}}<span
+                            class="end">Entrega {{orden.entrega | date:'dd/MM/yyyy'}} </span></h3>
+                    <h3 class="d-flex" *ngIf="orden.estado==='Finalizada'"><span class="end"><ion-button
+                            (click)="calificarServicio(orden)">Calificar Servicio</ion-button> </span>
+                    </h3>
+                </div>
+
+            </div>
+
+        </ion-item>
+
+    </ion-list>
+</ion-content>
