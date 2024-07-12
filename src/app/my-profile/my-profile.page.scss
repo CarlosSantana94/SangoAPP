@@ -1,0 +1,32 @@
+.form {
+    padding-top: 50px;
+
+    .img_box {
+        background: var(--bg-color);
+        margin: 0 auto;
+        width: 85px;
+        height: 85px;
+        border-radius: 50%;
+        text-align: center;
+        margin-bottom: 50px;
+
+        ion-icon {
+            font-size: 1.8rem;
+            color: var(--white);
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+
+    ion-item {
+        border: none !important;
+
+        &::after {
+            display: none;
+        }
+    }
+}

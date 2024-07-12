@@ -65,10 +65,10 @@ const routes: Routes = [
      path: 'account',
      loadChildren: () => import('./account/account.module').then(m => m.AccountPageModule)
  },
-// {
-//     path: 'my-profile',
-//     loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfilePageModule)
-// },
+ {
+     path: 'my-profile',
+     loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfilePageModule)
+ },
  {
      path: 'add-address',
      loadChildren: () => import('./add-address/add-address.module').then(m => m.AddAddressPageModule)
