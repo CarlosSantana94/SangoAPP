@@ -9,6 +9,6 @@ export const environment = {
         appId: '1:726792798295:web:fc41a194014d66853e2312',
         measurementId: 'G-HKPQCYNEFD'
     },
-    url: 'https://sango-api.herokuapp.com/',
+    url: 'https://sango-api-prod-51190d6823db.herokuapp.com/',
     mapsKey: 'AIzaSyALWK0kZF2PYTt6lc7Hr2gkBgt2Du_DJ6Y'
 };
