@@ -80,10 +80,34 @@ export class SignInPage implements OnInit {
         }
     }
 
+  async loginWithEmail() {
+    if (this.servidor) {
+      const googleUser = await GoogleAuth.signIn() as any;
+
+
+
+      console.log('my user: ', googleUser);
+
+      //  this.userInfo = googleUser;
+      console.log(googleUser.name);
+
+
+      localStorage.setItem('email', googleUser.email);
+      localStorage.setItem('display', googleUser.givenName + ' ' + googleUser.familyName);
+      localStorage.setItem('provider', googleUser.providerId);
+      localStorage.setItem('photoUrl', googleUser.imageUrl);
+      localStorage.setItem('uid', googleUser.id);
+      this.presentToast('Inicio de sesión exitoso, Bienvenido');
+      this.navCtrl.navigateRoot(['./tabs']);
+    } else {
+      this.presentToast('Error en servidor intente mas tarde.');
+    }
+  }
+
     async presentToast(message: string) {
         const toast = await this.toastController.create({
             message,
-            duration: 4000
+            duration: 2500
         });
         toast.present();
     }

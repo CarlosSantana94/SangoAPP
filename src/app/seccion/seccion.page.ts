@@ -13,6 +13,8 @@ export class SeccionPage implements OnInit {
     idServicio: number;
     opciones: any = [];
     carrito: any = {};
+  filteredOpciones: any[] = []; // This will hold the filtered options
+  searchText: string = '';
 
     constructor(private rest: RESTService,
                 private route: Router,
@@ -30,12 +32,19 @@ export class SeccionPage implements OnInit {
         this.idServicio = Number(sessionStorage.getItem('idServicio'));
         this.rest.getOpciones(this.idServicio).subscribe(data => {
             this.opciones = data;
+            this.filteredOpciones = this.opciones;
             console.log(this.opciones);
         });
         /*this.rest.getCarrito().subscribe(carrito => {
             this.carrito = carrito;
         });*/
     }
+
+  filterOpciones() {
+    this.filteredOpciones = this.opciones.filter(opc =>
+      opc.nombre.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
 
     seleccionarOpcionPrenda(opc: any) {
         sessionStorage.setItem('idOpcion', opc.id);

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RESTService} from '../rest.service';
 import {Router} from '@angular/router';
+import {LoadingController} from "@ionic/angular";
 
 @Component({
     selector: 'app-carrito',
@@ -15,6 +16,7 @@ export class CarritoPage implements OnInit {
     cargando: boolean;
 
     constructor(private rest: RESTService,
+                private loadingController: LoadingController,
                 private route: Router) {
     }
 
@@ -26,12 +28,18 @@ export class CarritoPage implements OnInit {
         this.route.navigate(['/envios']);
     }
 
-    actualizarCantidadPrendas() {
+    async actualizarCantidadPrendas() {
+      const loader = await this.loadingController.create({
+        message: 'Actualizando Carrito...',
+        spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
+      });
+      await loader.present();
         this.rest.getResumenCarrito().subscribe(data => {
             console.log(data);
             this.resumen = data;
             this.prendas = data.prendasList;
             this.cargando = true;
+          loader.dismiss();
         });
 
         this.rest.getCarrito().subscribe(carrito => {

@@ -21,13 +21,11 @@ export class HttpInterceptorService implements HttpInterceptor {
             headers: req.headers.set('idUsuario', 'noLogin'),
         });
         if (localStorage.getItem('uid') !== null) {
-            console.log('header');
             modifiedReq = req.clone({
                 headers: req.headers.set('idUsuario', localStorage.getItem('uid')),
             });
 
         }
-        console.log(modifiedReq);
         this.count++;
         return next.handle(modifiedReq).pipe(
             finalize(() => {
