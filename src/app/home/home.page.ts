@@ -168,4 +168,7 @@ export class HomePage implements OnInit {
   }
 
 
+  actualizarOrdenes() {
+    this.ngOnInit();
+  }
 }
