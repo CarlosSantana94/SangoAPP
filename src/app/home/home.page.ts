@@ -1,11 +1,12 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {AlertController, NavController, Platform} from '@ionic/angular';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ModalController} from '@ionic/angular';
 import {RESTService} from '../rest.service';
 import {CallNumber} from '@awesome-cordova-plugins/call-number/ngx';
 import {App as CapacitorApp} from '@capacitor/app';
 import {GoogleAuth} from "@codetrix-studio/capacitor-google-auth";
+import {sadOutline} from "ionicons/icons";
 
 @Component({
   selector: 'app-home',
@@ -18,27 +19,35 @@ export class HomePage implements OnInit {
   tieneOrdenes = false;
   servicios: any = [];
   carrito: any = {};
+  refresh: any;
 
   constructor(private navCtrl: NavController,
               private route: Router,
-              private modalController: ModalController,
               private rest: RESTService,
-              private platform: Platform,
               public alertController: AlertController,
+              private activatedRoute: ActivatedRoute,
               private callNumber: CallNumber) {
 
-    const usuario = {
+    if (sessionStorage.getItem('actualizarHome') === 'si') {
+      this.ngOnInit();
+    }
+
+    let usuario = {
       id: localStorage.getItem('uid'),
       nombre: localStorage.getItem('display'),
       email: localStorage.getItem('email'),
-      img: localStorage.getItem('photoUrl')
+      img: localStorage.getItem('photoUrl'),
+      puedePagarConCC: false
     };
 
-    this.rest.postUsuario(usuario).subscribe(data => {
-      console.log(data);
-      this.obtenerCarrito();
-    });
+    this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
+      localStorage.setItem("puedePagarCC", u.puedePagarConCC);
+      usuario.puedePagarConCC = u.puedePagarConCC;
 
+      this.rest.postUsuario(usuario).subscribe(data => {
+        this.obtenerCarrito();
+      });
+    });
 
   }
 
@@ -94,7 +103,6 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit() {
-
 
 
     this.nombre = localStorage.getItem('display');

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AlertController, NavController} from '@ionic/angular';
+import {AlertController, LoadingController, NavController} from '@ionic/angular';
 import {RESTService} from '../rest.service';
 import {Router} from '@angular/router';
 
@@ -7,145 +7,183 @@ import {Router} from '@angular/router';
 declare const Conekta;
 
 @Component({
-    selector: 'app-payment',
-    templateUrl: './payment.page.html',
-    styleUrls: ['./payment.page.scss'],
+  selector: 'app-payment',
+  templateUrl: './payment.page.html',
+  styleUrls: ['./payment.page.scss'],
 })
 export class PaymentPage implements OnInit {
 
-    total = 0;
-    metodo = '';
-    private pagando = false;
+  total = 0;
+  metodo = '';
+  private pagando = false;
 
-    tarjeta = {
-        card: {
-            number: '',
-            name: '',
-            exp_year: 2025,
-            exp_month: '12',
-            cvc: ''
-        }
+  tarjeta = {
+    card: {
+      number: '',
+      name: '',
+      exp_year: 2025,
+      exp_month: '12',
+      cvc: ''
+    }
+  };
+
+  tokenC = '';
+  meses = [];
+  anios = [];
+  cuandoEfectivo: any;
+  puedePagarConCC = false;
+  carrito: any = {};
+
+
+  constructor(private navCtrl: NavController,
+              public alertController: AlertController,
+              private loadingController: LoadingController,
+              private route: Router,
+              public rest: RESTService) {
+
+    this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
+      localStorage.setItem("puedePagarCC", u.puedePagarConCC);
+      this.puedePagarConCC = u.puedePagarConCC;
+
+      if (!this.puedePagarConCC) {
+        this.seleccionarMetodo('tarjeta');
+      }
+
+      this.rest.getResumenCarrito().subscribe(data => {
+        console.log(data);
+        this.carrito = data;
+      });
+    });
+
+
+  }
+
+  ngOnInit() {
+    this.cuandoEfectivo = '';
+    Conekta.setPublicKey('key_OMk8qnxSgVCZnq411H1ME6w');
+
+    this.meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+
+    let year = (new Date()).getFullYear();
+    this.anios.push(year);
+
+    for (let i = 0; i <= 12; i++) {
+      this.anios.push(year++);
+    }
+
+
+  }
+
+  tabs() {
+    this.route.navigate(['./tabs']);
+    sessionStorage.setItem('actualizarHome', 'si');
+  }
+
+  generarToken() {
+    const successResponseHandler = success => {
+      // Do something on sucess
+      // you need to send the token to the backend.
+      this.tokenC = success.id;
+      this.presentAlert('Confirmar Pago con Tarjeta', 'Total a pagar: $' + this.carrito.total);
     };
 
-    tokenC = '';
-    meses = [];
-    anios = [];
-    cuandoEfectivo: any;
+    const errorResponseHandler = error => {
+      // Do something on error
+      console.log(error)
+      this.presentAlert('Error en la tarjeta', error.message_to_purchaser);
+    };
 
-    carrito: any = {};
+    Conekta.Token.create(this.tarjeta, successResponseHandler, errorResponseHandler);
 
+  }
 
-    constructor(private navCtrl: NavController,
-                public alertController: AlertController,
-                private route: Router,
-                public rest: RESTService) {
-
-        this.rest.getResumenCarrito().subscribe(data => {
-            console.log(data);
-            this.carrito = data;
-        });
+  async presentAlert(titulo: string, mensaje: string) {
+    if (mensaje === '') {
+      mensaje = 'Validar datos de la tarjeta';
     }
 
-    ngOnInit() {
-        this.cuandoEfectivo = '';
-        Conekta.setPublicKey('key_OMk8qnxSgVCZnq411H1ME6w');
-
-        this.meses = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-
-        let year = (new Date()).getFullYear();
-        this.anios.push(year);
-
-        for (let i = 0; i <= 12; i++) {
-            this.anios.push(year++);
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: titulo,
+      message: mensaje,
+      buttons: [{text: 'Cancelar', role: 'cancel', cssClass: 'secondary'}, {
+        text: 'Confirmar', handler: () => {
+          this.cerrarPedido();
         }
+      }]
+    });
 
+    alert.present();
+  }
 
+  async presentAlertError(titulo: string, mensaje: string) {
+    if (mensaje === '') {
+      mensaje = 'Validar datos de la tarjeta';
     }
 
-    tabs() {
-        this.route.navigate(['./tabs']);
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: titulo,
+      message: mensaje,
+      buttons: [{text: 'Ok', role: 'cancel', cssClass: 'secondary'}]
+    });
+
+    alert.present();
+  }
+
+
+  seleccionarMetodo(sel: string) {
+    this.metodo = sel;
+  }
+
+  seleccionarCuandoEfectivo(cuandoEfectivo: any) {
+
+  }
+
+  pagarEnEfectivo() {
+    if (this.cuandoEfectivo === 'entregar') {
+      this.presentAlert('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
+        '\nEl pago lo harás cuando te recojan el pedido');
+    } else if (this.cuandoEfectivo === 'recibir') {
+      this.presentAlert('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
+        '\nEl pago lo harás cuando se te entregue tu ropa');
     }
+  }
 
-    generarToken() {
-        const successResponseHandler = success => {
-            // Do something on sucess
-            // you need to send the token to the backend.
-            this.tokenC = success.id;
-            this.presentAlert('Confirmar Pago con Tarjeta', 'Total a pagar: $' + this.carrito.total);
-        };
+  async cerrarPedido() {
+    const loader = await this.loadingController.create({
+      message: 'Pagando y creando pedido...',
+      spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
+    });
+    await loader.present();
 
-        const errorResponseHandler = error => {
-            // Do something on error
-            this.presentAlert('Error en la tarjeta', error.message_to_purchaser);
-        };
-
-        Conekta.Token.create(this.tarjeta, successResponseHandler, errorResponseHandler);
-
-    }
-
-    async presentAlert(titulo: string, mensaje: string) {
-        if (mensaje === '') {
-            mensaje = 'Validar datos de la tarjeta';
+    if (this.metodo === 'efectivo') {
+      this.rest.postPagarCarrito(this.metodo, this.cuandoEfectivo).subscribe(data => {
+        if (!data.hayError) {
+          this.rest.getCarrito().subscribe(a => {
+            console.log(a);
+            loader.dismiss();
+            this.tabs();
+          });
+        } else {
+          this.presentAlertError('Sucedio un error en su pedido', data.mensaje);
         }
+      });
+    } else if (this.metodo === 'tarjeta') {
+      this.rest.postPagarCarrito(this.metodo, this.tokenC).subscribe(data => {
+        console.log(data);
+        if (!data.hayError) {
+          this.rest.getCarrito().subscribe(a => {
+            console.log(a);
+            loader.dismiss();
+            this.tabs();
+          });
 
-        const alert = await this.alertController.create({
-            cssClass: 'my-custom-class',
-            header: titulo,
-            message: mensaje,
-            buttons: [{text: 'Cancelar', role: 'cancel', cssClass: 'secondary'}, {
-                text: 'Confirmar', handler: () => {
-                    this.cerrarPedido();
-                }
-            }]
-        });
-
-        alert.present();
-    }
-
-
-    seleccionarMetodo(sel: string) {
-        this.metodo = sel;
-    }
-
-    seleccionarCuandoEfectivo(cuandoEfectivo: any) {
-
-    }
-
-    pagarEnEfectivo() {
-        if (this.cuandoEfectivo === 'entregar') {
-            this.presentAlert('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
-                '\nEl pago lo harás cuando te recojan el pedido');
-        } else if (this.cuandoEfectivo === 'recibir') {
-            this.presentAlert('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
-                '\nEl pago lo harás cuando se te entregue tu ropa');
+        } else {
+          loader.dismiss();
+          this.presentAlertError('Sucedio un error en su pago', data.mensaje);
         }
+      });
     }
-
-    cerrarPedido() {
-        if (this.metodo === 'efectivo') {
-            this.rest.postPagarCarrito(this.metodo, this.cuandoEfectivo).subscribe(data => {
-                if (!data.hayError) {
-                    this.rest.getCarrito().subscribe(a => {
-                        console.log(a);
-                        this.tabs();
-                    });
-                } else {
-                    this.presentAlert('Sucedio un error en su pago', data.mensaje);
-                }
-            });
-        } else if (this.metodo === 'tarjeta') {
-            this.rest.postPagarCarrito(this.metodo, this.tokenC).subscribe(data => {
-                console.log(data);
-                if (!data.hayError) {
-                    this.rest.getCarrito().subscribe(a => {
-                        console.log(a);
-                        this.tabs();
-                    });
-
-                } else {
-                    this.presentAlert('Sucedio un error en su pago', data.mensaje);
-                }
-            });
-        }
-    }
+  }
 }

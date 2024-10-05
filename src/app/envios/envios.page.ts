@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {RESTService} from '../rest.service';
 import {formatDate} from '@angular/common';
 import {Router} from '@angular/router';
+import {LoadingController} from "@ionic/angular";
 
 @Component({
     selector: 'app-envios',
@@ -16,6 +17,7 @@ export class EnviosPage implements OnInit {
     fechaEntregaSeleccionada: any = '';
 
     constructor(private rest: RESTService,
+                private loadingController: LoadingController,
                 private route: Router) {
     }
 
@@ -42,7 +44,7 @@ export class EnviosPage implements OnInit {
         this.route.navigate(['./select-address']);
     }
 
-    escogerFechaRecoleccion(fechaRecoleccionSeleccionada: any) {
+   async escogerFechaRecoleccion(fechaRecoleccionSeleccionada: any) {
         console.log(fechaRecoleccionSeleccionada);
         this.fechasEntrega = [];
         this.fechaEntregaSeleccionada = '';
