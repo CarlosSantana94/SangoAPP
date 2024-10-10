@@ -37,6 +37,42 @@
 .tarjeta-btn {
   --background: #3c5a9a;
 }
+/* Specific styles for each button variation */
+.recibir-btn {
+  color: green;
+  --background: #d9e1d4; /* Custom color */
+}
+
+.entregar-btn {
+  color: green;
+  --background: #d9e1d4; /* Different custom color */
+}
+/* Add a hover effect */
+.entregar-btn:hover,
+.recibir-btn:hover {
+  transform: scale(1.02); /* Slight scaling effect */
+  --background:darkgreen; /* Changes color on hover */
+  color: white;
+}
+/* Ensure ion-row and ion-col don't constrain width */
+ion-row, ion-col {
+  flex-wrap: wrap; /* Allow the content to wrap */
+  display: flex; /* Make sure flex behavior is active */
+}
+
+
+.custom-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+  color: var(--ion-color-primary);
+  margin-bottom: 15px;
+  white-space: normal;
+  max-width: 100%; /* Ensure it takes the full width available */
+  display: block; /* Make sure it behaves as a block element */
+}
+
+
 
 .option-row {
   margin-top: 20px;

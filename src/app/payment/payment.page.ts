@@ -136,8 +136,9 @@ export class PaymentPage implements OnInit {
     this.metodo = sel;
   }
 
-  seleccionarCuandoEfectivo(cuandoEfectivo: any) {
-
+  seleccionarCuandoEfectivo(value: string) {
+    console.log('Selected value:', value);
+    this.cuandoEfectivo = value;
   }
 
   pagarEnEfectivo() {

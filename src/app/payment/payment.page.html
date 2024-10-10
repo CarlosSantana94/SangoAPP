@@ -30,27 +30,28 @@
     <!-- Payment options directly below buttons based on the selected method -->
     <ion-row *ngIf="metodo === 'efectivo'" class="option-row">
       <ion-col size="12">
-        <ion-list>
-          <ion-radio-group [(ngModel)]="cuandoEfectivo" (ionChange)="seleccionarCuandoEfectivo(cuandoEfectivo)">
-            <ion-item style="background-color: #d7d7d7;">
-              <ion-label>Selecciona cuando pagar</ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-label>
-                <img style="height: 35px;" src="assets/imgs/delivery_active.png"> Al entregar mi ropa
-              </ion-label>
-              <ion-radio slot="start" value="entregar"></ion-radio>
-            </ion-item>
-            <ion-item>
-              <ion-label>
-                <img style="height: 35px;" src="assets/imgs/pick_active.png"> Al recibir mi ropa
-              </ion-label>
-              <ion-radio slot="start" value="recibir"></ion-radio>
-            </ion-item>
-          </ion-radio-group>
-        </ion-list>
+        <ion-text class="custom-title">Selecciona en qué momento deseas pagar en efectivo:</ion-text>
+      </ion-col>
+      <ion-col size="12">
+        <ion-row class="button-row">
+          <ion-col size="12" class="button-col">
+            <ion-button expand="block" class="method-btn recibir-btn" (click)="seleccionarCuandoEfectivo('entregar')">
+              <ion-icon slot="start" name="exit-outline"></ion-icon>
+              Al entregar mis prendas
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row class="button-row">
+          <ion-col size="12" class="button-col">
+            <ion-button expand="block" class="method-btn entregar-btn" (click)="seleccionarCuandoEfectivo('recibir')">
+              <ion-icon slot="start" name="enter-outline"></ion-icon>
+              Al recibir mis prendas
+            </ion-button>
+          </ion-col>
+        </ion-row>
       </ion-col>
     </ion-row>
+
 
     <ion-row *ngIf="metodo === 'tarjeta'" class="option-row">
       <ion-col size="12">
@@ -79,17 +80,17 @@
               <ion-row>
                 <ion-col size="6">
                   <ion-item class="input-item">
-                    <ion-label>Mes</ion-label>
+                    <ion-label position="floating">Mes</ion-label>
                     <ion-select placeholder="Seleccionar" [(ngModel)]="tarjeta.card.exp_month">
-                      <ion-select-option [value]="mes" *ngFor="let mes of meses">{{mes}}</ion-select-option>
+                      <ion-select-option [value]="mes" *ngFor="let mes of meses">{{ mes }}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>
                 <ion-col size="6">
                   <ion-item class="input-item">
-                    <ion-label>Año</ion-label>
+                    <ion-label position="floating">Año</ion-label>
                     <ion-select placeholder="Seleccionar" [(ngModel)]="tarjeta.card.exp_year">
-                      <ion-select-option [value]="anio" *ngFor="let anio of anios">{{anio}}</ion-select-option>
+                      <ion-select-option [value]="anio" *ngFor="let anio of anios">{{ anio }}</ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>
@@ -111,16 +112,16 @@
 </ion-content>
 
 <ion-footer class="ion-no-border" *ngIf="metodo !== ''">
-  <div class="btn" *ngIf="metodo === 'efectivo'">
-    <h2 class="d-flex">Total ${{carrito.total}}
+  <div class="btn" *ngIf="metodo === 'efectivo' && carrito.total>0">
+    <h2 class="d-flex">Total ${{ carrito.total }}
       <span *ngIf="cuandoEfectivo !== ''" class="end" (click)="pagarEnEfectivo()">
                 <ion-icon name="cash-outline" style="margin-right: 5px"></ion-icon> Pagar en efectivo
                 <ion-icon class="zmdi zmdi-chevron-right ion-text-end"></ion-icon>
             </span>
     </h2>
   </div>
-  <div class="btn" *ngIf="metodo === 'tarjeta'">
-    <h2 class="d-flex">Total ${{carrito.total}}
+  <div class="btn" *ngIf="metodo === 'tarjeta' && carrito.total>0">
+    <h2 class="d-flex">Total ${{ carrito.total }}
       <span (click)="generarToken()" class="end">
                 <ion-icon name="card-outline" style="margin-right: 5px"></ion-icon> Pagar con tarjeta
                 <ion-icon class="zmdi zmdi-chevron-right ion-text-end"></ion-icon>

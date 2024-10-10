@@ -1,7 +1,89 @@
-.vertical-center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+ion-header {
+  ion-toolbar {
+    --background: #ffffff; /* Use a light background for modern feel */
+    ion-title {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .icon-forward {
+      color: #eaf350;
+      padding-top: 5px;
+      margin-left: 4px;
+    }
+  }
+}
+
+.page-title {
+  padding: 16px;
+  color: rgb(107, 140, 205);
+  font-weight: bold;
+}
+
+.prenda-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center; // Center text and elements within the card
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .prenda-img {
+    width: 100%; /* Take full width of the card */
+    height: 200px; /* Set a fixed height for the image container */
+    object-fit: contain; /* Ensure the image covers the container */
+    object-position: center; /* Center the image */
+    display: block;
+    border-radius: 12px 12px 0 0;
+  }
+
+  ion-card-header {
+    ion-card-subtitle {
+      font-size: 0.9em;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    ion-card-title {
+      color: #29af5d;
+    }
+  }
+
+  .quantity-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-top: 5px;
+  }
+
+  .center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+
+ion-footer {
+  ion-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    ion-button {
+      margin: 0 10px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .prenda-card {
+    .prenda-img {
+      height: 250px; /* Larger image size for tablets */
+    }
+  }
 }

@@ -1,83 +1,65 @@
 <ion-header>
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
-        </ion-buttons>
-        <ion-title>
-            Mi Carrito
-        </ion-title>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mi Carrito</ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="bg_color" fullscreen>
-
-    <ion-card class="item_info">
-        <h2 style="font-weight: bold">
-            {{resumen.cantidadPrendas}} Prendas
-        </h2>
-        <div class="item_list">
-            <div class="item" *ngFor="let prenda of prendas">
-                <h3 class="d-flex">
-                    <span class="quantity">{{prenda.cantidad}}</span>
-                    <span class="multiply">x</span>
-                    <span class="item_name">{{prenda.nombre}} <span
-                            style="color: #6e7b82; margin-right: 2px; font-size: .7em"
-                            class="item_name">(${{prenda.precio}})</span></span>
-
-                    <span style="color: #5b80d9" class="amount end ion-text-end" >${{prenda.precioTotal | number : '1.2-2'}} </span>
-                </h3>
-                <ion-grid>
-                    <ion-row>
-                        <ion-col>
-                            <ion-button class="vertical-center" size="small"
-                                        (click)="removerPrenda(prenda.id)"
-                                        *ngIf="prenda.cantidad>0"><ion-icon name="remove-outline" *ngIf="prenda.cantidad >1"></ion-icon>
-                                        <ion-icon name="trash-outline" style="color: red" *ngIf="prenda.cantidad ===1"></ion-icon>
-                            </ion-button>
-                        </ion-col>
-                        <ion-col>
-                            <ion-button class="vertical-center" size="small"
-                                        (click)="agregarPrenda(prenda.id)"
-                                        *ngIf="prenda.cantidad>0"><ion-icon name="add-outline"></ion-icon>
-                            </ion-button>
-                        </ion-col>
-                        <ion-col></ion-col>
-                        <ion-col></ion-col>
-                        <ion-col></ion-col>
-                        <ion-col></ion-col>
-                    </ion-row>
-                </ion-grid>
-            </div>
-        </div>
-    </ion-card>
-
+  <ion-card class="item_info">
+    <h2 style="font-weight: bold; margin-bottom: 16px;">
+      {{resumen.cantidadPrendas}} Prendas
+    </h2>
+    <div class="item_list">
+      <div class="item" *ngFor="let prenda of prendas">
+        <ion-grid class="item-grid">
+          <ion-row class="align-items-center">
+            <ion-col size="2">
+              <img [src]="prenda.img" alt="{{prenda.nombre}}" class="item-image"/>
+            </ion-col>
+            <ion-col size="7">
+              <h3 class="item-service">{{prenda.servicio}}</h3>
+              <h3 class="item-details">
+                <span class="quantity">{{prenda.cantidad}}</span> x {{prenda.nombre}}
+                <span class="price">(${{prenda.precio}})</span>
+              </h3>
+            </ion-col>
+            <ion-col size="3" class="ion-text-end">
+              <span class="amount">${{prenda.precioTotal | number : '1.2-2'}}</span>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button color="danger" size="small" (click)="removerPrenda(prenda.id)">
+                <ion-icon name="remove-outline" *ngIf="prenda.cantidad > 1"></ion-icon>
+                <ion-icon name="trash-outline" *ngIf="prenda.cantidad === 1"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-button color="primary" size="small" (click)="agregarPrenda(prenda.id)">
+                <ion-icon name="add-outline"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+  </ion-card>
 </ion-content>
 
-
 <ion-footer class="ion-no-border">
-    <!--
-        <ion-card class="promo-code" (click)="promocode()">
-            <h2 class="d-flex">
-                <ion-icon class="zmdi zmdi-label"></ion-icon>{{'Have_Promocode' | translate}}
-            </h2>
-        </ion-card>
-    -->
-
-    <ion-card class="payment_info">
-        <h2 class="d-flex" style="color: #29af5d !important;">Total en carrito<span
-                class="end ion-text-end">${{carrito.total}}</span></h2>
-    </ion-card>
-
-    <ion-footer class="ion-no-border" *ngIf="cargando">
-        <ion-button size="large" shape="full" class="btn" (click)="irARecoleccion()">
-            <ion-icon name="calendar-outline" style="margin-right: 6px"></ion-icon>
-            Programar Recolección
-        </ion-button>
-    </ion-footer>
-
-    <ion-footer class="ion-no-border" *ngIf="!cargando">
-        <ion-button disabled size="large" shape="full" class="btn">
-            Obteniendo Carrito
-        </ion-button>
-    </ion-footer>
+  <ion-card class="payment_info">
+    <h2>Total en carrito: <span class="end">${{carrito.total}}</span></h2>
+  </ion-card>
+  <ion-footer class="ion-no-border">
+    <ion-button expand="full" color="success" *ngIf="cargando && carrito.total > 0" (click)="irARecoleccion()">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      Programar Recolección
+    </ion-button>
+    <ion-button expand="full" color="medium" disabled *ngIf="!cargando">
+      Obteniendo Carrito
+    </ion-button>
+  </ion-footer>
 </ion-footer>
