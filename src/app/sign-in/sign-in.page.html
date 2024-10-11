@@ -19,7 +19,7 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row *ngIf="showAppleSignIn">
         <ion-col size="12">
           <ion-button fill="outline" size="large" expand="block" class="btn google" (click)="loginWithApple()">
             <ion-icon style="color: black; padding-right: 5px" name="logo-apple"></ion-icon>

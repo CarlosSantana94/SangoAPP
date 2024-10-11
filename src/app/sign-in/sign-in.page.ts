@@ -5,10 +5,8 @@ import '@codetrix-studio/capacitor-google-auth';
 import {RESTService} from '../rest.service';
 import {environment} from '../../environments/environment';
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
-import {Plugins} from "@capacitor/core";
 import {SignInWithApple, SignInWithAppleOptions, SignInWithAppleResponse} from "@capacitor-community/apple-sign-in";
-
-const {Device} = Plugins;
+import {Device} from '@capacitor/device';
 
 @Component({
   selector: 'app-sign-in',
@@ -38,6 +36,7 @@ export class SignInPage implements OnInit {
 
   async ngOnInit() {
 
+    await this.checkPlatform();
     this.urlServer = environment.url;
 
     this.rest.getHealth().subscribe(h => {
@@ -65,14 +64,6 @@ export class SignInPage implements OnInit {
   async loginWithGoogle() {
     if (this.servidor) {
       const googleUser = await GoogleAuth.signIn() as any;
-
-
-      console.log('my user: ', googleUser);
-
-      //  this.userInfo = googleUser;
-      console.log(googleUser.name);
-
-
       localStorage.setItem('email', googleUser.email);
       localStorage.setItem('display', googleUser.givenName + ' ' + googleUser.familyName);
       localStorage.setItem('provider', googleUser.providerId);
@@ -84,6 +75,54 @@ export class SignInPage implements OnInit {
       this.presentToast('Error en servidor intente mas tarde.');
     }
   }
+
+  async loginWithApple() {
+    try {
+      let options: SignInWithAppleOptions = {
+        clientId: 'com.bucapps.sango.services',
+        redirectURI: 'https://sango-tintorerias.firebaseapp.com/__/auth/handler',
+        scopes: 'email name',
+        state: '12345',
+      };
+
+      SignInWithApple.authorize(options)
+        .then((result: SignInWithAppleResponse) => {
+          // Handle user information
+          // Validate token with server and create new session
+          localStorage.setItem('email', result.response.email);
+          localStorage.setItem('display', result.response.givenName + ' ' + result.response.familyName);
+          localStorage.setItem('photoUrl', '');
+          localStorage.setItem('uid', result.response.user);
+
+          this.presentToast('Inicio de sesión exitoso, Bienvenido');
+          this.navCtrl.navigateRoot(['./tabs']);
+
+        })
+        .catch(error => {
+          this.presentToast('Error en servidor intente mas tarde.');
+        });
+
+    } catch (error) {
+      await this.presentToast('Error en servidor intente mas tarde.');
+    }
+  }
+
+  async checkPlatform() {
+    try {
+      const info = await Device.getInfo();
+      if (info.platform === 'ios') {
+        console.log("The device is running iOS.");
+      } else if (info.platform === 'android') {
+        this.showAppleSignIn = false;
+        console.log("The device is running Android.");
+      } else {
+        console.log("The device is running on a different platform: ", info.platform);
+      }
+    } catch (error) {
+      console.error("Error retrieving device information: ", error);
+    }
+  }
+
 
   async loginWithEmail() {
     if (this.servidor) {
@@ -127,33 +166,7 @@ export class SignInPage implements OnInit {
   loginWithFacebook() {
   }
 
-  async loginWithApple() {
-    try {
-      let options: SignInWithAppleOptions = {
-        clientId: 'com.bucapps.sango.services',
-        redirectURI: 'https://sango-tintorerias.firebaseapp.com/__/auth/handler',
-        scopes: 'email name',
-        state: '12345',
-      };
 
-
-
-      SignInWithApple.authorize(options)
-        .then((result: SignInWithAppleResponse) => {
-          // Handle user information
-          // Validate token with server and create new session
-          console.log(result);
-        })
-        .catch(error => {
-          this.presentAlert();
-        });
-
-
-
-    } catch (error) {
-      this.presentAlert();
-    }
-  }
 
   async presentAlert() {
     const alert = await this.alertController.create({
