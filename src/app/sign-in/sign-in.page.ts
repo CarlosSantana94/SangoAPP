@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {AlertController, NavController, Platform, ToastController} from '@ionic/angular';
+import {AlertController, LoadingController, NavController, Platform, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import '@codetrix-studio/capacitor-google-auth';
 import {RESTService} from '../rest.service';
 import {environment} from '../../environments/environment';
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
-import {SignInWithApple, SignInWithAppleOptions, SignInWithAppleResponse} from "@capacitor-community/apple-sign-in";
+import {SignInWithApple, SignInWithAppleOptions} from "@capacitor-community/apple-sign-in";
 import {Device} from '@capacitor/device';
 
 @Component({
@@ -18,132 +18,93 @@ export class SignInPage implements OnInit {
   password: string;
   email: string;
   servidor: boolean;
-  versionAPI: any;
-  urlServer: any;
+  apiVersion: string;
+  serverUrl: string;
   showAppleSignIn = false;
   user = null;
 
-  constructor(private navCtrl: NavController,
-              private route: Router,
-              public platform: Platform,
-              public toastController: ToastController,
-              private alertController: AlertController,
-              public rest: RESTService) {
-    this.platform.ready().then(async () => {
-      GoogleAuth.initialize();
-    });
+  constructor(
+    private navCtrl: NavController,
+    private route: Router,
+    private platform: Platform,
+    private toastController: ToastController,
+    private alertController: AlertController,
+    private loadingController: LoadingController,
+    private rest: RESTService
+  ) {
   }
 
   async ngOnInit() {
-
+    await this.platform.ready();
+    GoogleAuth.initialize();
     await this.checkPlatform();
-    this.urlServer = environment.url;
+    this.serverUrl = environment.url;
 
-    this.rest.getHealth().subscribe(h => {
-      console.log(h);
-      this.servidor = h.isUp;
-      this.versionAPI = h.version;
-
-      if (this.servidor && localStorage.getItem('uid') !== null) {
-        this.navCtrl.navigateRoot(['./tabs']);
-      }
-
-      if (!this.servidor) {
-        localStorage.clear();
-        sessionStorage.clear();
-      }
+    const loader = await this.loadingController.create({
+      message: 'Obteniendo datos del servidor...',
+      spinner: 'bubbles',
     });
-  }
+    await loader.present();
 
-  tabs() {
-    // this.auth.login(this.email, this.password);
-    // this.navCtrl.navigateRoot(['./tabs']);
+    this.rest.getHealth().subscribe(
+      (h) => {
+        this.servidor = h.isUp;
+        this.apiVersion = h.version;
+        loader.dismiss();
+        if (this.servidor && localStorage.getItem('uid')) {
+          this.navCtrl.navigateRoot(['./tabs']);
+        } else {
+          this.clearStorage();
+        }
+      },
+      (error) => {
+        loader.dismiss();
+        this.presentToast('Error al obtener datos del servidor.');
+        console.error('Error retrieving server health: ', error);
+      }
+    );
   }
-
 
   async loginWithGoogle() {
-    if (this.servidor) {
-      const googleUser = await GoogleAuth.signIn() as any;
-      localStorage.setItem('email', googleUser.email);
-      localStorage.setItem('display', googleUser.givenName + ' ' + googleUser.familyName);
-      localStorage.setItem('provider', googleUser.providerId);
-      localStorage.setItem('photoUrl', googleUser.imageUrl);
-      localStorage.setItem('uid', googleUser.id);
+    try {
+      if (!this.servidor) {
+        throw new Error('Servidor no disponible');
+      }
+      const googleUser = await GoogleAuth.signIn();
+      this.setUserInfo(googleUser.email, `${googleUser.givenName} ${googleUser.familyName}`, googleUser.imageUrl, googleUser.id);
       this.presentToast('Inicio de sesión exitoso, Bienvenido');
       this.navCtrl.navigateRoot(['./tabs']);
-    } else {
+    } catch (error) {
       this.presentToast('Error en servidor intente mas tarde.');
+      console.error('Google login error: ', error);
     }
   }
 
   async loginWithApple() {
     try {
-      let options: SignInWithAppleOptions = {
+      const options: SignInWithAppleOptions = {
         clientId: 'com.bucapps.sango.services',
         redirectURI: 'https://sango-tintorerias.firebaseapp.com/__/auth/handler',
         scopes: 'email name',
         state: '12345',
       };
-
-      SignInWithApple.authorize(options)
-        .then((result: SignInWithAppleResponse) => {
-          // Handle user information
-          // Validate token with server and create new session
-          localStorage.setItem('email', result.response.email);
-          localStorage.setItem('display', result.response.givenName + ' ' + result.response.familyName);
-          localStorage.setItem('photoUrl', '');
-          localStorage.setItem('uid', result.response.user);
-
-          this.presentToast('Inicio de sesión exitoso, Bienvenido');
-          this.navCtrl.navigateRoot(['./tabs']);
-
-        })
-        .catch(error => {
-          this.presentToast('Error en servidor intente mas tarde.');
-        });
-
+      const result = await SignInWithApple.authorize(options);
+      this.setUserInfo(result.response.email, `${result.response.givenName} ${result.response.familyName}`, '', result.response.user);
+      this.presentToast('Inicio de sesión exitoso, Bienvenido');
+      this.navCtrl.navigateRoot(['./tabs']);
     } catch (error) {
-      await this.presentToast('Error en servidor intente mas tarde.');
+      this.presentToast('Error en servidor intente mas tarde.');
+      console.error('Apple login error: ', error);
     }
   }
 
   async checkPlatform() {
     try {
       const info = await Device.getInfo();
-      if (info.platform === 'ios') {
-        console.log("The device is running iOS.");
-      } else if (info.platform === 'android') {
-        this.showAppleSignIn = false;
-        console.log("The device is running Android.");
-      } else {
-        console.log("The device is running on a different platform: ", info.platform);
-      }
+      this.showAppleSignIn = info.platform === 'ios';
+      console.log(`The device is running ${info.platform}.`);
     } catch (error) {
       console.error("Error retrieving device information: ", error);
-    }
-  }
-
-
-  async loginWithEmail() {
-    if (this.servidor) {
-      const googleUser = await GoogleAuth.signIn() as any;
-
-
-      console.log('my user: ', googleUser);
-
-      //  this.userInfo = googleUser;
-      console.log(googleUser.name);
-
-
-      localStorage.setItem('email', googleUser.email);
-      localStorage.setItem('display', googleUser.givenName + ' ' + googleUser.familyName);
-      localStorage.setItem('provider', googleUser.providerId);
-      localStorage.setItem('photoUrl', googleUser.imageUrl);
-      localStorage.setItem('uid', googleUser.id);
-      this.presentToast('Inicio de sesión exitoso, Bienvenido');
-      this.navCtrl.navigateRoot(['./tabs']);
-    } else {
-      this.presentToast('Error en servidor intente mas tarde.');
     }
   }
 
@@ -155,25 +116,15 @@ export class SignInPage implements OnInit {
     toast.present();
   }
 
-  resiter_now() {
-    this.route.navigate(['./resiter-now']);
+  private setUserInfo(email: string, displayName: string, photoUrl: string, uid: string) {
+    localStorage.setItem('email', email);
+    localStorage.setItem('display', displayName);
+    localStorage.setItem('photoUrl', photoUrl);
+    localStorage.setItem('uid', uid);
   }
 
-  forgot_password() {
-    this.route.navigate(['./forgot-password']);
-  }
-
-  loginWithFacebook() {
-  }
-
-
-
-  async presentAlert() {
-    const alert = await this.alertController.create({
-      header: 'Login Failed',
-      message: 'Please try again later',
-      buttons: ['OK'],
-    });
-    await alert.present();
+  private clearStorage() {
+    localStorage.clear();
+    sessionStorage.clear();
   }
 }
