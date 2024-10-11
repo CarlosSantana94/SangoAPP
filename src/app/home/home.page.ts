@@ -40,6 +40,8 @@ export class HomePage implements OnInit {
       puedePagarConCC: false
     };
 
+    // TODO si no existe lo crea
+
     this.rest.postUsuario(usuario).subscribe(data => {
     });
 

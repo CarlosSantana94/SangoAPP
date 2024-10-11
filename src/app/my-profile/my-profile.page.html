@@ -1,54 +1,61 @@
 <ion-header>
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
-        </ion-buttons>
-        <ion-title>
-            {{"My_Profile" | translate}}
-        </ion-title>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{"My_Profile" | translate}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="!isEditing" (click)="toggleEdit()">
+        <ion-icon name="pencil-outline"></ion-icon> Edit
+      </ion-button>
+      <ion-button *ngIf="isEditing" (click)="saveChanges()">
+        <ion-icon name="save-outline"></ion-icon> Save
+      </ion-button>
+      <ion-button *ngIf="isEditing" (click)="cancelChanges()">
+        <ion-icon name="close-outline"></ion-icon> Cancel
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <ion-content>
-        <div class="form">
-
-            <div class="img_box center_img">
-                <img src="{{photoURL}}" class="crop_img">
-                <!--                <ion-icon class="zmdi zmdi-camera ion-text-center"></ion-icon>-->
-            </div>
-            <ion-list lines="none">
-                <ion-item lines="none">
-
-                    <div class="item_inner d-flex">
-                        <ion-icon class="zmdi zmdi-account ion-text-start"></ion-icon>
-                        <div class="input_box">
-                            <ion-label position="floating">Nombre</ion-label>
-                            <ion-input mode="md" type="name" value="{{nombre}}" readonly="boolean"></ion-input>
-                        </div>
-                    </div>
-                </ion-item>
-
-                <ion-item lines="none">
-                    <div class="item_inner d-flex">
-                        <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
-                        <div class="input_box">
-                            <ion-label position="floating">Email</ion-label>
-                            <ion-input mode="md" type="email" value="{{email}}" readonly="boolean"></ion-input>
-                        </div>
-                    </div>
-                </ion-item>
-
-               <!-- <ion-item lines="none">
-                    <div class="item_inner d-flex">
-                        <ion-icon class="zmdi zmdi-smartphone-iphone ion-text-start"></ion-icon>
-                        <div class="input_box">
-                            <ion-label position="floating">{{'Phone_Number' | translate}}</ion-label>
-                            <ion-input mode="md" type="text" value="{{tel}}" readonly="boolean"></ion-input>
-                        </div>
-                    </div>
-                </ion-item>-->
-            </ion-list>
+  <div class="form">
+    <div class="img_box center_img" (click)="editPhoto()">
+      <img [src]="photoURL" class="crop_img">
+      <ion-icon class="zmdi zmdi-camera ion-text-center" *ngIf="!photoURL"></ion-icon>
+    </div>
+    <ion-list lines="none">
+      <ion-item lines="none">
+        <div class="item_inner d-flex">
+          <ion-icon class="zmdi zmdi-account ion-text-start"></ion-icon>
+          <div class="input_box">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input mode="md" type="text" [(ngModel)]="nombre" [readonly]="!isEditing" [ngClass]="{'editable': isEditing}"></ion-input>
+          </div>
         </div>
-    </ion-content>
+      </ion-item>
+
+      <ion-item lines="none">
+        <div class="item_inner d-flex">
+          <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
+          <div class="input_box">
+            <ion-label position="floating">Email</ion-label>
+            <ion-input mode="md" type="email" [(ngModel)]="email" [readonly]="!isEditing" [ngClass]="{'editable': isEditing}"></ion-input>
+          </div>
+        </div>
+      </ion-item>
+
+      <ion-item lines="none">
+        <div class="item_inner d-flex">
+          <ion-icon class="zmdi zmdi-smartphone-iphone ion-text-start"></ion-icon>
+          <div class="input_box">
+            <ion-label position="floating">{{'Phone_Number' | translate}}</ion-label>
+            <ion-input mode="md" type="text" [(ngModel)]="tel" [readonly]="!isEditing" [ngClass]="{'editable': isEditing}"></ion-input>
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>
