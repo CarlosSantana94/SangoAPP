@@ -40,6 +40,12 @@ export class HomePage implements OnInit {
       puedePagarConCC: false
     };
 
+    this.rest.postUsuario(usuario).subscribe(data => {
+    });
+
+    console.log("USUARIO A CREAR");
+    console.log(usuario);
+
     this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
       localStorage.setItem("puedePagarCC", u.puedePagarConCC);
       usuario.puedePagarConCC = u.puedePagarConCC;
