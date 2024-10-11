@@ -45,24 +45,25 @@
         </ion-row>
     </ion-card>
 
-    <ion-card class="item_info">
-        <h2 style="font-weight: bold">
-            {{resumen.cantidadPrendas}} Prendas
-        </h2>
-        <div class="item_list">
-            <div class="item" *ngFor="let prenda of prendas">
-                <h3 class="d-flex">
-                    <span class="quantity">{{prenda.cantidad}}</span>
-                    <span class="multiply">x</span>
-                    <span class="item_name">{{prenda.nombre}} <span
-                            style="color: #6e7b82; margin-right: 2px; font-size: .7em"
-                            class="item_name">(${{prenda.precio}})</span></span>
-                    <span style="color: #5b80d9"
-                          class="amount end ion-text-end">${{prenda.precioTotal | number : '1.2-2'}}</span>
-                </h3>
-            </div>
-        </div>
-    </ion-card>
+  <ion-card class="item_info" *ngFor="let servicio of groupedPrendas | keyvalue">
+    <h2 style="font-weight: bold">
+      {{ servicio.key }} <!-- Nombre del servicio -->
+    </h2>
+    <div class="item_list">
+      <div class="item" *ngFor="let prenda of servicio.value">
+        <h3 class="d-flex">
+          <span class="quantity">{{prenda.cantidad}}</span>
+          <span class="multiply">x</span>
+          <span class="item_name">{{prenda.nombre}}
+            <span style="color: #6e7b82; margin-right: 2px; font-size: .7em"
+                  class="item_name">(${{prenda.precio}})</span>
+                </span>
+          <span style="color: #5b80d9"
+                class="amount end ion-text-end">${{prenda.precioTotal | number : '1.2-2'}}</span>
+        </h3>
+      </div>
+    </div>
+  </ion-card>
 
 </ion-content>
 

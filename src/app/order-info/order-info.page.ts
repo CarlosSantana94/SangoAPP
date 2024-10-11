@@ -21,7 +21,7 @@ export class OrderInfoPage implements OnInit {
   queja: any;
   comentario: any;
   comentarioExistente: boolean = false;
-
+  groupedPrendas = {}; // Nuevo objeto para agrupar prendas por servicio
 
   constructor(private rest: RESTService) {
   }
@@ -32,6 +32,7 @@ export class OrderInfoPage implements OnInit {
     this.rest.getCarritoPorId(localStorage.getItem('pedidoSeleccionado')).subscribe(data => {
       this.resumen = data;
       this.prendas = data.prendasList;
+      this.groupPrendasByService();
 
       console.log(data);
       this.rest.getComentarioDeCarrito(data.id)
@@ -45,6 +46,17 @@ export class OrderInfoPage implements OnInit {
     });
     this.valorEstrellas = 5;
   }
+
+  groupPrendasByService() {
+    this.groupedPrendas = this.prendas.reduce((acc, prenda) => {
+      if (!acc[prenda.servicio]) {
+        acc[prenda.servicio] = [];
+      }
+      acc[prenda.servicio].push(prenda);
+      return acc;
+    }, {});
+  }
+
 
   calificar(number: number) {
     this.valorEstrellas = number;

@@ -73,71 +73,67 @@
         </ion-row>
     </ion-card>
 
-    <ion-card class="info">
-        <ion-row>
-            <ion-col size="6">
-                <h2>Recoleccion</h2>
-                <h3>{{resumen.recoleccion  | date:'dd/MM/yyyy'}}</h3>
+  <ion-card class="info">
+    <ion-row>
+      <ion-col size="6">
+        <h2>Recoleccion</h2>
+        <h3>{{resumen.recoleccion}}</h3>
+      </ion-col>
 
-            </ion-col>
-
-            <ion-col size="6">
-                <h2>Entrega</h2>
-                <h3>{{resumen.entrega | date:'dd/MM/yyyy'}}</h3>
-
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col size="12">
-                <h2>
-                    <ion-icon name="home-outline"></ion-icon>
-                    Dirección
-                </h2>
-                <h3>{{resumen.direccion}}</h3>
-                <small>CP: {{resumen.cp}}</small>
-                <ion-row>
-                    <ion-col><small>
-                        <ion-icon name="person-circle-outline" style="margin-right: 2px"></ion-icon>
-                        {{resumen.nombre}}</small></ion-col>
-                    <ion-col><small>
-                        <ion-icon name="call-outline" style="margin-right: 2px"></ion-icon>
-                        {{resumen.tel}}</small></ion-col>
-                </ion-row>
-                <ion-row style="font-size: 1.4em">
-                    Total <span style="color: #29af5d; margin-left: 6px">${{resumen.total | number : '1.2-2'}}</span>
-                </ion-row>
-                <ion-row *ngIf="comentarioExistente"><h3>Evaluacion del Chofer:</h3></ion-row>
-                <ion-row *ngIf="comentarioExistente">
-                    <ion-icon style="color: #14990A" name="checkmark-circle-outline"></ion-icon>
-                    : {{comentario}}</ion-row>
-                <ion-row *ngIf="comentarioExistente">
-                    <ion-icon style="color: darkred" name="close-circle-outline"></ion-icon>
-                    : {{queja}}</ion-row>
-
-
-            </ion-col>
-        </ion-row>
-    </ion-card>
-
-    <ion-card class="item_info">
-        <h2 style="font-weight: bold">
-            {{resumen.cantidadPrendas}} Prendas
+      <ion-col size="6">
+        <h2>Entrega</h2>
+        <h3>{{resumen.entrega}}</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <h2>
+          <ion-icon name="home-outline"></ion-icon>
+          Dirección
         </h2>
-        <div class="item_list">
-            <div class="item" *ngFor="let prenda of prendas">
-                <h3 class="d-flex">
-                    <span class="quantity">{{prenda.cantidad}}</span>
-                    <span class="multiply">x</span>
-                    <span class="item_name">{{prenda.nombre}} <span
-                            style="color: #6e7b82; margin-right: 2px; font-size: .7em"
-                            class="item_name">(${{prenda.precio | number : '1.2-2'}})</span></span>
+        <h3>{{resumen.direccion}}</h3>
+        <small>CP: {{resumen.cp}}</small>
+        <ion-row>
+          <ion-col>
+            <small>
+              <ion-icon name="person-circle-outline" style="margin-right: 2px"></ion-icon>
+              {{resumen.nombre}}
+            </small>
+          </ion-col>
+          <ion-col>
+            <small>
+              <ion-icon name="call-outline" style="margin-right: 2px"></ion-icon>
+              {{resumen.tel}}
+            </small>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-card>
 
-                    <span style="color: #5b80d9"
-                          class="amount end ion-text-end">${{prenda.precioTotal | number : '1.2-2'}}</span>
-                </h3>
-            </div>
-        </div>
-    </ion-card>
+  <!-- Updated Section to Display Items Grouped by Service -->
+  <ion-card class="item_info" *ngFor="let servicio of groupedPrendas | keyvalue">
+    <h2 style="font-weight: bold; color: #1e2ad5">
+      {{ servicio.key }} <!-- Displaying the service name -->
+    </h2>
+    <div class="item_list">
+      <div class="item" *ngFor="let prenda of servicio.value">
+        <h3 class="d-flex">
+          <span class="quantity">{{prenda.cantidad}}</span>
+          <span class="multiply">x</span>
+          <span class="item_name">
+                        {{prenda.nombre}}
+            <span style="color: #6e7b82; margin-right: 2px; font-size: .7em" class="item_name">
+                            (${{prenda.precio}})
+                        </span>
+                    </span>
+          <span style="color: #5b80d9" class="amount end ion-text-end">
+                        ${{prenda.precioTotal | number : '1.2-2'}}
+                    </span>
+        </h3>
+      </div>
+    </div>
+  </ion-card>
 
 
 </ion-content>
