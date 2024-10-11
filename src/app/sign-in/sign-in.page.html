@@ -4,7 +4,7 @@
 
   <!-- Logo Section -->
   <div class="logo">
-    <img src="assets/imgs/logo_sango.png" alt="Sango Logo" />
+    <img src="assets/imgs/logo_sango.png" alt="Sango Logo"/>
   </div>
 
   <!-- Form Section -->
@@ -14,8 +14,16 @@
       <ion-row>
         <ion-col size="12">
           <ion-button fill="outline" size="large" expand="block" class="btn google" (click)="loginWithGoogle()">
-            <img slot="start" src="assets/imgs/google.png" alt="Google Icon" />
+            <ion-icon style="color: red; padding-right: 5px" name="logo-google"></ion-icon>
             Iniciar Sesión con Google
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-button fill="outline" size="large" expand="block" class="btn google" (click)="loginWithApple()">
+            <ion-icon style="color: black; padding-right: 5px" name="logo-apple"></ion-icon>
+            Iniciar Sesión con Apple
           </ion-button>
         </ion-col>
       </ion-row>
@@ -25,7 +33,7 @@
 
 <ion-footer class="ion-no-border">
   <h5 class="ion-text-center" *ngIf="servidor">
-    v0.0.4-{{versionAPI}}
+    v0.0.4-{{ versionAPI }}
     <ion-icon style="color: #29af5d" name="radio-button-on-outline"></ion-icon>
   </h5>
   <h5 class="ion-text-center" *ngIf="!servidor">
