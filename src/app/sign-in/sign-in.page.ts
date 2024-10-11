@@ -89,6 +89,7 @@ export class SignInPage implements OnInit {
         state: '12345',
       };
       const result = await SignInWithApple.authorize(options);
+      console.log(result);
       this.setUserInfo(result.response.email, `${result.response.givenName} ${result.response.familyName}`, '', result.response.user);
       this.presentToast('Inicio de sesión exitoso, Bienvenido');
       this.navCtrl.navigateRoot(['./tabs']);
