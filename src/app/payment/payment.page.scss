@@ -59,7 +59,10 @@ ion-row, ion-col {
   flex-wrap: wrap; /* Allow the content to wrap */
   display: flex; /* Make sure flex behavior is active */
 }
-
+.input-item.invalid {
+  --background: #ffe6e6; /* Light red background for invalid input */
+  --border-color: #ff4d4d; /* Red border for invalid input */
+}
 
 .custom-title {
   font-size: 1.4rem;

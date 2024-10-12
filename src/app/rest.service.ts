@@ -67,8 +67,8 @@ export class RESTService {
     return this.http.get(environment.url + 'carrito/resumen');
   }
 
-  postPagarCarrito(metodo: string, cuandoOToken: string): any {
-    return this.http.post(environment.url + 'carrito/pagar/' + metodo + '/' + cuandoOToken, {});
+  postPagarCarrito(metodo: string, cuandoOToken: string, email: string): any {
+    return this.http.post(environment.url + 'carrito/pagar/' + metodo + '/' + cuandoOToken, {email: email});
   }
 
   getPedidos(): any {

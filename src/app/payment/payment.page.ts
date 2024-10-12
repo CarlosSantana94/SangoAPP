@@ -21,7 +21,7 @@ export class PaymentPage implements OnInit {
     card: {
       number: '',
       name: '',
-      exp_year: 2025,
+      exp_year: 2026,
       exp_month: '12',
       cvc: ''
     }
@@ -33,6 +33,8 @@ export class PaymentPage implements OnInit {
   cuandoEfectivo: any;
   puedePagarConCC = false;
   carrito: any = {};
+  email: any;
+  isEmailValid: boolean = true;
 
 
   constructor(private navCtrl: NavController,
@@ -44,6 +46,13 @@ export class PaymentPage implements OnInit {
     this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
       localStorage.setItem("puedePagarCC", u.puedePagarConCC);
       this.puedePagarConCC = u.puedePagarConCC;
+
+      this.email = localStorage.getItem("email");
+      if (this.email == 'null') {
+        this.email = '';
+      }
+
+
 
       if (!this.puedePagarConCC) {
         this.seleccionarMetodo('tarjeta');
@@ -84,20 +93,20 @@ export class PaymentPage implements OnInit {
       // Do something on sucess
       // you need to send the token to the backend.
       this.tokenC = success.id;
-      this.presentAlert('Confirmar Pago con Tarjeta', 'Total a pagar: $' + this.carrito.total);
+      this.presentAlertPagar('Confirmar Pago con Tarjeta', 'Total a pagar: $' + this.carrito.total);
     };
 
     const errorResponseHandler = error => {
       // Do something on error
       console.log(error)
-      this.presentAlert('Error en la tarjeta', error.message_to_purchaser);
+      this.presentAlertError('Error en la tarjeta', error.message_to_purchaser);
     };
 
     Conekta.Token.create(this.tarjeta, successResponseHandler, errorResponseHandler);
 
   }
 
-  async presentAlert(titulo: string, mensaje: string) {
+  async presentAlertPagar(titulo: string, mensaje: string) {
     if (mensaje === '') {
       mensaje = 'Validar datos de la tarjeta';
     }
@@ -143,10 +152,10 @@ export class PaymentPage implements OnInit {
 
   pagarEnEfectivo() {
     if (this.cuandoEfectivo === 'entregar') {
-      this.presentAlert('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
+      this.presentAlertPagar('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
         '\nEl pago lo harás cuando te recojan el pedido');
     } else if (this.cuandoEfectivo === 'recibir') {
-      this.presentAlert('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
+      this.presentAlertPagar('¿Cerrar Pedido?', 'Al presionar pagar, se generará tu orden.' +
         '\nEl pago lo harás cuando se te entregue tu ropa');
     }
   }
@@ -159,7 +168,7 @@ export class PaymentPage implements OnInit {
     await loader.present();
 
     if (this.metodo === 'efectivo') {
-      this.rest.postPagarCarrito(this.metodo, this.cuandoEfectivo).subscribe(data => {
+      this.rest.postPagarCarrito(this.metodo, this.cuandoEfectivo, '').subscribe(data => {
         if (!data.hayError) {
           this.rest.getCarrito().subscribe(a => {
             console.log(a);
@@ -171,7 +180,7 @@ export class PaymentPage implements OnInit {
         }
       });
     } else if (this.metodo === 'tarjeta') {
-      this.rest.postPagarCarrito(this.metodo, this.tokenC).subscribe(data => {
+      this.rest.postPagarCarrito(this.metodo, this.tokenC, localStorage.getItem('email')).subscribe(data => {
         console.log(data);
         if (!data.hayError) {
           this.rest.getCarrito().subscribe(a => {
@@ -187,4 +196,16 @@ export class PaymentPage implements OnInit {
       });
     }
   }
+
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
+  // Method to validate the email
+  validateEmail() {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    this.isEmailValid = emailRegex.test(this.email);
+  }
+
 }

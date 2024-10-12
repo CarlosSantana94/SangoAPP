@@ -68,6 +68,17 @@
               <ion-input type="text" [(ngModel)]="tarjeta.card.name"></ion-input>
             </ion-item>
 
+            <ion-item class="input-item"  [class.invalid]="!isEmailValid">
+              <ion-icon slot="start" name="person-outline"></ion-icon>
+              <ion-label position="floating">Email</ion-label>
+              <ion-input type="text" [(ngModel)]="email" (ngModelChange)="validateEmail()"></ion-input>
+            </ion-item>
+
+            <!-- Optional: Display an error message when email is invalid -->
+            <ion-text color="danger" *ngIf="!isEmailValid">
+              Ingresa un Email Valido.
+            </ion-text>
+
             <!-- Card Number -->
             <ion-item class="input-item">
               <ion-icon slot="start" name="card-outline"></ion-icon>
@@ -120,7 +131,7 @@
             </span>
     </h2>
   </div>
-  <div class="btn" *ngIf="metodo === 'tarjeta' && carrito.total>0">
+  <div class="btn" *ngIf="metodo === 'tarjeta' && carrito.total>0 && isValidEmail(email)">
     <h2 class="d-flex">Total ${{ carrito.total }}
       <span (click)="generarToken()" class="end">
                 <ion-icon name="card-outline" style="margin-right: 5px"></ion-icon> Pagar con tarjeta
