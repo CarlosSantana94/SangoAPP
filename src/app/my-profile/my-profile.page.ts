@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RESTService} from "../rest.service";
+import {AlertController, LoadingController, ToastController} from "@ionic/angular";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-my-profile',
@@ -20,7 +22,11 @@ export class MyProfilePage implements OnInit {
     tel: this.tel
   };
 
-  constructor(private rest: RESTService) {
+  constructor(private rest: RESTService,
+              private loadingController: LoadingController,
+              private toastController: ToastController,
+              private route: Router,
+              private alertController: AlertController) {
   }
 
   ngOnInit() {
@@ -80,6 +86,64 @@ export class MyProfilePage implements OnInit {
   editPhoto() {
     // Implement photo update functionality
     console.log('Edit photo clicked');
+  }
+
+  async confirmAccountDeletion() {
+    const alert = await this.alertController.create({
+      header: '¿Estás seguro?',
+      message: 'Esta accion no se puede revertir. Puedes Crear una cuenta en cualquier momento de nuevo.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Account deletion canceled');
+          }
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.deleteAccount();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async deleteAccount() {
+    const loading = await this.loadingController.create({
+      message: 'Eliminando Tu Cuenta...',
+    });
+    await loading.present();
+    await loading.dismiss();
+    this.rest.deleteUsuario(localStorage.getItem('uid')).subscribe(
+      async (response) => {
+        console.log(response)
+        await loading.dismiss();
+        this.presentToast(response.message);
+        if (!response.hayError){
+          sessionStorage.clear();
+          localStorage.clear();
+          // Optionally log out the user and redirect them
+          this.route.navigate(['/sign-in']);
+        }
+
+      },
+      async (error) => {
+        await loading.dismiss();
+        this.presentToast('Error Eliminando Cuenta Intente Mas Tarde.');
+      }
+    );
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500
+    });
+    toast.present();
   }
 
 }

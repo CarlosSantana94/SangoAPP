@@ -1,12 +1,9 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {AlertController, NavController, Platform} from '@ionic/angular';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ModalController} from '@ionic/angular';
+import {Component, OnInit} from '@angular/core';
+import {AlertController, LoadingController, NavController} from '@ionic/angular';
+import {Router} from '@angular/router';
 import {RESTService} from '../rest.service';
 import {CallNumber} from '@awesome-cordova-plugins/call-number/ngx';
 import {App as CapacitorApp} from '@capacitor/app';
-import {GoogleAuth} from "@codetrix-studio/capacitor-google-auth";
-import {sadOutline} from "ionicons/icons";
 
 @Component({
   selector: 'app-home',
@@ -24,14 +21,15 @@ export class HomePage implements OnInit {
   constructor(private navCtrl: NavController,
               private route: Router,
               private rest: RESTService,
+              private loadingController: LoadingController,
               public alertController: AlertController,
-              private activatedRoute: ActivatedRoute,
               private callNumber: CallNumber) {
 
-    if (sessionStorage.getItem('actualizarHome') === 'si') {
-      this.ngOnInit();
-    }
 
+  }
+
+
+  async obtenerCarrito() {
     let usuario = {
       id: localStorage.getItem('uid'),
       nombre: localStorage.getItem('display'),
@@ -53,15 +51,52 @@ export class HomePage implements OnInit {
       usuario.puedePagarConCC = u.puedePagarConCC;
 
       this.rest.postUsuario(usuario).subscribe(data => {
-        this.obtenerCarrito();
+
       });
     });
 
+    const loader = await this.loadingController.create({
+      message: 'Obteniendo Datos...',
+      spinner: 'bubbles',
+    });
+    await loader.present();
+    this.rest.getCarrito().subscribe(async carrito => {
+      await loader.dismiss();
+      this.carrito = carrito;
+      console.log(this.carrito);
+      if (isNaN(this.carrito.id)) {
+        this.obtenerCarrito();
+      }
+    });
+  }
+
+
+  ngOnInit() {
+    this.obtenerCarrito();
+
+
+    this.nombre = localStorage.getItem('display');
+    this.rest.getServicios().subscribe(data => {
+      this.servicios = data;
+      console.log(data);
+    });
+
+    this.rest.getPedidos().subscribe(data => {
+      if (data.length !== 0) {
+        console.log('Tiene ordenes ' + data.length);
+        this.tieneOrdenes = true;
+        this.ordenes = data;
+        console.log(this.ordenes);
+      }
+      console.log(data);
+    });
+  }
+
+  async ionViewDidEnter() {
+    await this.obtenerCarrito();
   }
 
   showExitConfirm() {
-
-
     this.alertController.create({
       header: 'Salir de SANGO',
       message: 'Deseas salir?',
@@ -78,59 +113,9 @@ export class HomePage implements OnInit {
           navigator['app'].exitApp();
         }
       }]
-    })
-      .then(alert => {
-        alert.present();
-      });
-  }
-
-
-  ionViewDidEnter() {
-    this.obtenerCarrito();
-    CapacitorApp.addListener('backButton', ({canGoBack}) => {
-
-      // alert(this.route.url);
-
-      if (this.route.url.includes('home') || this.route.url.includes('HOME')) {
-        this.showExitConfirm();
-      } else {
-        window.history.back();
-      }
+    }).then(alert => {
+      alert.present();
     });
-
-  }
-
-  obtenerCarrito() {
-    this.rest.getCarrito().subscribe(carrito => {
-      this.carrito = carrito;
-      console.log(this.carrito);
-      if (isNaN(this.carrito.id)) {
-        this.obtenerCarrito();
-      }
-    });
-  }
-
-  ngOnInit() {
-
-
-    this.nombre = localStorage.getItem('display');
-    this.rest.getServicios().subscribe(data => {
-      this.servicios = data;
-      console.log(data);
-
-    });
-
-    this.rest.getPedidos().subscribe(data => {
-      if (data.length !== 0) {
-        console.log('Tiene ordenes ' + data.length);
-        this.tieneOrdenes = true;
-        this.ordenes = data;
-        console.log(this.ordenes);
-        this.obtenerCarrito();
-      }
-      console.log(data);
-    });
-
   }
 
   offers() {
@@ -145,7 +130,6 @@ export class HomePage implements OnInit {
   seleccionarSeccion(seccion: string) {
     const idServicio = this.servicios.find(element => element.nombre === seccion);
     console.log(idServicio);
-
     sessionStorage.setItem('idServicio', idServicio.id);
     sessionStorage.setItem('nombreServicio', idServicio.nombre);
     this.route.navigate(['./seccion']);
@@ -164,7 +148,6 @@ export class HomePage implements OnInit {
     this.route.navigate(['/carrito']);
   }
 
-
   llamar() {
     this.callNumber.callNumber('3331221189', true)
       .then(res => console.log('Launched dialer!', res))
@@ -172,9 +155,7 @@ export class HomePage implements OnInit {
   }
 
   calificarServicio(orden) {
-
   }
-
 
   actualizarOrdenes() {
     this.ngOnInit();

@@ -10,51 +10,76 @@
 <ion-content class="bg_color" fullscreen>
   <ion-card class="item_info">
     <h2 style="font-weight: bold; margin-bottom: 16px;">
-      {{resumen.cantidadPrendas}} Prendas
+      {{ resumen.cantidadPrendas }} Prendas
     </h2>
-    <div class="item_list">
-      <div class="item" *ngFor="let prenda of prendas">
-        <ion-grid class="item-grid">
-          <ion-row class="align-items-center">
-            <ion-col size="2">
-              <img [src]="prenda.img" alt="{{prenda.nombre}}" class="item-image"/>
-            </ion-col>
-            <ion-col size="7">
-              <h3 class="item-service">{{prenda.servicio}}</h3>
-              <h3 class="item-details">
-                <span class="quantity">{{prenda.cantidad}}</span> x {{prenda.nombre}}
-                <span class="price">(${{prenda.precio}})</span>
-              </h3>
-            </ion-col>
-            <ion-col size="3" class="ion-text-end">
-              <span class="amount">${{prenda.precioTotal | number : '1.2-2'}}</span>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ion-button color="danger" size="small" (click)="removerPrenda(prenda.id)">
-                <ion-icon name="remove-outline" *ngIf="prenda.cantidad > 1"></ion-icon>
-                <ion-icon name="trash-outline" *ngIf="prenda.cantidad === 1"></ion-icon>
-              </ion-button>
-            </ion-col>
-            <ion-col>
-              <ion-button color="primary" size="small" (click)="agregarPrenda(prenda.id)">
-                <ion-icon name="add-outline"></ion-icon>
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-    </div>
+
+    <ion-accordion-group>
+      <!-- Agrupado por Servicio -->
+      <ion-accordion *ngFor="let servicio of groupedPrendas | keyvalue">
+        <!-- Encabezado del Servicio -->
+        <ion-item slot="header" color="light">
+          <h2 class="service-title" [ngClass]="getServiceClass(servicio.key)">
+            {{ servicio.key }}
+          </h2>
+        </ion-item>
+
+        <!-- Contenido del Servicio -->
+        <div class="item_list" slot="content">
+          <!-- Agrupado por ServicioPadre -->
+          <div *ngFor="let servicioPadre of servicio.value | keyvalue" class="servicio-padre-group">
+            <h3 class="service-padre-title">
+              {{ servicioPadre.key }}
+            </h3>
+
+            <div class="item" *ngFor="let prenda of servicioPadre.value">
+              <ion-grid class="item-grid">
+                <ion-row class="align-items-center">
+                  <ion-col size="2">
+                    <img [src]="prenda.img" alt="{{ prenda.nombre }}" class="item-image" />
+                  </ion-col>
+                  <ion-col size="7">
+                    <h3 class="item-details">
+                      <span class="quantity">{{ prenda.cantidad }}</span> x {{ prenda.nombre }}
+                      <span class="price">(${{ prenda.precio }})</span>
+                    </h3>
+                  </ion-col>
+                  <ion-col size="3" class="ion-text-end">
+                    <span class="amount">${{ prenda.precioTotal | number: '1.2-2' }}</span>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-button color="danger" size="small" (click)="removerPrenda(prenda.id)">
+                      <ion-icon name="remove-outline" *ngIf="prenda.cantidad > 1"></ion-icon>
+                      <ion-icon name="trash-outline" *ngIf="prenda.cantidad === 1"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                  <ion-col>
+                    <ion-button color="primary" size="small" (click)="agregarPrenda(prenda.id)">
+                      <ion-icon name="add-outline"></ion-icon>
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </div>
+          </div>
+        </div>
+      </ion-accordion>
+    </ion-accordion-group>
   </ion-card>
 </ion-content>
 
 <ion-footer class="ion-no-border">
   <ion-card class="payment_info">
-    <h2>Total en carrito: <span class="end">${{carrito.total}}</span></h2>
+    <h2>Total en carrito: <span class="end">${{ carrito.total }}</span></h2>
   </ion-card>
   <ion-footer class="ion-no-border">
-    <ion-button expand="full" color="success" *ngIf="cargando && carrito.total > 0" (click)="irARecoleccion()">
+    <ion-button
+      expand="full"
+      color="success"
+      *ngIf="cargando && carrito.total > 0"
+      (click)="irARecoleccion()"
+    >
       <ion-icon name="calendar-outline" slot="start"></ion-icon>
       Programar Recolección
     </ion-button>

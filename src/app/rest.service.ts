@@ -88,7 +88,10 @@ export class RESTService {
   }
 
   getUsuario(idUsuario: any): any {
-
     return this.http.get(environment.url + 'usuario/' + idUsuario);
+  }
+
+  deleteUsuario(idUsuario: any): any {
+    return this.http.delete(environment.url + 'usuario/' + idUsuario);
   }
 }

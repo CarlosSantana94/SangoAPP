@@ -4,7 +4,7 @@
       <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{"My_Profile" | translate}}
+     Mi perfil
     </ion-title>
     <ion-buttons slot="end">
       <ion-button *ngIf="!isEditing" (click)="toggleEdit()">
@@ -22,10 +22,10 @@
 
 <ion-content>
   <div class="form">
-    <div class="img_box center_img" (click)="editPhoto()">
+    <!--<div class="img_box center_img" (click)="editPhoto()">
       <img [src]="photoURL" class="crop_img">
       <ion-icon class="zmdi zmdi-camera ion-text-center" *ngIf="!photoURL"></ion-icon>
-    </div>
+    </div>-->
     <ion-list lines="none">
       <ion-item lines="none">
         <div class="item_inner d-flex">
@@ -58,4 +58,8 @@
       </ion-item>
     </ion-list>
   </div>
+  <ion-item style="padding-top: 95px;">
+    <ion-label>Eliminar mi cuenta</ion-label>
+    <ion-button color="danger" (click)="confirmAccountDeletion()">Eliminar mi cuenta y datos</ion-button>
+  </ion-item>
 </ion-content>

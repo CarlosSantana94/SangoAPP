@@ -64,3 +64,109 @@ ion-card {
   letter-spacing: 0 !important;
   height: 48px;
 }
+/* confirm-order.page.scss */
+.tintoreria {
+  color: #1e25ed !important; /* Color para Tintoreria */
+}
+
+.planchado {
+  color: #dc7502 !important;; /* Color para Planchado */
+}
+
+.lavanderia {
+  color: #15dddd !important;; /* Color para Lavanderia */
+}
+
+.blancos-y-hogar {
+  color: #f3dd66 !important;; /* Color para Blancos y Hogar */
+}
+
+.teñidos {
+  color: #2c8310 !important;; /* Color para Teñidos */
+}
+
+// Estilos generales para la vista
+.servicio-group {
+  margin-bottom: 24px;
+}
+
+.service-header {
+  background-color: var(--ion-color-light);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--ion-color-primary);
+  display: flex;
+  align-items: center;
+}
+
+.service-title ion-icon {
+  margin-right: 10px;
+}
+
+.servicio-padre-group {
+  margin-bottom: 16px;
+}
+
+.service-padre-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-left: 10px;
+  color: var(--ion-color-secondary);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ion-color-light);
+}
+
+.item-grid {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ion-color-light);
+  margin-bottom: 10px;
+}
+
+.item-details {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ion-color-dark);
+}
+
+.price {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+}
+
+.amount {
+  font-size: 1rem;
+  color: var(--ion-color-primary);
+  font-weight: 700;
+}
+
+.item-image {
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+.payment_info {
+  padding: 10px;
+  margin-bottom: 0;
+
+  h2 {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--ion-color-success);
+    font-weight: bold;
+
+    .end {
+      font-size: 1.2rem;
+    }
+  }
+}
+

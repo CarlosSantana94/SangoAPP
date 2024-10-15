@@ -45,25 +45,38 @@
         </ion-row>
     </ion-card>
 
-  <ion-card class="item_info" *ngFor="let servicio of groupedPrendas | keyvalue">
-    <h2 style="font-weight: bold">
-      {{ servicio.key }} <!-- Nombre del servicio -->
-    </h2>
-    <div class="item_list">
-      <div class="item" *ngFor="let prenda of servicio.value">
-        <h3 class="d-flex">
-          <span class="quantity">{{prenda.cantidad}}</span>
-          <span class="multiply">x</span>
-          <span class="item_name">{{prenda.nombre}}
-            <span style="color: #6e7b82; margin-right: 2px; font-size: .7em"
-                  class="item_name">(${{prenda.precio}})</span>
-                </span>
-          <span style="color: #5b80d9"
-                class="amount end ion-text-end">${{prenda.precioTotal | number : '1.2-2'}}</span>
-        </h3>
-      </div>
-    </div>
-  </ion-card>
+  <ion-grid>
+    <ion-row *ngFor="let servicio of groupedPrendas | keyvalue">
+      <ion-col size="12">
+        <ion-card class="item_info">
+          <h2 [ngClass]="getServiceClass(servicio.key)" style="font-weight: bold; margin-bottom: 10px;">
+            {{ servicio.key }} <!-- Nombre del servicio -->
+          </h2>
+          <div *ngFor="let servicioPadre of servicio.value | keyvalue">
+            <p style="font-weight: bold; padding-left: 10px;">
+              {{ servicioPadre.key }} <!-- Nombre del servicioPadre -->
+            </p>
+            <div class="item_list" style="padding-left: 20px;">
+              <div class="item" *ngFor="let prenda of servicioPadre.value">
+                <h3 class="d-flex" style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="flex-grow: 1;">
+                    <span class="quantity">{{ prenda.cantidad }}</span>
+                    <span class="multiply">x</span>
+                    <span class="item_name">{{ prenda.nombre }}
+                      <span style="color: #6e7b82; margin-right: 2px; font-size: .7em"
+                            class="item_name">(${{ prenda.precio }})</span>
+                  </span>
+                  </div>
+                  <span style="color: #5b80d9; font-weight: bold;"
+                        class="amount ion-text-end">${{ prenda.precioTotal | number : '1.2-2' }}</span>
+                </h3>
+              </div>
+            </div>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>
 

@@ -1,85 +1,93 @@
 <ion-header>
-    <ion-toolbar>
-        <ion-title>Menu</ion-title>
-    </ion-toolbar>
-    <div class="banner d-flex" (click)="my_profile()">
-        <div class="img_box center_img">
-            <img src="{{photoURL}}" class="crop_img" referrerpolicy=“no-referrer”>
-        </div>
-        <div class="text_box">
-            <h2 *ngIf="nombre!=='undefined'">{{nombre}}</h2>
-            <h3 class="d-flex"> {{email}}
-                <ion-icon class="zmdi zmdi-chevron-right ion-text-end end"></ion-icon>
-            </h3>
-        </div>
+  <ion-toolbar>
+    <ion-title>Menu</ion-title>
+  </ion-toolbar>
+  <div class="banner d-flex" (click)="my_profile()">
+   <!-- <div class="img_box center_img">
+      <img src="{{photoURL}}" class="crop_img" referrerpolicy=“no-referrer”>
+    </div>-->
+    <div class="text_box">
+      <h2 *ngIf="nombre!=='undefined'">{{ nombre }}</h2>
+      <h3 class="d-flex"> {{ email }}
+        <ion-icon class="zmdi zmdi-chevron-right ion-text-end end"></ion-icon>
+      </h3>
     </div>
+  </div>
 </ion-header>
 
 <ion-content>
-    <ion-list lines="none">
-       <!--  <ion-item (click)="my_orders()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-storage ion-text-start"></ion-icon>
-                <h2> {{'My_Orders' | translate}}</h2>
-            </div>
-        </ion-item> -->
+  <ion-list lines="none">
+    <!--  <ion-item (click)="my_orders()">
+         <div class="item_inner d-flex">
+             <ion-icon class="zmdi zmdi-storage ion-text-start"></ion-icon>
+             <h2> {{'My_Orders' | translate}}</h2>
+         </div>
+     </ion-item> -->
 
-        <ion-item (click)="my_address()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-pin ion-text-start"></ion-icon>
-                <h2> {{'My_address' | translate}}</h2>
-            </div>
-        </ion-item>
+    <ion-item (click)="my_address()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-pin ion-text-start"></ion-icon>
+        <h2> Mis Direcciones</h2>
+      </div>
+    </ion-item>
 
-        <ion-item (click)="zonaDeCobertura()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-map ion-text-start" name="map-outline"></ion-icon>
-                <h2> Zona de Cobertura</h2>
-            </div>
-        </ion-item>
+    <ion-item (click)="zonaDeCobertura()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-map ion-text-start" name="map-outline"></ion-icon>
+        <h2> Zona de Cobertura</h2>
+      </div>
+    </ion-item>
 
-        <ion-item (click)="faq()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-assignment-check ion-text-start"></ion-icon>
-                <h2> {{'faqs' | translate}}</h2>
-            </div>
-        </ion-item>
+    <ion-item (click)="faq()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-assignment-check ion-text-start"></ion-icon>
+        <h2> {{ 'faqs' | translate }}</h2>
+      </div>
+    </ion-item>
 
-        <ion-item (click)="contact_us()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
-                <h2> {{'Contact_us' | translate}}</h2>
-            </div>
-        </ion-item>
 
-       <!-- <ion-item (click)="chat_with_us()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-comments ion-text-start"></ion-icon>
-                <h2> {{'chat_with_us' | translate}}</h2>
-            </div>
-        </ion-item>-->
+    <ion-item (click)="contact_us()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
+        <h2> Contacto</h2>
+      </div>
+    </ion-item>
 
-        <ion-item (click)="terms_conditions()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-assignment-alert ion-text-start"></ion-icon>
-                <h2> {{'Terms_Conditions' | translate}}</h2>
-            </div>
-        </ion-item>
-<!--
-        <ion-item (click)="change_language()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-globe ion-text-start"></ion-icon>
-                <h2> {{'change_language' | translate}}</h2>
-            </div>
-        </ion-item>-->
+    <!-- <ion-item (click)="chat_with_us()">
+         <div class="item_inner d-flex">
+             <ion-icon class="zmdi zmdi-comments ion-text-start"></ion-icon>
+             <h2> {{'chat_with_us' | translate}}</h2>
+         </div>
+     </ion-item>-->
 
-        <ion-item (click)="logout()">
-            <div class="item_inner d-flex">
-                <ion-icon class="zmdi zmdi-open-in-new ion-text-start"></ion-icon>
-                <h2> {{'Logout' | translate}}</h2>
-            </div>
-        </ion-item>
-    </ion-list>
+    <ion-item (click)="terms_conditions()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-assignment-alert ion-text-start"></ion-icon>
+        <h2>Terminos & Condiciones</h2>
+      </div>
+    </ion-item>
+
+    <ion-item (click)="avisoDePrivacidad()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-assignment-alert ion-text-start"></ion-icon>
+        <h2> Aviso de Privacidad</h2>
+      </div>
+    </ion-item>
+    <!--
+            <ion-item (click)="change_language()">
+                <div class="item_inner d-flex">
+                    <ion-icon class="zmdi zmdi-globe ion-text-start"></ion-icon>
+                    <h2> {{'change_language' | translate}}</h2>
+                </div>
+            </ion-item>-->
+
+    <ion-item (click)="logout()">
+      <div class="item_inner d-flex">
+        <ion-icon class="zmdi zmdi-open-in-new ion-text-start"></ion-icon>
+        <h2> {{ 'Logout' | translate }}</h2>
+      </div>
+    </ion-item>
+  </ion-list>
 
 
 </ion-content>

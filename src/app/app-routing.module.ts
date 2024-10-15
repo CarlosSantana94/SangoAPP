@@ -152,7 +152,15 @@ const routes: Routes = [
  {
      path: 'zona-de-cobertura',
      loadChildren: () => import('./zona-de-cobertura/zona-de-cobertura.module').then(m => m.ZonaDeCoberturaPageModule)
- },
+ },  {
+    path: 'aviso-de-privacidad',
+    loadChildren: () => import('./aviso-de-privacidad/aviso-de-privacidad.module').then( m => m.AvisoDePrivacidadPageModule)
+  },
+  {
+    path: 'delete-account',
+    loadChildren: () => import('./delete-account/delete-account.module').then( m => m.DeleteAccountPageModule)
+  },
+
   
   
 ];
