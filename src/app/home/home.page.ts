@@ -54,14 +54,7 @@ export class HomePage implements OnInit {
 
       });
     });
-
-    const loader = await this.loadingController.create({
-      message: 'Obteniendo Datos...',
-      spinner: 'bubbles',
-    });
-    await loader.present();
     this.rest.getCarrito().subscribe(async carrito => {
-      await loader.dismiss();
       this.carrito = carrito;
       console.log(this.carrito);
       if (isNaN(this.carrito.id)) {
@@ -157,7 +150,4 @@ export class HomePage implements OnInit {
   calificarServicio(orden) {
   }
 
-  actualizarOrdenes() {
-    this.ngOnInit();
-  }
 }
