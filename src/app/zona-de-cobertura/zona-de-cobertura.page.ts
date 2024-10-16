@@ -1,176 +1,145 @@
-import {Component, OnInit, ViewChild, ElementRef, NgZone} from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
-import {NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions} from '@ionic-native/native-geocoder/ngx';
+// zona-de-cobertura.page.ts
+import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
+import { Geolocation } from '@capacitor/geolocation';
 
 declare var google;
 
 @Component({
-    selector: 'app-zona-de-cobertura',
-    templateUrl: './zona-de-cobertura.page.html',
-    styleUrls: ['./zona-de-cobertura.page.scss'],
+  selector: 'app-zona-de-cobertura',
+  templateUrl: './zona-de-cobertura.page.html',
+  styleUrls: ['./zona-de-cobertura.page.scss'],
 })
 export class ZonaDeCoberturaPage implements OnInit {
-    @ViewChild('map', {static: false}) mapElement: ElementRef;
-    map: any;
-    address: string;
-    lat: string;
-    long: string;
-    autocomplete: { input: string; };
-    autocompleteItems: any[];
-    location: any;
-    placeid: any;
-    GoogleAutocomplete: any;
+  @ViewChild('map', { static: false }) mapElement: ElementRef;
+  map: any;
+  address: string;
+  lat: string;
+  long: string;
+  coverageMessage: string = 'Solo la zona mostrada en verde tiene covertura SANGO';
+  GoogleAutocomplete: any;
 
+  constructor(
+    private nativeGeocoder: NativeGeocoder,
+    public zone: NgZone,
+  ) {
+    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
+  }
 
-    constructor(
-        private geolocation: Geolocation,
-        private nativeGeocoder: NativeGeocoder,
-        public zone: NgZone,
-    ) {
-        this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
-        this.autocomplete = {input: ''};
-        this.autocompleteItems = [];
-    }
+  ngOnInit() {
+    // Additional initialization logic if needed
+  }
 
-    //  CARGAMOS EL MAPA EN ONINIT
-    ngOnInit() {
-        this.loadMap();
-    }
+  ionViewDidEnter() {
+    this.loadMap();
+  }
 
-    //  CARGAR EL MAPA TIENE DOS PARTES
-    loadMap() {
+  async loadMap() {
+    try {
+      const permission = await Geolocation.requestPermissions();
+      if (permission.location === 'granted') {
+        const position = await Geolocation.getCurrentPosition();
 
-        //  OBTENEMOS LAS COORDENADAS DESDE EL TELEFONO.
-        this.geolocation.getCurrentPosition().then((resp) => {
-            const latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+        const latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        const matrizUbicacion = { lat: 20.663930, lng: -103.414894 };
 
-
-            const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
-            // Create a bounding box with sides ~30km away from the center point
-            const defaultBounds = {
-                north: matrizUbicacion.lat + 0.03,
-                south: matrizUbicacion.lat - 0.03,
-                east: matrizUbicacion.lng + 0.03,
-                west: matrizUbicacion.lng - 0.03,
-            };
-
-            const mapOptions = {
-                center: matrizUbicacion,
-                zoom: 13,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-
-
-            //  CUANDO TENEMOS LAS COORDENADAS SIMPLEMENTE NECESITAMOS PASAR AL MAPA DE GOOGLE TODOS LOS PARAMETROS.
-            this.getAddressFromCoords(resp.coords.latitude, resp.coords.longitude);
-            this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-
-            const markerLocal = new google.maps.Marker({
-                map: this.map,
-                animation: google.maps.Animation.DROP,
-                position: latLng
-            });
-
-
-            const matrizMarker = new google.maps.Marker({
-                map: this.map,
-                animation: google.maps.Animation.DROP,
-                position: matrizUbicacion,
-                icon: 'assets/imgs/pinMapa.png'
-            });
-
-
-            this.map.addListener('tilesloaded', () => {
-                console.log('accuracy', this.map, this.map.center.lat());
-                this.getAddressFromCoords(this.map.center.lat(), this.map.center.lng());
-                this.lat = this.map.center.lat();
-                this.long = this.map.center.lng();
-            });
-
-
-            const zonaDeCoberturaEnMapa = new google.maps.Rectangle({
-                strokeColor: '#3560ee',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: 'rgba(149,255,82,0.53)',
-                fillOpacity: 0.35,
-                map: this.map,
-                center: matrizUbicacion,
-                bounds: defaultBounds
-            });
-        }).catch((error) => {
-            console.log('Error getting location', error);
-        });
-    }
-
-
-    getAddressFromCoords(lattitude, longitude) {
-        console.log('getAddressFromCoords ' + lattitude + ' ' + longitude);
-        let options: NativeGeocoderOptions = {
-            useLocale: true,
-            maxResults: 5
+        const defaultBounds = {
+          north: matrizUbicacion.lat + 0.03,
+          south: matrizUbicacion.lat - 0.03,
+          east: matrizUbicacion.lng + 0.03,
+          west: matrizUbicacion.lng - 0.03,
         };
-        this.nativeGeocoder.reverseGeocode(lattitude, longitude, options)
-            .then((result: NativeGeocoderResult[]) => {
-                this.address = '';
-                let responseAddress = [];
-                for (let [key, value] of Object.entries(result[0])) {
-                    if (value.length > 0) {
-                        responseAddress.push(value);
-                    }
-                }
-                responseAddress.reverse();
-                for (let value of responseAddress) {
-                    this.address += value + ', ';
-                }
-                this.address = this.address.slice(0, -2);
-            })
-            .catch((error: any) => {
-                this.address = 'Address Not Available!';
-            });
-    }
 
-    //  FUNCION DEL BOTON INFERIOR PARA QUE NOS DIGA LAS COORDENADAS DEL LUGAR EN EL QUE POSICIONAMOS EL PIN.
-    ShowCords() {
-        alert('lat' + this.lat + ', long' + this.long);
-    }
+        const mapOptions = {
+          center: matrizUbicacion,
+          zoom: 13,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+        };
 
-    //  AUTOCOMPLETE, SIMPLEMENTE ACTUALIZAMOS LA LISTA CON CADA EVENTO DE ION CHANGE EN LA VISTA.
-    UpdateSearchResults() {
-        if (this.autocomplete.input == '') {
-            this.autocompleteItems = [];
-            return;
+        this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+        // Add marker for the current location
+        const userMarker = new google.maps.Marker({
+          map: this.map,
+          animation: google.maps.Animation.DROP,
+          position: latLng,
+        });
+
+        // Show an info window for the user's location
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<h5>Tu Ubicación</h5>`,
+        });
+        infoWindow.open(this.map, userMarker);
+
+        // Add marker for the defined center (coverage zone)
+        new google.maps.Marker({
+          map: this.map,
+          animation: google.maps.Animation.DROP,
+          position: matrizUbicacion,
+          icon: 'assets/imgs/pinMapa.png',
+        });
+
+        // Add rectangle overlay to define the coverage area
+        new google.maps.Rectangle({
+          strokeColor: '#3560ee',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#95ff52',
+          fillOpacity: 0.35,
+          map: this.map,
+          bounds: defaultBounds,
+        });
+
+        // Display the coverage message at the top of the map
+        const coverageDiv = document.createElement('div');
+        coverageDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        coverageDiv.style.color = 'white';
+        coverageDiv.style.padding = '10px';
+        coverageDiv.style.margin = '50px';
+        coverageDiv.style.borderRadius = '4px';
+        coverageDiv.innerText = this.coverageMessage;
+        this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(coverageDiv);
+
+        // Fetch the address of the user's location
+        this.getAddressFromCoords(position.coords.latitude, position.coords.longitude);
+      } else {
+        console.error('Location permission not granted');
+      }
+    } catch (error) {
+      console.error('Error requesting location permission or getting position', error);
+    }
+  }
+
+  getAddressFromCoords(latitude, longitude) {
+    let options: NativeGeocoderOptions = {
+      useLocale: true,
+      maxResults: 5,
+    };
+    this.nativeGeocoder.reverseGeocode(latitude, longitude, options)
+      .then((result: NativeGeocoderResult[]) => {
+        this.address = '';
+        let responseAddress = [];
+        for (let [key, value] of Object.entries(result[0])) {
+          if (value.length > 0) {
+            responseAddress.push(value);
+          }
         }
-        this.GoogleAutocomplete.getPlacePredictions({input: this.autocomplete.input},
-            (predictions, status) => {
-                this.autocompleteItems = [];
-                this.zone.run(() => {
-                    predictions.forEach((prediction) => {
-                        this.autocompleteItems.push(prediction);
-                    });
-                });
-            });
-    }
+        responseAddress.reverse();
+        this.address = responseAddress.join(', ');
 
-    //  FUNCION QUE LLAMAMOS DESDE EL ITEM DE LA LISTA.
-    SelectSearchResult(item) {
-        //  AQUI PONDREMOS LO QUE QUERAMOS QUE PASE CON EL PLACE ESCOGIDO, GUARDARLO, SUBIRLO A FIRESTORE.
-        //  HE AÑADIDO UN ALERT PARA VER EL CONTENIDO QUE NOS OFRECE GOOGLE Y GUARDAMOS EL PLACEID PARA UTILIZARLO POSTERIORMENTE SI QUEREMOS.
-        alert(JSON.stringify(item));
-        this.placeid = item.place_id;
-    }
+        // Update info window content with the fetched address
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<h5>Your Location</h5><p>${this.address}</p>`,
+        });
+        infoWindow.setPosition({ lat: latitude, lng: longitude });
+        infoWindow.open(this.map);
+      })
+      .catch((error: any) => {
+        this.address = 'Address Not Available!';
+      });
+  }
 
-
-    //  LLAMAMOS A ESTA FUNCION PARA LIMPIAR LA LISTA CUANDO PULSAMOS IONCLEAR.
-    ClearAutocomplete() {
-        this.autocompleteItems = [];
-        this.autocomplete.input = '';
-    }
-
-    //  EJEMPLO PARA IR A UN LUGAR DESDE UN LINK EXTERNO, ABRIR GOOGLE MAPS PARA DIRECCIONES.
-    GoTo() {
-        return window.location.href = 'https://www.google.com/maps/search/?api=1&query=Google&query_place_id=' + this.placeid;
-    }
-
+  ShowCords() {
+    alert('lat: ' + this.lat + ', long: ' + this.long);
+  }
 }
