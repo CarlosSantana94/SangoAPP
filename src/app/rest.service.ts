@@ -94,4 +94,29 @@ export class RESTService {
   deleteUsuario(idUsuario: any): any {
     return this.http.delete(environment.url + 'usuario/' + idUsuario);
   }
+
+
+  // ____________________________________ V2 ______________________________
+
+
+  getUsuarioV2(idUsuario: any): any {
+    return this.http.get(environment.url + 'api/v2/usuarios/' + idUsuario);
+  }
+
+  getCarritoNuevoPorUsuarioId(idUsuario: any): any {
+    return this.http.get(environment.url + 'api/v2/carritos/nuevo/' + idUsuario);
+  }
+
+  postUsuarioV2(usuario: any): any {
+    return this.http.post(environment.url + 'api/v2/usuarios', usuario);
+  }
+
+  postActualizarCarritoV2(usuarioId: any, prendaId: any, cantidad: number): any {
+    return this.http.post(environment.url + 'api/v2/carritos/' + usuarioId + '/anadir-prenda/' + prendaId + '?cantidad=' + cantidad, null);
+  }
+
+  getResumenCarritoV2(idUsuario: any): any {
+    return this.http.get(environment.url + 'api/v2/carritos/' + idUsuario + '/resumen');
+  }
+
 }

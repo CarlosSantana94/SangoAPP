@@ -32,11 +32,57 @@ export class SubOpcionPrendaPage implements OnInit {
     this.idOpcion = sessionStorage.getItem('idOpcion');
 
     this.actualizarCantidadPrendas();
+
+    this.rest.getSubOpciones(this.idOpcion).subscribe(data => {
+      this.subPrendas = data;
+      this.rest.getResumenCarritoV2(localStorage.getItem('uid')).subscribe(resumen => {
+
+        // Recorrer todas las subOpciones (subPrendas)
+        this.subPrendas.forEach(subOpcion => {
+          // Buscar en los ítems del resumen
+          const resumenDetalles = resumen.detalles;
+
+          resumenDetalles.forEach(detalle => {
+
+            console.log(resumen.id);
+            console.log(detalle);
+            console.log(detalle.id);
+
+            if (detalle.id = subOpcion.id){
+              subOpcion.cantidad = detalle.cantidad;
+            }
+          })
+
+
+        });
+      });
+
+    });
+
+
   }
 
-  async agregarPrenda(subPrendaId: number) {
-    this.rest.postCarrito(1, subPrendaId).subscribe(data => {
-      this.actualizarCantidadPrendas();
+  async agregarPrenda(prenda: any) {
+    const loader = await this.loadingController.create({
+      message: 'Actualizando Carrito...',
+      spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
+    });
+    await loader.present();
+    this.rest.postActualizarCarritoV2(localStorage.getItem('uid'), prenda.id, prenda.cantidad + 1).subscribe(data => {
+      loader.dismiss();
+      // Asegúrate de que 'data' contiene la estructura correcta y 'items' es la lista de ítems del carrito.
+      const carritoItems = data.items; // 'items' es el array de ítems del carrito
+
+      // Recorrer todas las subOpciones (subPrendas)
+      this.subPrendas.forEach(subOpcion => {
+        // Buscar en los ítems del carrito por id de la prenda
+        const itemEncontrado = carritoItems.find(item => item.prenda.id === subOpcion.id);
+
+        // Si se encuentra el ítem, actualizamos la cantidad en subOpcion
+        if (itemEncontrado) {
+          subOpcion.cantidad = itemEncontrado.cantidad;
+        }
+      });
     });
   }
 
@@ -46,7 +92,7 @@ export class SubOpcionPrendaPage implements OnInit {
     });
   }
 
- async actualizarCantidadPrendas() {
+  async actualizarCantidadPrendas() {
     const loader = await this.loadingController.create({
       message: 'Actualizando Carrito...',
       spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
@@ -59,7 +105,7 @@ export class SubOpcionPrendaPage implements OnInit {
         this.subPrendas = data;
         console.log(data);
       });
-       loader.dismiss();
+      loader.dismiss();
     });
 
   }

@@ -30,37 +30,9 @@ export class HomePage implements OnInit {
 
 
   async obtenerCarrito() {
-    let usuario = {
-      id: localStorage.getItem('uid'),
-      nombre: localStorage.getItem('display'),
-      email: localStorage.getItem('email'),
-      img: localStorage.getItem('photoUrl'),
-      puedePagarConCC: false
-    };
-
-    // TODO si no existe lo crea
-
-    this.rest.postUsuario(usuario).subscribe(data => {
-    });
-
-    console.log("USUARIO A CREAR");
-    console.log(usuario);
-
-    this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
-      localStorage.setItem("puedePagarCC", u.puedePagarConCC);
-      usuario.puedePagarConCC = u.puedePagarConCC;
-
-      this.rest.postUsuario(usuario).subscribe(data => {
-
-      });
-    });
-    this.rest.getCarrito().subscribe(async carrito => {
-      this.carrito = carrito;
-      console.log(this.carrito);
-      if (isNaN(this.carrito.id)) {
-        this.obtenerCarrito();
-      }
-    });
+   this.rest.getCarritoNuevoPorUsuarioId(localStorage.getItem('uid')).subscribe(data => {
+     this.carrito = data;
+   });
   }
 
 
@@ -87,6 +59,16 @@ export class HomePage implements OnInit {
 
   async ionViewDidEnter() {
     await this.obtenerCarrito();
+
+    this.rest.getPedidos().subscribe(data => {
+      if (data.length !== 0) {
+        console.log('Tiene ordenes ' + data.length);
+        this.tieneOrdenes = true;
+        this.ordenes = data;
+        console.log(this.ordenes);
+      }
+      console.log(data);
+    });
   }
 
   showExitConfirm() {
@@ -111,14 +93,6 @@ export class HomePage implements OnInit {
     });
   }
 
-  offers() {
-    this.navCtrl.navigateRoot(['./tabs/offers']);
-  }
-
-  select_clothes(segment: any) {
-    localStorage.setItem('segment', segment);
-    this.route.navigate(['./select-clothes']);
-  }
 
   seleccionarSeccion(seccion: string) {
     const idServicio = this.servicios.find(element => element.nombre === seccion);
@@ -131,14 +105,6 @@ export class HomePage implements OnInit {
   order_info(id: any) {
     localStorage.setItem('pedidoSeleccionado', id);
     this.route.navigate(['./order-info']);
-  }
-
-  select_planchado() {
-    this.route.navigate(['./planchado']);
-  }
-
-  goToCart() {
-    this.route.navigate(['/carrito']);
   }
 
   llamar() {
