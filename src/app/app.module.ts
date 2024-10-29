@@ -16,6 +16,7 @@ import { HttpInterceptorService } from './http-interceptor.service';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
+import {GroupByPipe} from "./group-by.pipe";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -28,24 +29,26 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule,
     IonicStorageModule.forRoot(),
     TranslateModule.forRoot({
-        loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-        }
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
     }),
     FormsModule,
     ReactiveFormsModule
   ],
   providers: [
-        { provide: APP_CONFIG, useValue: BaseAppConfig },
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-        { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true },
-        CallNumber,
-        Geolocation,
-        NativeGeocoder,
+    {provide: APP_CONFIG, useValue: BaseAppConfig},
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},
+    CallNumber,
+    Geolocation,
+    NativeGeocoder,
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+  exports: [
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}

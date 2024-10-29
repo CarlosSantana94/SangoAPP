@@ -28,7 +28,7 @@
             <p>{{prenda.descripcion}}</p>
             <ion-row class="quantity-row">
               <ion-col size="4" class="center-content">
-                <ion-button fill="clear" size="small" (click)="removerPrenda(prenda.id)" *ngIf="prenda.cantidad > 0">
+                <ion-button fill="clear" size="small" (click)="removerPrenda(prenda)" *ngIf="prenda.cantidad > 0">
                   <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
                 </ion-button>
               </ion-col>
@@ -56,14 +56,14 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-buttons slot="start" *ngIf="carrito.cantidad > 0">
+    <ion-buttons slot="start" *ngIf="totalPrendas > 0">
       <ion-button (click)="goToCart()">
-        <ion-badge color="tertiary">{{carrito.cantidad}}</ion-badge>
+        <ion-badge color="tertiary">{{totalPrendas}}</ion-badge>
         Prendas
       </ion-button>
     </ion-buttons>
-    <ion-title>${{carrito.total}}</ion-title>
-    <ion-buttons slot="end" *ngIf="carrito.total>0">
+    <ion-title>${{total}}</ion-title>
+    <ion-buttons slot="end" *ngIf="total>0">
       <ion-button color="success" (click)="irAEnvios()">Continuar
         <ion-icon slot="end" name="caret-forward-outline"></ion-icon>
       </ion-button>

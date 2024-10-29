@@ -59,8 +59,8 @@ export class RESTService {
     return this.http.post(environment.url + 'carrito/direccion/' + idDireccion, {test: 'test'});
   }
 
-  postActualizarRecoleccionYEntrega(recoleccion: any, entrega: any) {
-    return this.http.post(environment.url + 'envios/' + recoleccion + '/' + entrega, {test: 'test'});
+  postActualizarRecoleccionYEntrega(recoleccion: any, entrega: any, carritoId: any) {
+    return this.http.post(environment.url + 'envios/' + recoleccion + '/' + entrega + '?carritoId=' + carritoId, null);
   }
 
   getResumenCarrito(): any {
@@ -103,8 +103,16 @@ export class RESTService {
     return this.http.get(environment.url + 'api/v2/usuarios/' + idUsuario);
   }
 
+  getCarritoNuevo(idUsuario: any): any {
+    return this.http.get(environment.url + 'api/v2/carritos/nuevo/' + idUsuario);
+  }
+
   getCarritoNuevoPorUsuarioId(idUsuario: any): any {
     return this.http.get(environment.url + 'api/v2/carritos/nuevo/' + idUsuario);
+  }
+
+  getTodosLosCarritos(idUsuario: any): any {
+    return this.http.get(environment.url + 'api/v2/carritos/usuario/' + idUsuario);
   }
 
   postUsuarioV2(usuario: any): any {
@@ -115,8 +123,24 @@ export class RESTService {
     return this.http.post(environment.url + 'api/v2/carritos/' + usuarioId + '/anadir-prenda/' + prendaId + '?cantidad=' + cantidad, null);
   }
 
+  actualizarCantidadDePrendaEnCarrito(carritoId: any, prendaId: any, cantidad: number): any {
+    return this.http.post(environment.url + 'api/v2/carritos/' + carritoId + '/actualizar-cantidad/' + prendaId + '?cantidad=' + cantidad, null);
+  }
+
   getResumenCarritoV2(idUsuario: any): any {
     return this.http.get(environment.url + 'api/v2/carritos/' + idUsuario + '/resumen');
+  }
+
+  postActualizarDireccionDeCarritoV2(carritoId: any, direccionId: any): any {
+    return this.http.post(environment.url + 'api/v2/carritos/' + carritoId + '/direccion/' + direccionId, null);
+  }
+
+  postPagarCarritoV2(metodo: any, cuandoOToken: any, email: any): any {
+    return this.http.post(environment.url + 'api/v2/carritos/carrito/pagar/' + metodo + '/' + cuandoOToken + '?email=' + email, {email: email});
+  }
+
+  getCarritoPorIdV2(idCarrito: any): any {
+    return this.http.get(environment.url + 'api/v2/carritos/' + idCarrito);
   }
 
 }

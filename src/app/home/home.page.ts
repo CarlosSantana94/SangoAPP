@@ -43,31 +43,27 @@ export class HomePage implements OnInit {
     this.nombre = localStorage.getItem('display');
     this.rest.getServicios().subscribe(data => {
       this.servicios = data;
-      console.log(data);
-    });
-
-    this.rest.getPedidos().subscribe(data => {
-      if (data.length !== 0) {
-        console.log('Tiene ordenes ' + data.length);
-        this.tieneOrdenes = true;
-        this.ordenes = data;
-        console.log(this.ordenes);
-      }
-      console.log(data);
     });
   }
 
   async ionViewDidEnter() {
     await this.obtenerCarrito();
-
-    this.rest.getPedidos().subscribe(data => {
+    this.ordenes = [];
+    this.rest.getTodosLosCarritos(localStorage.getItem('uid')).subscribe(data => {
       if (data.length !== 0) {
-        console.log('Tiene ordenes ' + data.length);
         this.tieneOrdenes = true;
-        this.ordenes = data;
-        console.log(this.ordenes);
+
+        data.forEach(orden =>{
+          const total = orden.items.reduce((sum, item) => {
+            return sum + (item.prenda.precio * item.cantidad);
+          }, 0);
+
+          orden.total = total;
+          this.ordenes.push(orden);
+        });
+        console.log(this.ordenes)
       }
-      console.log(data);
+
     });
   }
 

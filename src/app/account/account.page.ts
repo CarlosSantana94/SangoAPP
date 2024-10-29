@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {APP_CONFIG, AppConfig} from '../app.config';
 import {ModalController} from '@ionic/angular';
 import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
+import {RESTService} from "../rest.service";
 
 @Component({
   selector: 'app-account',
@@ -18,13 +19,21 @@ export class AccountPage implements OnInit {
 
 
   constructor(@Inject(APP_CONFIG) public config: AppConfig, private navCtrl: NavController, private route: Router,
-              private modalController: ModalController, public platform: Platform) {
+              private modalController: ModalController, public platform: Platform, private rest: RESTService) {
     this.platform.ready().then(async () => {
       GoogleAuth.initialize();
     });
   }
 
   ngOnInit() {
+
+  }
+
+  ionViewDidEnter() {
+    this.rest.getUsuarioV2(localStorage.getItem('uid')).subscribe(data => {
+      console.log(data);
+      this.nombre = data.nombre;
+    })
   }
 
   my_orders() {

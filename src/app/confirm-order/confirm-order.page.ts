@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {ModalController} from '@ionic/angular';
+import {LoadingController, ModalController} from '@ionic/angular';
 import {RESTService} from '../rest.service';
 
 interface Prenda {
   id: number;
-  nombre: string;
-  precio: number;
+  nombrePrenda: string;
+  precioUnitario: number;
   servicio: string;
-  servicioPadre: string;
-  precioTotal: number;
+  nombreCategoria: string;
+  subtotal: number;
   img: string;
   cantidad: number;
 }
@@ -26,22 +26,32 @@ export class ConfirmOrderPage implements OnInit {
   recogerFecha = '';
   entregarFecha = '';
   cargando: boolean = false;
+  direccion: any = {};
 
   constructor(
     private route: Router,
     private modalController: ModalController,
-    private rest: RESTService
+    private rest: RESTService,
+    private loadingController: LoadingController
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.cargando = false;
 
+    const loader = await this.loadingController.create({
+      message: 'Obteniendo Resumen...',
+      spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
+    });
+    await loader.present();
     // Fetch data for the summary of the cart
-    this.rest.getResumenCarrito().subscribe((data) => {
-      console.log(data);
+    this.rest.getResumenCarritoV2(localStorage.getItem('uid')).subscribe((data) => {
+      loader.dismiss();
       this.resumen = data;
-      this.prendas = data.prendasList;
+      this.prendas = data.detalles;
+      this.recogerFecha = data.envios.fechaRecoleccion;
+      this.entregarFecha = data.envios.fechaEntrega;
+      this.direccion = data.direccion;
       this.groupPrendasByService(); // Group the prendas by servicioPadre and servicio
       this.cargando = true;
     });
@@ -50,14 +60,14 @@ export class ConfirmOrderPage implements OnInit {
   // Method to group prendas by servicioPadre and servicio
   groupPrendasByService() {
     this.groupedPrendas = this.prendas.reduce(
-      (acc: { [servicio: string]: { [servicioPadre: string]: Prenda[] } }, prenda: Prenda) => {
+      (acc: { [servicio: string]: { [nombreCategoria: string]: Prenda[] } }, prenda: Prenda) => {
         if (!acc[prenda.servicio]) {
           acc[prenda.servicio] = {};
         }
-        if (!acc[prenda.servicio][prenda.servicioPadre]) {
-          acc[prenda.servicio][prenda.servicioPadre] = [];
+        if (!acc[prenda.servicio][prenda.nombreCategoria]) {
+          acc[prenda.servicio][prenda.nombreCategoria] = [];
         }
-        acc[prenda.servicio][prenda.servicioPadre].push(prenda);
+        acc[prenda.servicio][prenda.nombreCategoria].push(prenda);
         return acc;
       },
       {}

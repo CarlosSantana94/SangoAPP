@@ -114,7 +114,7 @@
           <h2 class="d-flex">Orden #{{ orden.id }} <span class="end"
                                                          style="color: #29af5d">${{ orden.total }}</span>
           </h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='Creada'"><span class="end" style="color: #3eb31c">Programada para recolección<ion-icon
+          <h2 class="d-flex" *ngIf="orden.estado==='CREADO'"><span class="end" style="color: #3eb31c">Programada para recolección<ion-icon
             name="car-outline"></ion-icon></span></h2>
           <h2 class="d-flex" *ngIf="orden.estado==='SolicitaCancelacion'"><span class="end" style="color: #b3381c">Solicita Cancelacion<ion-icon
             name="close-circle-outline"></ion-icon></span></h2>
@@ -124,10 +124,10 @@
             name="hand-left-outline"></ion-icon></span></h2>
           <h2 class="d-flex" *ngIf="orden.estado==='Finalizada'"><span class="end" style="color: #9a9a9a">Orden Entregada<ion-icon
             name="checkmark-outline"></ion-icon></span></h2>
-          <h3 class="d-flex"><span class="end">Recoleccion {{ orden.recoleccion | date:'dd/MM/yyyy' }} </span>
+          <h3 class="d-flex"><span class="end">Recoleccion {{ orden.envios.fechaRecoleccion | date:'dd/MM/yyyy' }} </span>
           </h3>
-          <h3 class="d-flex">Prendas: {{ orden.cantidadPrendas }}<span
-            class="end">Entrega {{ orden.entrega | date:'dd/MM/yyyy' }} </span></h3>
+          <h3 class="d-flex">Prendas: {{ orden.items.length }}<span
+            class="end">Entrega {{ orden.envios.fechaEntrega | date:'dd/MM/yyyy' }} </span></h3>
           <h3 class="d-flex" *ngIf="orden.estado==='Finalizada'"><span class="end"><ion-button
             (click)="calificarServicio(orden)">Calificar Servicio</ion-button> </span>
           </h3>

@@ -17,6 +17,9 @@ export class SubOpcionPrendaPage implements OnInit {
   nombreOpcion: any;
   subPrendas: any = [];
   carrito: any = {};
+  idCarrito: any;
+  total: number;
+  totalPrendas: number;
 
 
   constructor(private rest: RESTService,
@@ -31,27 +34,37 @@ export class SubOpcionPrendaPage implements OnInit {
     this.nombreOpcion = sessionStorage.getItem('nombreOpcion');
     this.idOpcion = sessionStorage.getItem('idOpcion');
 
-    this.actualizarCantidadPrendas();
+    // this.actualizarCantidadPrendas();
 
+    this.obtenerCantidadesEnCarrito();
+
+  }
+
+  async obtenerCantidadesEnCarrito() {
+    const loader = await this.loadingController.create({
+      message: 'Actualizando Información',
+      spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
+    });
+    await loader.present();
     this.rest.getSubOpciones(this.idOpcion).subscribe(data => {
       this.subPrendas = data;
       this.rest.getResumenCarritoV2(localStorage.getItem('uid')).subscribe(resumen => {
+        loader.dismiss();
+        const detalles = resumen.detalles;
+        console.log(resumen)
+        this.idCarrito = resumen.id;
+        this.total = resumen.total;
+        this.totalPrendas = resumen.totalPrendas;
 
         // Recorrer todas las subOpciones (subPrendas)
         this.subPrendas.forEach(subOpcion => {
           // Buscar en los ítems del resumen
-          const resumenDetalles = resumen.detalles;
-
-          resumenDetalles.forEach(detalle => {
-
-            console.log(resumen.id);
-            console.log(detalle);
-            console.log(detalle.id);
-
-            if (detalle.id = subOpcion.id){
-              subOpcion.cantidad = detalle.cantidad;
+          detalles.forEach(res => {
+            if (res.id == subOpcion.id) {
+              subOpcion.cantidad = res.cantidad
             }
-          })
+
+          });
 
 
         });
@@ -59,36 +72,29 @@ export class SubOpcionPrendaPage implements OnInit {
 
     });
 
-
   }
 
   async agregarPrenda(prenda: any) {
     const loader = await this.loadingController.create({
-      message: 'Actualizando Carrito...',
+      message: 'Agregando Prenda al Carrito...',
       spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
     });
     await loader.present();
-    this.rest.postActualizarCarritoV2(localStorage.getItem('uid'), prenda.id, prenda.cantidad + 1).subscribe(data => {
+    this.rest.postActualizarCarritoV2(localStorage.getItem('uid'), prenda.id, 1).subscribe(data => {
       loader.dismiss();
-      // Asegúrate de que 'data' contiene la estructura correcta y 'items' es la lista de ítems del carrito.
-      const carritoItems = data.items; // 'items' es el array de ítems del carrito
-
-      // Recorrer todas las subOpciones (subPrendas)
-      this.subPrendas.forEach(subOpcion => {
-        // Buscar en los ítems del carrito por id de la prenda
-        const itemEncontrado = carritoItems.find(item => item.prenda.id === subOpcion.id);
-
-        // Si se encuentra el ítem, actualizamos la cantidad en subOpcion
-        if (itemEncontrado) {
-          subOpcion.cantidad = itemEncontrado.cantidad;
-        }
-      });
+      this.obtenerCantidadesEnCarrito();
     });
   }
 
-  async removerPrenda(subPrendaId: number) {
-    this.rest.postCarrito(0, subPrendaId).subscribe(data => {
-      this.actualizarCantidadPrendas();
+  async removerPrenda(prenda: any) {
+    const loader = await this.loadingController.create({
+      message: 'Eliminando Prenda al Carrito...',
+      spinner: 'bubbles', // Optional: 'dots', 'bubbles', etc.
+    });
+    await loader.present();
+    this.rest.actualizarCantidadDePrendaEnCarrito(this.idCarrito, prenda.id, prenda.cantidad - 1).subscribe(data => {
+      loader.dismiss();
+      this.obtenerCantidadesEnCarrito();
     });
   }
 
@@ -127,7 +133,7 @@ export class SubOpcionPrendaPage implements OnInit {
   }
 
   goToCart() {
-    this.route.navigate(['/carrito']);
+    this.route.navigate(['./carrito']);
   }
 
   trackByFn(index: number, item: any): number {

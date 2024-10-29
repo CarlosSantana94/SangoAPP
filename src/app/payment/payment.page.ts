@@ -43,22 +43,20 @@ export class PaymentPage implements OnInit {
               private route: Router,
               public rest: RESTService) {
 
-    this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
+    this.rest.getUsuarioV2(localStorage.getItem('uid')).subscribe(u => {
       localStorage.setItem("puedePagarCC", u.puedePagarConCC);
       this.puedePagarConCC = u.puedePagarConCC;
 
-      this.email = localStorage.getItem("email");
+      this.email = u.email;
       if (this.email == 'null') {
         this.email = '';
       }
-
-
 
       if (!this.puedePagarConCC) {
         this.seleccionarMetodo('tarjeta');
       }
 
-      this.rest.getResumenCarrito().subscribe(data => {
+      this.rest.getResumenCarritoV2(localStorage.getItem('uid')).subscribe(data => {
         console.log(data);
         this.carrito = data;
       });
@@ -168,7 +166,7 @@ export class PaymentPage implements OnInit {
     await loader.present();
 
     if (this.metodo === 'efectivo') {
-      this.rest.postPagarCarrito(this.metodo, this.cuandoEfectivo, '').subscribe(data => {
+      this.rest.postPagarCarritoV2(this.metodo, this.cuandoEfectivo, '').subscribe(data => {
         if (!data.hayError) {
           this.rest.getCarrito().subscribe(a => {
             console.log(a);
@@ -180,7 +178,7 @@ export class PaymentPage implements OnInit {
         }
       });
     } else if (this.metodo === 'tarjeta') {
-      this.rest.postPagarCarrito(this.metodo, this.tokenC, localStorage.getItem('email')).subscribe(data => {
+      this.rest.postPagarCarritoV2(this.metodo, this.tokenC, this.email).subscribe(data => {
         console.log(data);
         if (!data.hayError) {
           this.rest.getCarrito().subscribe(a => {

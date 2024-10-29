@@ -46,25 +46,18 @@ export class MyProfilePage implements OnInit {
     this.originalData = {nombre: this.nombre, email: this.email, tel: this.tel};
     this.isEditing = false;
 
-    this.rest.getUsuario(localStorage.getItem('uid')).subscribe(u => {
-      localStorage.setItem("puedePagarCC", u.puedePagarConCC);
-      let usuario = {
-        id: localStorage.getItem('uid'),
-        nombre: this.nombre,
-        email: this.email,
-        img: localStorage.getItem('photoUrl'),
-        puedePagarConCC: false,
-        tel: this.tel
-      };
+  }
 
+  ionViewDidEnter() {
+    this.rest.getUsuarioV2(localStorage.getItem('uid')).subscribe(data => {
+      console.log(data);
+      this.nombre = data.nombre;
+      this.email = data.email;
+      if (data.tel){
+        this.tel = data.tel;
+      }
 
-      usuario.puedePagarConCC = u.puedePagarConCC;
-
-      this.rest.postUsuario(usuario).subscribe(data => {
-        this.setUserInfo(this.email, this.nombre, localStorage.getItem('photoUrl'), localStorage.getItem('uid'), this.tel);
-      });
-    });
-
+    })
   }
 
   private setUserInfo(email: string, displayName: string, photoUrl: string, uid: string, tel) {

@@ -10,8 +10,9 @@
 <ion-content class="bg_color" fullscreen>
   <ion-card class="item_info">
     <h2 style="font-weight: bold; margin-bottom: 16px;">
-      {{ resumen.cantidadPrendas }} Prendas
+      {{ totalPrendas }} Prendas
     </h2>
+
 
     <ion-accordion-group>
       <!-- Agrupado por Servicio -->
@@ -19,43 +20,45 @@
         <!-- Encabezado del Servicio -->
         <ion-item slot="header" color="light">
           <h2 class="service-title" [ngClass]="getServiceClass(servicio.key)">
-            {{ servicio.key }}
+            {{ servicio.key }} ({{ servicio.value.cantidadTotal }} prendas)
           </h2>
         </ion-item>
 
         <!-- Contenido del Servicio -->
         <div class="item_list" slot="content">
-          <!-- Agrupado por ServicioPadre -->
-          <div *ngFor="let servicioPadre of servicio.value | keyvalue" class="servicio-padre-group">
+          <!-- Agrupado por Categoría dentro del Servicio -->
+          <div *ngFor="let categoria of servicio.value.categorias | keyvalue" class="categoria-group">
             <h3 class="service-padre-title">
-              {{ servicioPadre.key }}
+              {{ categoria.key }}
             </h3>
 
-            <div class="item" *ngFor="let prenda of servicioPadre.value">
+            <!-- Listado de Prendas dentro de la Categoría -->
+            <div class="item" *ngFor="let prenda of categoria.value">
               <ion-grid class="item-grid">
                 <ion-row class="align-items-center">
                   <ion-col size="2">
-                    <img [src]="prenda.img" alt="{{ prenda.nombre }}" class="item-image" />
+                    <!-- Placeholder para la imagen (agregar lógica de imagen si está disponible) -->
+                    <img src="{{prenda.imgPrenda}}" alt="{{ prenda.nombrePrenda }}" class="item-image" />
                   </ion-col>
                   <ion-col size="7">
                     <h3 class="item-details">
-                      <span class="quantity">{{ prenda.cantidad }}</span> x {{ prenda.nombre }}
-                      <span class="price">(${{ prenda.precio }})</span>
+                      <span class="quantity">{{ prenda.cantidad }}</span> x {{ prenda.nombrePrenda }}
+                      <span class="price">(${{ prenda.precioUnitario }})</span>
                     </h3>
                   </ion-col>
                   <ion-col size="3" class="ion-text-end">
-                    <span class="amount">${{ prenda.precioTotal | number: '1.2-2' }}</span>
+                    <span class="amount">${{ prenda.subtotal | number: '1.2-2' }}</span>
                   </ion-col>
                 </ion-row>
                 <ion-row>
                   <ion-col>
-                    <ion-button color="danger" size="small" (click)="removerPrenda(prenda.id)">
+                    <ion-button color="danger" size="small" (click)="removerPrenda(prenda)">
                       <ion-icon name="remove-outline" *ngIf="prenda.cantidad > 1"></ion-icon>
                       <ion-icon name="trash-outline" *ngIf="prenda.cantidad === 1"></ion-icon>
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button color="primary" size="small" (click)="agregarPrenda(prenda.id)">
+                    <ion-button color="primary" size="small" (click)="agregarPrenda(prenda)">
                       <ion-icon name="add-outline"></ion-icon>
                     </ion-button>
                   </ion-col>
@@ -66,6 +69,10 @@
         </div>
       </ion-accordion>
     </ion-accordion-group>
+
+
+
+
   </ion-card>
 </ion-content>
 
@@ -77,13 +84,13 @@
     <ion-button
       expand="full"
       color="success"
-      *ngIf="cargando && carrito.total > 0"
+      *ngIf="!cargando && carrito.total > 0"
       (click)="irARecoleccion()"
     >
       <ion-icon name="calendar-outline" slot="start"></ion-icon>
       Programar Recolección
     </ion-button>
-    <ion-button expand="full" color="medium" disabled *ngIf="!cargando">
+    <ion-button expand="full" color="medium" disabled *ngIf="cargando">
       Obteniendo Carrito
     </ion-button>
   </ion-footer>
