@@ -14,13 +14,41 @@
       },
       "oauth_client": [
         {
-          "client_id": "726792798295-vp6ntedo7mpo9timmleossonhi99dvn4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.bucapps.sango",
-            "certificate_hash": "b26f23dbb13916dde0b3db555ce4593875052c4a"
-          }
-        },
+          "client_id": "726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5e7KCj5VkRiwbHbhVWavZM9uTIrLIxEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726792798295-37qir25jv0pjisn63rv53rmvhoc2k2nl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "726792798295-55gl8j4qa4ur80d9acrvkjqrdqrkqsa4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bucapps.sango"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726792798295:android:19f65a08f18a2b9e3e2312",
+        "android_client_info": {
+          "package_name": "com.tintorerias.sango"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com",
           "client_type": 3
@@ -35,8 +63,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com",
+              "client_id": "726792798295-37qir25jv0pjisn63rv53rmvhoc2k2nl.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "726792798295-55gl8j4qa4ur80d9acrvkjqrdqrkqsa4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.bucapps.sango"
+              }
             }
           ]
         }
