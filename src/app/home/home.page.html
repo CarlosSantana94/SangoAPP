@@ -82,7 +82,9 @@
     <!--<h1 class="d-flex">Tus Ordenes <span
             class="end">{{'Past_Orders' | translate}}</span></h1>-->
 
-
+    <ion-button expand="block" style="--background: #3abb7c; --color: #ffffff; margin-left: 20px;margin-right: 20px; margin-bottom: 15px;" (click)="ionViewDidEnter()" >
+      Actualizar Ordenes
+    </ion-button>
     <ion-item class="no_order" *ngIf="!tieneOrdenes">
       <div class="item_inner d-flex">
         <div class="text_box">
@@ -132,9 +134,7 @@
             (click)="calificarServicio(orden)">Calificar Servicio</ion-button> </span>
           </h3>
         </div>
-
       </div>
-
     </ion-item>
 
   </ion-list>
