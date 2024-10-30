@@ -24,9 +24,12 @@ export class SeccionPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.rest.getResumenCarritoV2(localStorage.getItem('uid')).subscribe(resumen => {
-      this.totalPrendas = resumen.totalPrendas;
-    });
+    if (localStorage.getItem('uid')!==null) {
+      this.rest.getResumenCarritoV2(localStorage.getItem('uid')).subscribe(resumen => {
+        this.totalPrendas = resumen.totalPrendas;
+      });
+    }
+
   }
 
   ngOnInit() {

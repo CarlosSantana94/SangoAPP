@@ -22,8 +22,16 @@
       <ion-row *ngIf="showAppleSignIn">
         <ion-col size="12">
           <ion-button fill="outline" size="large" expand="block" class="btn google" (click)="loginWithApple()">
-            <ion-icon style="color: black; padding-right: 5px" name="logo-apple"></ion-icon>
+            <ion-icon style="color: #2c2c2c; padding-right: 5px" name="logo-apple"></ion-icon>
             Iniciar Sesión con Apple
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-button fill="outline" size="large" expand="block" class="btn google" (click)="verServicios()">
+            <ion-icon style="color: #1c64c2; padding-right: 5px" name="home-outline"></ion-icon>
+            Ver Servicios
           </ion-button>
         </ion-col>
       </ion-row>
@@ -33,11 +41,11 @@
 
 <ion-footer class="ion-no-border">
   <h5 class="ion-text-center" *ngIf="servidor">
-    v0.0.4-{{ apiVersion }}
+    v2.0-{{ apiVersion }}
     <ion-icon style="color: #29af5d" name="radio-button-on-outline"></ion-icon>
   </h5>
   <h5 class="ion-text-center" *ngIf="!servidor">
-    v0.0.4
+    v2.0
     <ion-icon style="color: #ed576b" name="radio-button-on-outline"></ion-icon>
   </h5>
 </ion-footer>

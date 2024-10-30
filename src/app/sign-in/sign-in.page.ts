@@ -87,11 +87,11 @@ export class SignInPage implements OnInit {
         localStorage.setItem('uid', googleUser.id);
         this.rest.postUsuarioV2(userV2).subscribe(
           response => {
-            if (response.status === 200) {
+
               this.setUserInfo(googleUser.email, `${googleUser.givenName} ${googleUser.familyName}`, googleUser.imageUrl, googleUser.id);
               this.presentToast('Inicio de sesión exitoso, Bienvenido');
               this.navCtrl.navigateRoot(['./tabs']);
-            }
+
           },
           error => {
             console.error('Error en la solicitud:', error);
@@ -183,5 +183,9 @@ export class SignInPage implements OnInit {
   private clearStorage() {
     localStorage.clear();
     sessionStorage.clear();
+  }
+
+  verServicios() {
+    this.navCtrl.navigateRoot(['./servicios-sin-cuenta']);
   }
 }

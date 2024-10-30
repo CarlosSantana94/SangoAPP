@@ -1,0 +1,7 @@
+export enum EstadoCarrito {
+  NUEVO = 'NUEVO',
+  CREADO = 'CREADO',
+  EN_TIENDA = 'EN_TIENDA',
+  TERMINADO = 'TERMINADO',
+  EN_RUTA_REPARTIDOR = 'EN_RUTA_REPARTIDOR'
+}

@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title><strong>Sango </strong>Tintorerias</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg_color" fullscreen>
+
+
+  <h4 style="background-color: transparent; padding-left: 20px">Bienvenido!</h4>
+  <div class="services">
+    <h2>Servicios <span style="float: right"> <ion-button href="tel:+52 33-3122-1189"><ion-icon
+      name="call-outline"></ion-icon> 33-31-22-11-89</ion-button></span></h2>
+
+
+    <div class="scroll-x">
+      <div class="service" (click)="seleccionarSeccion('Tintoreria')">
+        <div class="img_box">
+          <img src="assets/imgs/portadas-06.jpg">
+        </div>
+
+      </div>
+
+      <div class="service" (click)="seleccionarSeccion('Planchado')">
+        <div class="img_box">
+          <img src="assets/imgs/portadas-05.jpg">
+        </div>
+
+      </div>
+      <div class="service" (click)="seleccionarSeccion('Lavanderia')">
+        <div class="img_box">
+          <img src="assets/imgs/portadas-02.jpg">
+        </div>
+      </div>
+
+      <div class="service" (click)="seleccionarSeccion('Blancos y Hogar')">
+        <div class="img_box">
+          <img src="assets/imgs/portadas-04.jpg">
+        </div>
+      </div>
+
+
+      <div class="service" (click)="seleccionarSeccion('Teñidos')">
+        <div class="img_box">
+          <img src="assets/imgs/portadas-03.jpg">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <ion-list lines="none">
+    <!--<h1 class="d-flex">Tus Ordenes <span
+            class="end">{{'Past_Orders' | translate}}</span></h1>-->
+
+       <ion-item class="no_login" (click)="login()">
+           <div class="item_inner d-flex">
+               <div class="img_box">
+                <ion-icon class="zmdi zmdi-account-add ion-text-center"></ion-icon>
+               </div>
+               <div class="text_box">
+                   <h2>Inicia Sesion para ver tus pedidos.</h2>
+               </div>
+           </div>
+       </ion-item>
+
+
+
+  </ion-list>
+
+
+</ion-content>

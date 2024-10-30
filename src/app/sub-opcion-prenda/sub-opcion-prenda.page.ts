@@ -20,6 +20,7 @@ export class SubOpcionPrendaPage implements OnInit {
   idCarrito: any;
   total: number;
   totalPrendas: number;
+  tieneCuenta: boolean = false;
 
 
   constructor(private rest: RESTService,
@@ -36,7 +37,15 @@ export class SubOpcionPrendaPage implements OnInit {
 
     // this.actualizarCantidadPrendas();
 
-    this.obtenerCantidadesEnCarrito();
+    if (localStorage.getItem('uid') !== null) {
+      this.tieneCuenta = true;
+      this.obtenerCantidadesEnCarrito();
+    } else {
+      this.tieneCuenta = false;
+      this.rest.getSubOpciones(this.idOpcion).subscribe(data => {
+        this.subPrendas = data;
+      });
+    }
 
   }
 

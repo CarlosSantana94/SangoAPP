@@ -1,0 +1,5 @@
+export enum EstadoPrenda {
+  PENDIENTE = 'PENDIENTE',
+  PROCESADO = 'PROCESADO',
+  COMPLETADO = 'COMPLETADO'
+}
