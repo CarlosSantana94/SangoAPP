@@ -16,7 +16,7 @@ export class ZonaDeCoberturaPage implements OnInit {
   address: string;
   lat: string;
   long: string;
-  coverageMessage: string = 'Solo la zona mostrada en verde tiene covertura SANGO';
+  coverageMessage: string = 'Solo la zona mostrada en verde tiene cobertura SANGO';
   GoogleAutocomplete: any;
 
   constructor(

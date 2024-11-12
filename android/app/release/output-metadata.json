@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.bucapps.sango",
+  "applicationId": "com.tintorerias.sango",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 3,
-      "versionName": "0.3 new SHA SIGNIN",
+      "versionCode": 1,
+      "versionName": "PROD_V2_1",
       "outputFile": "app-release.apk"
     }
   ],

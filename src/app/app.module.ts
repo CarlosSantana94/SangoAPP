@@ -17,6 +17,7 @@ import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import {GroupByPipe} from "./group-by.pipe";
+import {Diagnostic} from "@ionic-native/diagnostic/ngx";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -39,6 +40,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     ReactiveFormsModule
   ],
   providers: [
+    Diagnostic,
     {provide: APP_CONFIG, useValue: BaseAppConfig},
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},

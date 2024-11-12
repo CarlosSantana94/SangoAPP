@@ -1,0 +1,25 @@
+.banner-image {
+  width: 100%;                 // Ocupa todo el ancho del contenedor
+  height: 190px;               // Altura fija para mantener la proporción rectangular
+  border-radius: 15px;         // Bordes redondeados para un look moderno
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Sombra para dar profundidad
+  object-fit: scale-down;           // Escala la imagen sin distorsión y la recorta si es necesario
+  object-position: center;     // Centra la imagen en el contenedor
+  margin-bottom: 10px;         // Espacio debajo del banner
+}
+.banner-image {
+  height: 20vh; // Ajusta al 20% de la altura de la ventana, por ejemplo
+}
+.section-title {
+  font-size: 1.2rem;     // Tamaño de fuente para destacar como título
+  font-weight: bold;     // Negrita para hacerla más visible
+  margin-bottom: 8px;    // Espacio debajo del título
+  color: #4d90fe;        // Color opcional para personalizar el estilo
+}
+
+.section-title2 {
+  font-size: 1.2rem;     // Tamaño de fuente para destacar como título
+  font-weight: bold;     // Negrita para hacerla más visible
+  margin-bottom: 8px;    // Espacio debajo del título
+  color: #b78914;        // Color opcional para personalizar el estilo
+}

@@ -2,6 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../environments/environment';
 import {catchError} from 'rxjs/operators';
+import {Observable} from "rxjs";
+
+interface Fecha {
+  fecha: string;
+  disponibles: number;
+  fechaFormat?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -39,12 +46,12 @@ export class RESTService {
     return this.http.post(environment.url + 'carrito/' + agregar + '/' + subPrendaId, {});
   }
 
-  getEnvios() {
-    return this.http.get(environment.url + 'envios');
+  getEnvios() : Observable<Fecha[]>{
+    return this.http.get<Fecha[]>(environment.url + 'envios');
   }
 
-  getEnviosEntrega(fechaSeleccionadaRecoleccion: any) {
-    return this.http.get(environment.url + 'envios/' + fechaSeleccionadaRecoleccion);
+  getEnviosEntrega(fechaSeleccionadaRecoleccion: any) :Observable<Fecha[]>  {
+    return this.http.get<Fecha[]>(environment.url + 'envios/' + fechaSeleccionadaRecoleccion);
   }
 
   getDirecciones() {

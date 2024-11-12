@@ -47,12 +47,12 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="tieneCuenta">
+  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="tieneCuenta">
+    <ion-badge color="success" style="left: -5px; z-index: 3; position: absolute;">{{totalPrendas}}</ion-badge>
     <ion-fab-button color="tertiary" (click)="goToCart()">
       <ion-icon name="cart-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </ion-content>
 
 <ion-footer *ngIf="tieneCuenta">

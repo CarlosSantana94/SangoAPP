@@ -1,131 +1,39 @@
-ion-header {
-    ion-toolbar ion-title {
-        span {
-            color: var(--primary);
-            font-size: 1.1rem;
-        }
-    }
-
-    .search_box {
-        width: calc(100% - 0px);
-        margin: 0 auto;
-        position: relative;
-        overflow: hidden;
-        min-height: 50px;
-        z-index: 99;
-        background: var(--white);
-        padding: 0 15px;
-
-        ion-icon {
-            font-size: 1.4rem;
-            min-width: 35px;
-            height: 35px;
-            line-height: 35px;
-            z-index: 99;
-            position: relative;
-            top: 0px;
-            padding: 0 2px;
-            color: var(--text-black);
-
-            &.zmdi-gps-dot {
-                font-size: 1.3rem;
-                left: unset;
-                right: 0;
-                z-index: 99;
-                color: var(--text-light);
-            }
-        }
-
-        ion-searchbar {
-            --background: var(--transparent) !important;
-            --color: var(--text-black);
-            font-weight: 500 !important;
-            --placeholder-opacity: 1;
-            --placeholder-color: var(--text-light) !important;
-            --placeholder-font-weight: 400 !important;
-            --box-shadow: none !important;
-            padding: 0 !important;
-        }
-    }
+.info-label {
+  text-align: center;
+  color: orangered;
+  background-color: #ececec;
+  border-radius: 5px;
+  padding: 8px;
+  margin: 8px;
 }
 
-.map {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-
-    img {
-        min-width: 30px;
-        min-height: 30px;
-    }
-
-    ion-icon {
-        position: absolute;
-        z-index: 99;
-        color: red;
-        font-size: 2.2rem;
-    }
+.link {
+  color: #007aff;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-
-#map {
-    width: 100%;
-    height: 30%;
+.save-button {
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
-
-/* Optional: Makes the sample page fill the window. */
-html,
-body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.map-container {
+  width: 100%;
+  height: 200px;
+  margin-top: 16px;
+  border-radius: 8px;
+  overflow: hidden;
 }
-
-#description {
-    font-family: Roboto;
-    font-size: 15px;
-    font-weight: 300;
-}
-
-#infowindow-content .title {
-    font-weight: bold;
-}
-
-#infowindow-content {
-    display: none;
-}
-
-#map #infowindow-content {
-    display: inline;
-}
-
-
+/* Estilos para el campo de entrada de autocompletado */
 #pac-input {
-    background-color: #fff;
-
-
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
 }
-
-#pac-input:focus {
-    border-color: #4d90fe;
+/* Estilos para el campo de entrada de autocompletado */
+#pac-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
 }
-
-#title {
-    color: #fff;
-    background-color: #4d90fe;
-    font-size: 25px;
-    font-weight: 500;
-    padding: 6px 12px;
-}
-
-
-input {
-    width: 100%;
-
-}
-

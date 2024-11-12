@@ -1,240 +1,163 @@
-import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
-import {ModalController} from '@ionic/angular';
-import {AddressTitlePage} from '../address-title/address-title.page';
-import {Observable} from 'rxjs';
-import {Router} from '@angular/router';
-import {RESTService} from '../rest.service';
-import {Geolocation} from '@ionic-native/geolocation/ngx';
-import {NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions} from '@ionic-native/native-geocoder/ngx';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastController, AlertController } from '@ionic/angular';
 
 declare const google;
 
 
 @Component({
-    selector: 'app-add-address',
-    templateUrl: './add-address.page.html',
-    styleUrls: ['./add-address.page.scss'],
+  selector: 'app-add-address',
+  templateUrl: './add-address.page.html',
+  styleUrls: ['./add-address.page.scss'],
 })
 export class AddAddressPage implements OnInit {
-    locations: Observable<any>;
-    // Map related
-    @ViewChild('map') mapElement: ElementRef;
+  @ViewChild('map', { static: false }) mapElement: ElementRef;
+  map: any;
+  direccionMapa = ''; // Dirección ingresada por el usuario
+  nuevaDireccion = { lat: 0, lng: 0, direccion: '', interior: '', nombre: '', tel: '', cp: '', indicacion: '', alias: '' };
+  autocomplete: any;
 
+  // Definición de los límites de la zona de cobertura
+  matrizUbicacion = { lat: 20.663930, lng: -103.414894 };
+  defaultBounds = {
+    north: this.matrizUbicacion.lat + 0.03,
+    south: this.matrizUbicacion.lat - 0.03,
+    east: this.matrizUbicacion.lng + 0.03,
+    west: this.matrizUbicacion.lng - 0.03,
+  };
+  coverageBounds: any;
 
-    map: any;
-    markers = [];
-    direccionABuscar: string;
+  constructor(
+    private router: Router,
+    private toastController: ToastController,
+    private alertController: AlertController,
+    private zone: NgZone
+  ) {}
 
-    nuevaDireccion = {
-        direccion: '',
-        nombre: '',
-        tel: '',
-        cp: '',
-        indicacion: '',
-        alias: '',
-        lat: 0,
-        lng: 0,
-        interior: ''
-    };
-    nuevaDireccionColores = {
-        nombreCompleto: 'dark',
-        direccion: 'black',
-        numero: 'black',
-        tel: 'black',
-        cp: 'black',
-        alias: 'black',
-    };
-    direccionMapa = '';
+  async ngOnInit() {
+    try {
+      // Esperar a que se cargue Google Maps antes de configurar el autocompletado
+      await this.loadGoogleMapsScript();
+      this.coverageBounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(this.defaultBounds.south, this.defaultBounds.west),
+        new google.maps.LatLng(this.defaultBounds.north, this.defaultBounds.east)
+      );
+      this.setupAutocomplete(); // Configura el autocompletado después de cargar el script
+    } catch (error) {
+      console.error('Error al cargar Google Maps:', error);
+    }
+  }
 
+  loadGoogleMapsScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (window['google'] && window['google'].maps) {
+        resolve(); // El script ya está cargado
+        return;
+      }
 
-    constructor(private modalController: ModalController,
-                private rest: RESTService,
-                private route: Router,
-                private geolocation: Geolocation,
-                private nativeGeocoder: NativeGeocoder,
-                public zone: NgZone,
-    ) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = (error) => reject(error);
 
+      document.head.appendChild(script);
+    });
+  }
+
+  setupAutocomplete() {
+    const input = document.getElementById('pac-input') as HTMLInputElement;
+
+    if (!input) {
+      console.error('El campo de entrada pac-input no se encuentra en el DOM.');
+      return;
     }
 
-    ngOnInit() {
-        setTimeout(() => {
-            this.loadMap();
-        }, 1500);
+    // Configuración de Autocompletado de Google Places
+    this.autocomplete = new google.maps.places.Autocomplete(input, {
+      bounds: this.coverageBounds,
+      strictBounds: true,
+      fields: ['formatted_address', 'geometry'],
+      types: ['address'],
+      componentRestrictions: { country: 'mx' }
+    });
 
-    }
+    this.autocomplete.addListener('place_changed', () => {
+      const place = this.autocomplete.getPlace();
 
-    async loadMap() {
-        /*Geolocation.requestPermissions().then(p => {
-            console.log(p);
-        }).catch(e => {
-            console.log(e);
-        });*/
-        let coordinates = {lat: 20.663930, lng: -103.414894};
-        this.geolocation.getCurrentPosition().then((resp) => {
-            coordinates = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-        });
-        console.log('Current position:', coordinates);
-        if (coordinates) {
-            const latLng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
+      // Verificar si el lugar tiene geometría y ubicación
+      if (place.geometry && place.geometry.location) {
+        const lat = typeof place.geometry.location.lat === 'function'
+          ? place.geometry.location.lat()
+          : place.geometry.location.lat;
+        const lng = typeof place.geometry.location.lng === 'function'
+          ? place.geometry.location.lng()
+          : place.geometry.location.lng;
 
-            const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
-            // Create a bounding box with sides ~30km away from the center point
-            const defaultBounds = {
-                north: matrizUbicacion.lat + 0.03,
-                south: matrizUbicacion.lat - 0.03,
-                east: matrizUbicacion.lng + 0.03,
-                west: matrizUbicacion.lng - 0.03,
-            };
+        if (typeof lat === 'number' && !isNaN(lat) && typeof lng === 'number' && !isNaN(lng)) {
+          const location = new google.maps.LatLng(lat, lng);
 
-
-            const mapOptions = {
-                center: latLng,
-                zoom: 16,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                strictBounds: true,
-                bounds: defaultBounds,
-            };
-
-            this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-
-            const markerLocal = new google.maps.Marker({
-                map: this.map,
-                animation: google.maps.Animation.DROP,
-                position: latLng
-            });
-
-
-            const matrizMarker = new google.maps.Marker({
-                map: this.map,
-                animation: google.maps.Animation.DROP,
-                position: matrizUbicacion,
-                icon: 'assets/imgs/logo_sango_mini.png'
-            });
-
-            const cityCircle = new google.maps.Rectangle({
-                strokeColor: '#3560ee',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: 'rgba(149,255,82,0.53)',
-                fillOpacity: 0.35,
-                map: this.map,
-                center: matrizUbicacion,
-                bounds: defaultBounds
-            });
-
-
-            markerLocal.setMap(this.map);
-            matrizMarker.setMap(this.map);
-            const input = document.getElementById('pac-input') as HTMLInputElement;
-
-
-            const options = {
-                fields: ['formatted_address', 'geometry', 'name'],
-                strictBounds: true,
-                bounds: defaultBounds,
-                types: ['address'],
-                componentRestrictions: {
-                    country: ['mx']
-                }
-            };
-
-
-            const autocomplete = new google.maps.places.Autocomplete(input, options);
-
-
-            autocomplete.addListener('place_changed', () => {
-
-                markerLocal.setVisible(false);
-                const place = autocomplete.getPlace();
-
-                if (!place.geometry || !place.geometry.location) {
-                    // User entered the name of a Place that was not suggested and
-                    // pressed the Enter key, or the Place Details request failed.
-                    window.alert('No details available for input: \'' + place.name + '\'');
-                    return;
-                }
-                this.nuevaDireccion.lat = place.geometry.location.lat();
-                this.nuevaDireccion.lng = place.geometry.location.lng();
-
-                // If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    this.map.fitBounds(place.geometry.viewport);
-                } else {
-                    this.map.setCenter(place.geometry.location);
-                    this.map.setZoom(17);
-                }
-                markerLocal.setPosition(place.geometry.location);
-                markerLocal.setVisible(true);
-
-                console.log(place.geometry.location);
-
-                console.log(this.nuevaDireccion);
-
-                this.direccionMapa = input.value;
-                console.log(this.direccionMapa);
-            });
-        }
-    }
-
-
-    address_title() {
-        this.modalController.create({component: AddressTitlePage}).then((modalElement) => {
-                modalElement.present();
-            }
-        );
-    }
-
-
-    validarCampos() {
-        let existeError = false;
-
-        this.nuevaDireccionColores = {
-            nombreCompleto: 'dark',
-            direccion: 'dark',
-            numero: 'black',
-            tel: 'black',
-            cp: 'black',
-            alias: 'black',
-        };
-        this.nuevaDireccion.direccion = this.direccionMapa;
-        if (this.nuevaDireccion.nombre === '') {
-            this.nuevaDireccionColores.nombreCompleto = 'danger';
-            existeError = true;
-        }
-        if (this.nuevaDireccion.cp === '') {
-            this.nuevaDireccionColores.cp = 'danger';
-            existeError = true;
-        }
-        if (this.nuevaDireccion.tel === '') {
-            this.nuevaDireccionColores.tel = 'danger';
-            existeError = true;
-        }
-        if (this.nuevaDireccion.alias === '') {
-            this.nuevaDireccionColores.alias = 'danger';
-            existeError = true;
-        }
-
-        console.log(this.nuevaDireccion);
-
-        if (!existeError) {
-            this.rest.postDireccion(this.nuevaDireccion).subscribe(data => {
-                console.log(data);
-                this.select_address();
-            });
+          if (this.coverageBounds.contains(location)) {
+            this.nuevaDireccion.lat = lat;
+            this.nuevaDireccion.lng = lng;
+            this.nuevaDireccion.direccion = place.formatted_address;
+            this.direccionMapa = place.formatted_address;
+            console.log('Dirección asignada correctamente:', this.nuevaDireccion);
+          } else {
+            console.warn('Ubicación fuera de la zona permitida:', { lat, lng });
+            this.showOutOfBoundsAlert();
+          }
         } else {
-            console.log('error');
+          console.error('Latitud o longitud no son números válidos:', { lat, lng });
         }
-    }
+      } else {
+        console.warn('El lugar seleccionado no tiene una ubicación válida o geometría.', place);
+      }
+    });
+  }
 
-    select_address() {
-        this.route.navigate(['./select-address']).then(() => {
-            window.location.reload();
-        });
-    }
+  async showOutOfBoundsAlert() {
+    const alert = await this.alertController.create({
+      header: 'Zona no permitida',
+      message: 'La dirección ingresada está fuera de la zona de cobertura permitida. Por favor, elige una dirección válida.',
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
 
-    irAZonaDeCobertura() {
-        this.route.navigate(['./zona-de-cobertura']);
+
+
+async validarCampos() {
+    // Verificar si la dirección y campos requeridos están completos
+    let mensaje = '';
+
+    if (!this.nuevaDireccion.direccion) mensaje += 'Dirección es requerida. ';
+    if (!this.nuevaDireccion.nombre) mensaje += 'Nombre y apellido es requerido. ';
+    if (!this.nuevaDireccion.cp) mensaje += 'Código Postal es requerido. ';
+    if (!this.nuevaDireccion.tel) mensaje += 'Teléfono es requerido. ';
+    if (!this.nuevaDireccion.alias) mensaje += 'Alias es requerido. ';
+
+    if (mensaje) {
+      // Muestra mensaje de error si falta algún campo
+      const toast = await this.toastController.create({
+        message: mensaje,
+        color: 'danger',
+        duration: 3000
+      });
+      await toast.present();
+    } else {
+      // Guardar dirección si todos los campos están completos
+      this.guardarDireccion();
     }
+  }
+
+  guardarDireccion() {
+    console.log('Guardando dirección:', this.nuevaDireccion);
+    this.router.navigate(['./select-address']);
+  }
+
+  irAZonaDeCobertura() {
+
+  }
 }
