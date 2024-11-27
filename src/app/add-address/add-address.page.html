@@ -3,49 +3,50 @@
     <ion-buttons slot="start">
       <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
     </ion-buttons>
-    <ion-title>Nueva dirección</ion-title>
+    <ion-title>
+      <div class="title_inner d-flex">
+        Nueva dirección
+      </div>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="bg_color" fullscreen>
   <ion-list>
-    <!-- Mensaje de advertencia -->
-    <ion-item lines="none">
-      <ion-label class="info-label">
-        <small>
-          Si tu dirección <strong>no aparece</strong> en el desplegado, aún no tenemos servicio en tu
-          <span class="link" (click)="irAZonaDeCobertura()">zona</span>.
-        </small>
-      </ion-label>
-    </ion-item>
-
-    <!-- Input para Google Places Autocomplete -->
     <ion-item>
-      <ion-label position="floating">Calle y número</ion-label>
-      <input id="pac-input" type="text" placeholder="Calle y número" [(ngModel)]="direccionMapa" style="width: 100%; padding: 8px;">
+      <small style="text-align: center; color: orangered; background-color: #ececec; border-radius: 5px">Si tu
+        dirección
+        <span style="font-weight: bold;">no aparece </span>
+        en el desplegado, aún no tenemos servicio en tu <span style="font-weight: bold"
+                                                              (click)="irAZonaDeCobertura()">zona</span></small>
+
+    </ion-item>
+    <ion-item>
+      <input id="pac-input" [value]="direccionMapa" type="text" placeholder="Calle y número"/>
     </ion-item>
 
-    <!-- Mensaje de ayuda para ingresar dirección -->
-    <ion-item *ngIf="nuevaDireccion.lat === 0 && nuevaDireccion.lng === 0">
-      <ion-text color="medium">Para continuar, introduce tu calle y número</ion-text>
+    <ion-item *ngIf="nuevaDireccion.lat===0 && nuevaDireccion.lng===0">
+      <ion-text style="color: #3c5a9a">Para continuar, Introduce tu calle y numero</ion-text>
     </ion-item>
 
-    <!-- Campos adicionales de la dirección (solo se muestran si la ubicación es válida) -->
-    <ng-container *ngIf="nuevaDireccion.lat !== 0 && nuevaDireccion.lng !== 0">
+    <div *ngIf="nuevaDireccion.lat!==0 && nuevaDireccion.lng!==0">
       <ion-item>
-        <ion-label position="floating">Interior</ion-label>
-        <ion-input [(ngModel)]="nuevaDireccion.interior"></ion-input>
+        <ion-label position="floating">Interior
+        </ion-label>
+        <ion-input type="name" [(ngModel)]="nuevaDireccion.interior"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Nombre y apellido</ion-label>
-        <ion-input [(ngModel)]="nuevaDireccion.nombre"></ion-input>
+        <ion-label position="floating" color="{{nuevaDireccionColores.nombreCompleto}}">Nombre y apellido
+        </ion-label>
+        <ion-input type="name" [(ngModel)]="nuevaDireccion.nombre"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Código Postal</ion-label>
-        <ion-input type="number" inputmode="numeric" maxlength="5" [(ngModel)]="nuevaDireccion.cp"></ion-input>
+        <ion-label position="floating" color="{{nuevaDireccionColores.cp}}">Código Postal</ion-label>
+        <ion-input type="postal-code" inputmode="numeric" maxlength="5"
+                   [(ngModel)]="nuevaDireccion.cp"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Teléfono de contacto</ion-label>
+        <ion-label position="floating" color="{{nuevaDireccionColores.tel}}">Telefono de contacto</ion-label>
         <ion-input type="tel" inputmode="tel" [(ngModel)]="nuevaDireccion.tel"></ion-input>
       </ion-item>
       <ion-item>
@@ -53,23 +54,23 @@
         <ion-input [(ngModel)]="nuevaDireccion.indicacion"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Alias (Ej: Casa, Oficina, etc)</ion-label>
+        <ion-label position="floating" color="{{nuevaDireccionColores.alias}}">Alias (Ej: Casa, Oficina, etc)
+        </ion-label>
         <ion-input [(ngModel)]="nuevaDireccion.alias"></ion-input>
       </ion-item>
-
-      <!-- Botón para guardar la dirección -->
-      <ion-button expand="block" class="save-button" (click)="validarCampos()">Guardar dirección</ion-button>
-
-      <!-- Botón para ver la zona de cobertura -->
-      <ion-item lines="none">
+      <ion-button style="margin-top: 16px; margin-bottom: 16px" size="large" shape="block" class="btn"
+                  (click)="validarCampos()">
+        Guardar dirección
+      </ion-button>
+      <ion-item>
         <ion-button color="light" (click)="irAZonaDeCobertura()">
-          <ion-icon name="map-outline" slot="start"></ion-icon>
+          <ion-icon name="map-outline" style="margin-right: 6px"></ion-icon>
           Ver Zona de Cobertura
         </ion-button>
       </ion-item>
-    </ng-container>
+    </div>
   </ion-list>
+  <div style="visibility: hidden" #map id="map"></div>
 
-  <!-- Contenedor del mapa (opcional, si deseas mostrar la ubicación en el mapa) -->
-  <div #map id="map" class="map-container"></div>
+
 </ion-content>
