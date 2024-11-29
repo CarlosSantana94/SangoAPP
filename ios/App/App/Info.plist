@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>fbYOUR_FACEBOOK_APP_ID</string>
+    </array>
+  </dict>
+</array>
+<key>FacebookAppID</key>
+<string>YOUR_FACEBOOK_APP_ID</string>
+<key>FacebookDisplayName</key>
+<string>YOUR_APP_DISPLAY_NAME</string>
+
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Esta aplicación necesita acceso a tu ubicación para mostrar la posición en el mapa y determinar si estas dentro del area de cobertura. </string>
 	<key>NSLocationAlwaysUsageDescription</key>

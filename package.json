@@ -25,6 +25,7 @@
     "@awesome-cordova-plugins/core": "^6.7.0",
     "@awesome-cordova-plugins/photo-viewer": "^6.7.0",
     "@capacitor-community/apple-sign-in": "^6.0.0",
+    "@capacitor-community/facebook-login": "^6.0.0",
     "@capacitor/android": "6.0.0",
     "@capacitor/app": "6.0.0",
     "@capacitor/core": "6.0.0",

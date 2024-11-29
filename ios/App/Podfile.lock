@@ -13,6 +13,10 @@ PODS:
     - Capacitor
   - CapacitorCommunityAppleSignIn (6.0.0):
     - Capacitor
+  - CapacitorCommunityFacebookLogin (6.0.0):
+    - Capacitor
+    - FBSDKCoreKit (= 17.0.0)
+    - FBSDKLoginKit (= 17.0.0)
   - CapacitorCordova (6.0.0)
   - CapacitorDevice (6.0.1):
     - Capacitor
@@ -27,6 +31,14 @@ PODS:
   - CodetrixStudioCapacitorGoogleAuth (0.0.1):
     - Capacitor
     - GoogleSignIn (~> 6.2.4)
+  - FBAEMKit (17.0.0):
+    - FBSDKCoreKit_Basics (= 17.0.0)
+  - FBSDKCoreKit (17.0.0):
+    - FBAEMKit (= 17.0.0)
+    - FBSDKCoreKit_Basics (= 17.0.0)
+  - FBSDKCoreKit_Basics (17.0.0)
+  - FBSDKLoginKit (17.0.0):
+    - FBSDKCoreKit (= 17.0.0)
   - GoogleSignIn (6.2.4):
     - AppAuth (~> 1.5)
     - GTMAppAuth (~> 1.3)
@@ -41,6 +53,7 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - CapacitorAppleLogin (from `../../node_modules/capacitor-apple-login`)
   - "CapacitorCommunityAppleSignIn (from `../../node_modules/@capacitor-community/apple-sign-in`)"
+  - "CapacitorCommunityFacebookLogin (from `../../node_modules/@capacitor-community/facebook-login`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorDevice (from `../../node_modules/@capacitor/device`)"
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
@@ -52,6 +65,10 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
+    - FBAEMKit
+    - FBSDKCoreKit
+    - FBSDKCoreKit_Basics
+    - FBSDKLoginKit
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
@@ -65,6 +82,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-apple-login"
   CapacitorCommunityAppleSignIn:
     :path: "../../node_modules/@capacitor-community/apple-sign-in"
+  CapacitorCommunityFacebookLogin:
+    :path: "../../node_modules/@capacitor-community/facebook-login"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorDevice:
@@ -86,6 +105,7 @@ SPEC CHECKSUMS:
   CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
   CapacitorAppleLogin: 10cb7ca643691a4dc6ef8f82579c8c47be31e18f
   CapacitorCommunityAppleSignIn: c8bba4ca8ff6ff843367ece13ee8af24e9266eb9
+  CapacitorCommunityFacebookLogin: f725f1240b8f7ab300723a668591cb8301341cc4
   CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
   CapacitorDevice: 7097a1deb4224b77fd13a6e60a355d0062a5d772
   CapacitorGeolocation: 0572212732f7ee65828d069a9663a274be89b9fc
@@ -93,10 +113,14 @@ SPEC CHECKSUMS:
   CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
   CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   CodetrixStudioCapacitorGoogleAuth: fcce058390347c1ce5d8ac4764bdf1f5c1ee233b
+  FBAEMKit: 31a20c2d8744d8c57d3a5b7ae4e27b4fdd819193
+  FBSDKCoreKit: dac911b656816f8d0b06e5fa4bac60e89505bb3b
+  FBSDKCoreKit_Basics: 92b7b7458d57091370b0b6cc197578874c3b4b16
+  FBSDKLoginKit: 5d5271ebfd1e39c6b071de8db5c4bd6255be3561
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
 
-PODFILE CHECKSUM: f96a38fa45f4959c9af550132fce80a8b445d2d6
+PODFILE CHECKSUM: ef8f7e0280917e00686dfcd2200fd941afac15d9
 
 COCOAPODS: 1.15.2

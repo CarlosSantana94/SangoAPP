@@ -8,6 +8,18 @@ import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
 import {SignInWithApple, SignInWithAppleOptions} from "@capacitor-community/apple-sign-in";
 import {Device} from '@capacitor/device';
 import {UsuarioV2} from "../models/usuario-v2";
+import {FacebookLogin} from "@capacitor-community/facebook-login";
+
+interface FacebookProfile {
+  id: string;
+  email: string;
+  name: string;
+  picture: {
+    data: {
+      url: string;
+    };
+  };
+}
 
 @Component({
   selector: 'app-sign-in',
@@ -40,6 +52,18 @@ export class SignInPage implements OnInit {
     GoogleAuth.initialize();
     await this.checkPlatform();
     this.serverUrl = environment.url;
+
+    // Initialize Facebook SDK if platform is web
+    if (this.platform.is('hybrid') === false) {
+      (window as any).fbAsyncInit = () => {
+        FB.init({
+          appId: environment.facebookAppId,
+          cookie: true,
+          xfbml: true,
+          version: 'v12.0'
+        });
+      };
+    }
 
     const loader = await this.loadingController.create({
       message: 'Obteniendo datos del servidor...',
@@ -188,4 +212,61 @@ export class SignInPage implements OnInit {
   verServicios() {
     this.navCtrl.navigateRoot(['./servicios-sin-cuenta']);
   }
+
+  async loginWithFacebook() {
+    try {
+      if (!this.servidor) {
+        throw new Error('Servidor no disponible');
+      } else {
+        const FACEBOOK_PERMISSIONS = ['email', 'public_profile'];
+
+        const result = await FacebookLogin.login({ permissions: FACEBOOK_PERMISSIONS });
+
+        if (result.accessToken) {
+          // Token is available
+          const token = result.accessToken.token;
+
+          // Optionally, you can also fetch the user details
+          const profile = await FacebookLogin.getProfile({fields: ['email', 'name', 'picture']}) as unknown as FacebookProfile;
+
+          const facebookUser: FacebookProfile = profile;
+
+          let userV2 = new UsuarioV2(
+            facebookUser.id,
+            facebookUser.email,
+            false,
+            facebookUser.picture.data.url,
+            facebookUser.name,
+            "FACEBOOK LOGIN",
+            null,
+            token,
+            null
+          );
+
+          localStorage.setItem('uid', facebookUser.id);
+          this.rest.postUsuarioV2(userV2).subscribe(
+            response => {
+              if (response.status === 200) {
+                this.setUserInfo(facebookUser.email, facebookUser.name, facebookUser.picture.data.url, facebookUser.id);
+                this.presentToast('Inicio de sesión exitoso, Bienvenido');
+                this.navCtrl.navigateRoot(['./tabs']);
+              }
+            },
+            error => {
+              console.error('Error en la solicitud:', error);
+              this.presentToast('Error en el inicio de sesión, intente de nuevo');
+            }
+          );
+        } else {
+          this.presentToast('Inicio de sesión cancelado');
+        }
+      }
+    } catch (error) {
+      this.presentToast('Error en servidor intente mas tarde.');
+      console.error('Facebook login error: ', error);
+    }
+  }
+
+
+
 }

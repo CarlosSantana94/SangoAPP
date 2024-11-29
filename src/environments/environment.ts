@@ -14,8 +14,9 @@ export const environment = {
     measurementId: 'G-HKPQCYNEFD'
   },
   //url: 'http://localhost:5000/',
-    url: 'https://sango-api-prod-51190d6823db.herokuapp.com/',
-  mapsKey: 'AIzaSyALWK0kZF2PYTt6lc7Hr2gkBgt2Du_DJ6Y'
+  url: 'https://sango-api-prod-51190d6823db.herokuapp.com/',
+  mapsKey: 'AIzaSyALWK0kZF2PYTt6lc7Hr2gkBgt2Du_DJ6Y',
+  facebookAppId: '492659439209445'
 };
 
 /*
