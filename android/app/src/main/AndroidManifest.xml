@@ -24,6 +24,9 @@
 
         </activity>
       <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+      <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+
       <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyALWK0kZF2PYTt6lc7Hr2gkBgt2Du_DJ6Y" />
@@ -46,4 +49,5 @@
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-feature android:name="android.hardware.location.gps" />
+  <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 </manifest>

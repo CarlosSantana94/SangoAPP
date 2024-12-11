@@ -164,6 +164,10 @@ const routes: Routes = [
     path: 'servicios-sin-cuenta',
     loadChildren: () => import('./servicios-sin-cuenta/servicios-sin-cuenta.module').then( m => m.ServiciosSinCuentaPageModule)
   },
+  {
+    path: 'edit-adress',
+    loadChildren: () => import('./edit-adress/edit-adress.module').then( m => m.EditAdressPageModule)
+  },
 
   
   

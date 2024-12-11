@@ -1,57 +1,65 @@
 <ion-header>
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
-        </ion-buttons>
-        <ion-title>
-            Mis Direcciones
-        </ion-title>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      Mis Direcciones
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="bg_color" fullscreen>
-    <div class="form">
-        <h1>Seleccionar Dirección</h1>
-        <ion-list lines="none">
-            <ion-radio-group>
-                <ion-item lines="none" *ngFor="let direccion of direcciones" (click)="selectAddress(direccion)">
-                    <ion-radio slot="start" [value]="direccion"></ion-radio>
-                    <ion-label class="d-flex">
-                        <div class="img_container">
+  <div class="form">
+    <h1>Seleccionar Dirección</h1>
+    <ion-text>Para editar o eliminar una dirección:</ion-text>
+    <div></div>
+    <ion-text>Menú principal >
+      <ion-icon name="grid-outline"></ion-icon>
+       > Mis Direcciones
+    </ion-text>
+    <ion-list lines="none">
+      <ion-radio-group>
+        <ion-item lines="none" *ngFor="let direccion of direcciones" (click)="selectAddress(direccion)">
+          <ion-radio slot="start" [value]="direccion"></ion-radio>
+          <ion-label class="d-flex">
+            <div class="img_container">
 
-                            <ion-icon style="height: 50px; color: #3c5a9a" name="location-outline"></ion-icon>
+              <ion-icon style="height: 50px; color: #3c5a9a" name="location-outline"></ion-icon>
 
-                            <h2>{{direccion.alias}}</h2>
-                        </div>
-                        <p>
-                            {{direccion.direccion}}<br> {{direccion.cp}}
-                            <br> {{direccion.tel}}
-                        </p>
-                    </ion-label>
-                </ion-item>
-            </ion-radio-group>
-        </ion-list>
-    </div>
-    <ion-button size="large" shape="block" class="btn" (click)="add_address()">
-        <ion-icon name="add-circle-outline"></ion-icon>
-        Agregar Dirección
-    </ion-button>
+              <h2>{{ direccion.alias }}</h2>
+            </div>
+            <p>
+              {{ direccion.direccion }}<br> {{ direccion.cp }}
+              <br> {{ direccion.tel }}
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-radio-group>
+    </ion-list>
+  </div>
+  <ion-button size="large" shape="block" class="btn" (click)="add_address()">
+    <ion-icon name="add-circle-outline"></ion-icon>
+    Agregar Dirección
+  </ion-button>
 </ion-content>
 
 <ion-footer *ngIf="hayDireccionSeleccionada">
-    <ion-toolbar>
+  <ion-toolbar>
 
-<ion-text  style="color: #be7d1c">Seleccionaste: {{direccionSeleccionada.alias}}</ion-text>
-    </ion-toolbar>
+    <ion-text style="color: #be7d1c">Seleccionaste: {{ direccionSeleccionada.alias }}</ion-text>
+  </ion-toolbar>
 </ion-footer>
 
 <ion-footer>
-    <ion-toolbar>
-        <ion-buttons slot="end">
-            <ion-button (click)="confirm_order()" *ngIf="hayDireccionSeleccionada">Continuar<ion-icon name="caret-forward-outline"></ion-icon></ion-button>
-        </ion-buttons>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirm_order()" *ngIf="hayDireccionSeleccionada">Continuar
+        <ion-icon name="caret-forward-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
 
-        <ion-title style="color: #29af5d">${{carrito.total}}</ion-title>
-    </ion-toolbar>
+    <ion-title style="color: #29af5d">${{ carrito.total }}</ion-title>
+  </ion-toolbar>
 </ion-footer>
 

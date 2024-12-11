@@ -47,14 +47,28 @@ export class EnviosPage implements OnInit {
     await loader.present();
     const data = await this.rest.getEnvios().toPromise() as Fecha[];
     loader.dismiss();
-    return data.map((fec: Fecha) => ({
-      ...fec,
-      fechaFormat: this.formatDate(fec.fecha)
-    }));
-  }
+
+
+    return data.map((fec: Fecha) => {
+      const parsedDate = new Date(fec.fecha);
+      console.log('Fecha original:', fec.fecha, 'Día de la semana:', parsedDate.getDay());
+      console.log('Fecha original:', fec.fecha);
+      console.log('Fecha UTC:', new Date(fec.fecha).toUTCString());
+      console.log('Fecha local:', new Date(fec.fecha).toString());
+
+      return {
+        ...fec,
+        fechaFormat: this.formatDate(fec.fecha),
+      };
+    });
+
+     }
 
   formatDate(date: string) {
-    return new Date(date).toLocaleDateString('es-ES', {
+    // Forzar el uso del formato YYYY-MM-DD sin que se ajuste por zona horaria
+    const [year, month, day] = date.split('-');
+    const adjustedDate = new Date(Number(year), Number(month) - 1, Number(day));
+    return adjustedDate.toLocaleDateString('es-ES', {
       weekday: 'long',
       day: '2-digit',
       month: 'long',

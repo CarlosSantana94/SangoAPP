@@ -5,4 +5,6 @@
     <string name="package_name">com.tintorerias.sango</string>
     <string name="custom_url_scheme">com.tintorerias.sango</string>
     <string name="server_client_id">726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">492659439209445</string>
+  <string name="facebook_client_token">0f1466dd221c15c75aad18af8801803a</string>
 </resources>

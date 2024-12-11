@@ -46,11 +46,11 @@ export class RESTService {
     return this.http.post(environment.url + 'carrito/' + agregar + '/' + subPrendaId, {});
   }
 
-  getEnvios() : Observable<Fecha[]>{
+  getEnvios(): Observable<Fecha[]> {
     return this.http.get<Fecha[]>(environment.url + 'envios');
   }
 
-  getEnviosEntrega(fechaSeleccionadaRecoleccion: any) :Observable<Fecha[]>  {
+  getEnviosEntrega(fechaSeleccionadaRecoleccion: any): Observable<Fecha[]> {
     return this.http.get<Fecha[]>(environment.url + 'envios/' + fechaSeleccionadaRecoleccion);
   }
 
@@ -150,4 +150,16 @@ export class RESTService {
     return this.http.get(environment.url + 'api/v2/carritos/' + idCarrito);
   }
 
+
+  deleteDireccion(id): any {
+
+  }
+
+  getDireccionPorId(direccionId: any): any {
+    return this.http.get(environment.url + 'direccion/' + direccionId);
+  }
+
+  getDeshabilitarDireccion(direccionId: any) {
+    return this.http.get(environment.url + 'direccion/disable/' + direccionId);
+  }
 }
