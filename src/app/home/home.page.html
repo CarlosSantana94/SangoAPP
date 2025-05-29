@@ -82,13 +82,15 @@
     <!--<h1 class="d-flex">Tus Ordenes <span
             class="end">{{'Past_Orders' | translate}}</span></h1>-->
 
-    <ion-button expand="block" style="--background: #3abb7c; --color: #ffffff; margin-left: 20px;margin-right: 20px; margin-bottom: 15px;" (click)="ionViewDidEnter()" >
+    <ion-button expand="block"
+                style="--background: #3abb7c; --color: #ffffff; margin-left: 20px;margin-right: 20px; margin-bottom: 15px;"
+                (click)="ionViewDidEnter()">
       Actualizar Ordenes
     </ion-button>
     <ion-item class="no_order" *ngIf="!tieneOrdenes">
       <div class="item_inner d-flex">
         <div class="text_box">
-          <h2>No se han realizado <span>ordenes</span>. Seleccione un servicio para continuar</h2>
+          <h2>No hay <span>ordenes</span> activas. Seleccione un servicio para continuar</h2>
         </div>
       </div>
     </ion-item>
@@ -106,27 +108,63 @@
        </ion-item>
 -->
 
+    <!-- Agrega esto después del botón "Actualizar Ordenes" y antes de la lista -->
+    <div class="filter-buttons" style="display: flex; justify-content: space-around; margin: 10px 20px;">
+      <ion-button (click)="filtrarOrdenes('ACTIVOS')" [color]="filtroActivo === 'ACTIVOS' ? 'primary' : 'medium'" size="small">
+        Pedidos Activos
+      </ion-button>
+      <ion-button (click)="filtrarOrdenes('COMPLETADOS')" [color]="filtroActivo === 'COMPLETADOS' ? 'primary' : 'medium'" size="small">
+        Completados
+      </ion-button>
+      <ion-button (click)="filtrarOrdenes('CANCELACIONES')" [color]="filtroActivo === 'CANCELACIONES' ? 'primary' : 'medium'" size="small">
+        Cancelaciones
+      </ion-button>
+      <ion-button (click)="filtrarOrdenes('TODOS')" [color]="filtroActivo === 'TODOS' ? 'primary' : 'medium'" size="small">
+        Todos
+      </ion-button>
+    </div>
+
 
     <ion-item (click)="order_info(orden.id)" *ngFor="let orden of ordenes">
       <div class="item_inner d-flex">
-        <div class="img_box">
+        <div class="img_box"  *ngIf="orden.estado==='CREADO'">
           <img src="assets/imgs/confirmed.png">
         </div>
+        <div class="img_box"  *ngIf="orden.estado==='EN_TIENDA'">
+          <img src="assets/imgs/pickedup.png">
+        </div>
+        <div class="img_box"  *ngIf="orden.estado==='TERMINADO'">
+          <img src="assets/imgs/inporcess.png">
+        </div>
+        <div class="img_box"  *ngIf="orden.estado==='EN_RUTA_REPARTIDOR'">
+          <img src="assets/imgs/dispatched.png">
+        </div>
+        <div class="img_box"  *ngIf="orden.estado==='FINALIZADO'">
+          <img src="assets/imgs/delivered.png">
+        </div>
         <div class="text_box">
-          <h2 class="d-flex">Orden #{{ orden.id }} <span class="end"
-                                                         style="color: #29af5d">${{ orden.total }}</span>
+          <h2 class="d-flex">Orden #{{ orden.id }}<span class="end"
+                                                                            style="color: #29af5d">${{ orden.total }}</span>
           </h2>
+
           <h2 class="d-flex" *ngIf="orden.estado==='CREADO'"><span class="end" style="color: #3eb31c">Programada para recolección<ion-icon
             name="car-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='SolicitaCancelacion'"><span class="end" style="color: #b3381c">Solicita Cancelacion<ion-icon
+          <h2 class="d-flex" *ngIf="orden.estado==='SOLICITA_CANCELACION'"><span class="end" style="color: #b3381c">Solicita Cancelacion<ion-icon
             name="close-circle-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='Recolectada'"><span class="end" style="color: #3c5a9a">En manos de Sango Tintoreria<ion-icon
+          <h2 class="d-flex" *ngIf="orden.estado==='CANCELADO'"><span class="end" style="color: #a10f0f">Orden Cancelada<ion-icon
+            name="close-circle-outline"></ion-icon></span></h2>
+          <h2 class="d-flex" *ngIf="orden.estado==='CANCELADO' || orden.estado==='SOLICITA_CANCELACION'"><span class="end" style="color: #380a0a">Motivo: {{ orden.motivoCancelacion }}</span>
+          </h2>
+          <h2 class="d-flex" *ngIf="orden.estado==='EN_TIENDA'"><span class="end" style="color: #3c5a9a">En manos de Sango Tintoreria<ion-icon
             name="hand-left-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='Entrega'"><span class="end" style="color: #a52de0">Listas para ser entregadas<ion-icon
+          <h2 class="d-flex" *ngIf="orden.estado==='TERMINADO'"><span class="end" style="color: #a52de0">Listas para ser entregadas<ion-icon
             name="hand-left-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='Finalizada'"><span class="end" style="color: #9a9a9a">Orden Entregada<ion-icon
+          <h2 class="d-flex" *ngIf="orden.estado==='EN_RUTA_REPARTIDOR'"><span class="end" style="color: #108dda">En ruta para entrega<ion-icon
+            name="hand-left-outline"></ion-icon></span></h2>
+          <h2 class="d-flex" *ngIf="orden.estado==='FINALIZADO'"><span class="end" style="color: #2d833e">Orden Entregada<ion-icon
             name="checkmark-outline"></ion-icon></span></h2>
-          <h3 class="d-flex"><span class="end">Recoleccion {{ orden.envios.fechaRecoleccion | date:'dd/MM/yyyy' }} </span>
+          <h3 class="d-flex"><span
+            class="end">Recoleccion {{ orden.envios.fechaRecoleccion | date:'dd/MM/yyyy' }} </span>
           </h3>
           <h3 class="d-flex">Prendas: {{ orden.items.length }}<span
             class="end">Entrega {{ orden.envios.fechaEntrega | date:'dd/MM/yyyy' }} </span></h3>
