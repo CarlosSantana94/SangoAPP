@@ -85,7 +85,7 @@
     <ion-button expand="block"
                 style="--background: #3abb7c; --color: #ffffff; margin-left: 20px;margin-right: 20px; margin-bottom: 15px;"
                 (click)="ionViewDidEnter()">
-      Actualizar Ordenes
+      Actualizar Ordenes {{notifMSG}}
     </ion-button>
     <ion-item class="no_order" *ngIf="!tieneOrdenes">
       <div class="item_inner d-flex">

@@ -8,6 +8,7 @@
                 <div class="title_inner ion-text-center">
                     <h2>Orden #{{resumen.id}}</h2>
                     <p>Realizada el {{fechaCreado | date:'dd/MMM/yyyy'}}</p>
+
                 </div>
             </ion-title>
         </div>
@@ -16,62 +17,100 @@
 
 
 <ion-content class="bg_color" fullscreen>
-    <ion-card class="info" *ngIf="!comentarioExistente && resumen.estado==='Finalizada' "
-              style="background-color: #e9fcff">
-        <ion-row>
-            <ion-col size="12">
-                <h2>Le Atendió</h2>
-                <h3>Felipe{{resumen.nombreRepartidor}}</h3>
-                <img style="height: 100px; width: auto" src="assets/imgs/profile.png">
-            </ion-col>
+  <ion-card class="rating-card" *ngIf="resumen.estadoCarrito==='FINALIZADO'">
+    <ion-card-header>
+      <ion-card-title class="rating-title">
+        {{ comentarioExistente ? 'Tu calificación anterior' : 'Califica tu experiencia' }}
+      </ion-card-title>
+    </ion-card-header>
 
-            <ion-col size="12" style="margin-top: 16px;">
-                <h2>Califica Tu servicio: {{valorEstrellas}}</h2>
-                <ion-icon size="large" name="star-outline" style="color: #eabe06"
-                          (click)="calificar(1)"></ion-icon>
+    <ion-card-content>
+      <!-- Sección del repartidor -->
+      <div class="delivery-person">
+        <img class="profile-img" src="assets/imgs/profile.png" alt="Repartidor">
+        <div class="delivery-info">
+          <h3 class="section-title">Te atendió</h3>
+          <h2 class="delivery-name">{{resumen.nombreRepartidor || 'Felipe'}}</h2>
+        </div>
+      </div>
 
-                <ion-icon *ngIf="valorEstrellas<2" size="large" name="star-outline" (click)="calificar(2)"></ion-icon>
+      <!-- Sección de calificación con estrellas -->
+      <div class="rating-section">
+        <h3 class="section-title">Calificación del servicio</h3>
+        <div class="stars-container">
+          <ion-icon *ngFor="let star of [1,2,3,4,5]; let i = index"
+                    size="large"
+                    [name]="(comentarioExistente ? valorEstrellas : valorEstrellas) > i ? 'star' : 'star-outline'"
+                    [style.color]="(comentarioExistente ? valorEstrellas : valorEstrellas) > i ? '#FFD700' : '#D3D3D3'"
+                    (click)="!comentarioExistente && calificar(i+1)">
+          </ion-icon>
+        </div>
+        <p class="rating-value">{{ (comentarioExistente ? valorEstrellas : valorEstrellas) }} de 5 estrellas</p>
+      </div>
 
-                <ion-icon *ngIf="valorEstrellas>=2" size="large" name="star-outline" style="color: #eabe06"
-                          (click)="calificar(2)"></ion-icon>
+      <!-- Sección de comentarios -->
+      <div class="feedback-section">
+        <!-- Comentario -->
+        <div class="feedback-item">
+          <h4 class="feedback-label">
+            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+            Comentario
+          </h4>
+          <div class="feedback-content" *ngIf="comentarioExistente?.comentario; else noComment">
+            {{ comentarioExistente.comentario }}
+          </div>
+          <ng-template #noComment>
+            <div class="feedback-empty">No se hicieron comentarios</div>
+          </ng-template>
+        </div>
 
-                <ion-icon *ngIf="valorEstrellas<3" size="large" name="star-outline" (click)="calificar(3)"></ion-icon>
-                <ion-icon *ngIf="valorEstrellas>=3" size="large" name="star-outline" style="color: #eabe06"
-                          (click)="calificar(3)"></ion-icon>
+        <!-- Queja -->
+        <div class="feedback-item">
+          <h4 class="feedback-label">
+            <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+            Queja o problema
+          </h4>
+          <div class="feedback-content" *ngIf="comentarioExistente?.queja; else noComplaint">
+            {{ comentarioExistente.queja }}
+          </div>
+          <ng-template #noComplaint>
+            <div class="feedback-empty">No se reportaron problemas</div>
+          </ng-template>
+        </div>
 
-                <ion-icon *ngIf="valorEstrellas<4" size="large" name="star-outline" (click)="calificar(4)"></ion-icon>
-                <ion-icon *ngIf="valorEstrellas>=4" size="large" name="star-outline" style="color: #eabe06"
-                          (click)="calificar(4)"></ion-icon>
+        <!-- Sección editable solo si no existe comentario -->
+        <div *ngIf="!comentarioExistente">
+          <ion-button expand="block" fill="outline" color="primary" (click)="agregarComentario()">
+            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
+            Agregar Comentario
+          </ion-button>
 
-                <ion-icon *ngIf="valorEstrellas<5" size="large" name="star-outline" (click)="calificar(5)"></ion-icon>
-                <ion-icon *ngIf="valorEstrellas===5" size="large" name="star-outline" style="color: #eabe06"
-                          (click)="calificar(5)"></ion-icon>
+          <ion-item *ngIf="hayComentario" class="feedback-input">
+            <ion-textarea [(ngModel)]="comentario"
+                          placeholder="¿Qué te gustó del servicio?"
+                          rows="3"></ion-textarea>
+          </ion-item>
 
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col size="12">
-                <h2>
-                    <ion-button color="success" (click)="agregarComentario()">Agregar Comentario</ion-button>
-                </h2>
-                <ion-item *ngIf="hayComentario">
+          <ion-button expand="block" fill="outline" color="danger" (click)="agregarQueja()">
+            <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+            Reportar un problema
+          </ion-button>
 
-                    <ion-textarea [(ngModel)]="comentario" placeholder="Comentario"></ion-textarea>
-                </ion-item>
-                <h2>
-                    <ion-button color="danger" (click)="agregarQueja()">Agregar Queja</ion-button>
-                </h2>
-                <ion-item *ngIf="hayQueja">
-                    <ion-textarea placeholder="Queja" [(ngModel)]="queja"></ion-textarea>
-                </ion-item>
+          <ion-item *ngIf="hayQueja" class="feedback-input">
+            <ion-textarea [(ngModel)]="queja"
+                          placeholder="Describe el problema que tuviste"
+                          rows="3"></ion-textarea>
+          </ion-item>
 
-                <h2>
-                    <ion-button (click)="enviarCalificacion()">Enviar</ion-button>
-                </h2>
-
-            </ion-col>
-        </ion-row>
-    </ion-card>
+          <!-- Botón de enviar solo en modo edición -->
+          <ion-button expand="block" color="success" (click)="enviarCalificacion()" class="submit-btn">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            Enviar calificación
+          </ion-button>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
 
   <ion-card class="info">
     <ion-row>

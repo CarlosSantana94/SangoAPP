@@ -1,4 +1,4 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type {CapacitorConfig} from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.bucapps.sango',
@@ -25,6 +25,13 @@ const config: CapacitorConfig = {
         'email'
       ],
       forceCodeForRefreshToken: true
+    },
+    "PushNotifications": {
+      "presentationOptions": [
+        "alert",
+        "badge",
+        "sound"
+      ]
     }
   }
 

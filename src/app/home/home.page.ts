@@ -4,6 +4,8 @@ import {Router} from '@angular/router';
 import {RESTService} from '../rest.service';
 import {CallNumber} from '@awesome-cordova-plugins/call-number/ngx';
 import {App as CapacitorApp} from '@capacitor/app';
+import {FcmService} from "../services/fcm.service";
+import {ActionPerformed, PushNotifications, PushNotificationSchema, Token} from "@capacitor/push-notifications";
 
 @Component({
   selector: 'app-home',
@@ -17,6 +19,8 @@ export class HomePage implements OnInit {
   servicios: any = [];
   carrito: any = {};
   refresh: any;
+  notifMSG: string;
+
   ordenesOriginales: any[] = []; // Para guardar todas las órdenes sin filtrar
   filtroActivo: string = 'ACTIVOS'; // Para saber qué filtro está activo
 
@@ -26,16 +30,19 @@ export class HomePage implements OnInit {
               private rest: RESTService,
               private loadingController: LoadingController,
               public alertController: AlertController,
-              private callNumber: CallNumber) {
+              private callNumber: CallNumber,
+              private fcmService: FcmService) {
 
 
   }
 
 
   async obtenerCarrito() {
-   this.rest.getCarritoNuevoPorUsuarioId(localStorage.getItem('uid')).subscribe(data => {
-     this.carrito = data;
-   });
+    this.rest.getCarritoNuevoPorUsuarioId(localStorage.getItem('uid')).subscribe(async data => {
+      this.carrito = data;
+
+      await this.fcmService.initPushNotifications(localStorage.getItem('uid'));
+    });
   }
 
 
@@ -50,12 +57,12 @@ export class HomePage implements OnInit {
   }
 
 
-
   // Modifica tu método ionViewDidEnter para guardar las órdenes originales
   async ionViewDidEnter() {
     await this.obtenerCarrito();
     this.ordenes = [];
     this.ordenesOriginales = []; // Limpiar el array antes de cargar nuevas órdenes
+
 
     this.rest.getTodosLosCarritos(localStorage.getItem('uid')).subscribe(data => {
       if (data.length !== 0) {
@@ -79,14 +86,15 @@ export class HomePage implements OnInit {
   }
 
 // Agrega este nuevo método para filtrar las órdenes
+
   filtrarOrdenes(tipo: string) {
     this.filtroActivo = tipo;
 
-    switch(tipo) {
+    switch (tipo) {
       case 'ACTIVOS':
         this.ordenes = this.ordenesOriginales.filter(orden =>
           ['CREADO', 'EN_TIENDA', 'TERMINADO', 'EN_RUTA_REPARTIDOR'].includes(orden.estado))
-            .sort((a, b) => new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime());
+          .sort((a, b) => new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime());
         break;
 
       case 'COMPLETADOS':

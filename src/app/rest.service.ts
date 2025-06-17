@@ -126,6 +126,10 @@ export class RESTService {
     return this.http.post(environment.url + 'api/v2/usuarios', usuario);
   }
 
+  updateUsuarioV2(usuario: any): any {
+    return this.http.put(environment.url + 'api/v2/usuarios/' + usuario.id, usuario);
+  }
+
   postActualizarCarritoV2(usuarioId: any, prendaId: any, cantidad: number): any {
     return this.http.post(environment.url + 'api/v2/carritos/' + usuarioId + '/anadir-prenda/' + prendaId + '?cantidad=' + cantidad, null);
   }

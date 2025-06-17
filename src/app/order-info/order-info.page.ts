@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {RESTService} from '../rest.service';
+import { Component, OnInit } from '@angular/core';
+import { RESTService } from '../rest.service';
 
 interface Prenda {
   id: number;
@@ -12,16 +12,24 @@ interface Prenda {
   cantidad: number;
 }
 
+interface Comentario {
+  id: number;
+  idChofer: number;
+  idCarrito: number;
+  comentario: string | null;
+  queja: string | null;
+  calificacion: number;
+  fecha: string;
+}
+
 @Component({
   selector: 'app-order-info',
   templateUrl: './order-info.page.html',
   styleUrls: ['./order-info.page.scss'],
 })
 export class OrderInfoPage implements OnInit {
-
-
-  prendas: Prenda[] = []; // Array to store the list of "Prendas"
-  groupedPrendas: { [servicioPadre: string]: { [servicio: string]: Prenda[] } } = {}; // Grouped by servicioPadre and servicio
+  prendas: Prenda[] = [];
+  groupedPrendas: { [servicioPadre: string]: { [servicio: string]: Prenda[] } } = {};
   resumen: any = [];
   recogerFecha = '';
   entregarFecha = '';
@@ -30,18 +38,16 @@ export class OrderInfoPage implements OnInit {
   direccion: any = {};
   elementType = 'url';
   value = 'Techiediaries';
-  valorEstrellas: any;
-  hayComentario: boolean;
-  hayQueja: boolean;
-  queja: any;
-  comentario: any;
-  comentarioExistente: boolean = false;
+  valorEstrellas: number = 5;
+  hayComentario: boolean = false;
+  hayQueja: boolean = false;
+  queja: string = '';
+  comentario: string = '';
+  comentarioExistente: Comentario | null = null; // Cambiamos a null y tipo Comentario
 
-  constructor(private rest: RESTService) {
-  }
+  constructor(private rest: RESTService) {}
 
   ngOnInit() {
-
     this.rest.getCarritoPorIdV2(localStorage.getItem('pedidoSeleccionado')).subscribe(data => {
       console.log(data);
       this.resumen = data;
@@ -52,20 +58,21 @@ export class OrderInfoPage implements OnInit {
       this.direccion = data.direccion;
       this.groupPrendasByService();
 
-      console.log(data);
-      this.rest.getComentarioDeCarrito(data.id)
-        .subscribe(data => {
-          if (data !== null && data.id !== null) {
-            this.comentarioExistente = true;
-            this.comentario = data.comentario;
-            this.queja = data.queja;
+      // Obtenemos el comentario existente
+      this.rest.getComentarioDeCarrito(data.id).subscribe(comentarioData => {
+        if (comentarioData) {
+          this.comentarioExistente = comentarioData;
+          // Si existe comentario, establecemos los valores iniciales
+          if (this.comentarioExistente) {
+            this.valorEstrellas = this.comentarioExistente.calificacion;
+            this.comentario = this.comentarioExistente.comentario || '';
+            this.queja = this.comentarioExistente.queja || '';
           }
-        });
+        }
+      });
     });
-    this.valorEstrellas = 5;
   }
 
-  // Method to group prendas by servicioPadre and servicio
   groupPrendasByService() {
     this.groupedPrendas = this.prendas.reduce(
       (acc: { [servicio: string]: { [nombreCategoria: string]: Prenda[] } }, prenda: Prenda) => {
@@ -80,11 +87,9 @@ export class OrderInfoPage implements OnInit {
       },
       {}
     );
-    console.log(this.groupedPrendas); // Salida para depuración
+    console.log(this.groupedPrendas);
   }
 
-
-  // Método para obtener la clase CSS basada en el nombre del servicio
   getServiceClass(servicio: string): string {
     switch (servicio) {
       case 'Tintoreria':
@@ -98,34 +103,60 @@ export class OrderInfoPage implements OnInit {
       case 'Teñidos':
         return 'teñidos';
       default:
-        return ''; // Devuelve una clase vacía si no coincide
+        return '';
     }
   }
 
-
   calificar(number: number) {
-    this.valorEstrellas = number;
+    // Solo permite calificar si no hay comentario existente
+    if (!this.comentarioExistente) {
+      this.valorEstrellas = number;
+    }
   }
 
   agregarComentario() {
-    this.hayComentario = !this.hayComentario;
+    // Solo permite agregar comentario si no hay comentario existente
+    if (!this.comentarioExistente) {
+      this.hayComentario = !this.hayComentario;
+      // Si se oculta el campo, limpiamos el comentario
+      if (!this.hayComentario) {
+        this.comentario = '';
+      }
+    }
   }
 
   agregarQueja() {
-    this.hayQueja = !this.hayQueja;
+    // Solo permite agregar queja si no hay comentario existente
+    if (!this.comentarioExistente) {
+      this.hayQueja = !this.hayQueja;
+      // Si se oculta el campo, limpiamos la queja
+      if (!this.hayQueja) {
+        this.queja = '';
+      }
+    }
   }
 
   enviarCalificacion() {
-    const current = new Date();
-    this.rest.postComentarioChofer({
-      idChofer: 1,
-      idCarrito: this.resumen.id,
-      comentario: this.comentario,
-      calificacion: this.valorEstrellas,
-      queja: this.queja,
-      fecha: current.getTime()
-    }).subscribe(data => {
-      console.log(data);
-    });
+    // Solo permite enviar si no hay comentario existente
+    if (!this.comentarioExistente) {
+      const current = new Date();
+      this.rest.postComentarioChofer({
+        idChofer: this.resumen.idRepartidor || 1, // Usamos el id del repartidor del resumen
+        idCarrito: this.resumen.id,
+        comentario: this.comentario || null,
+        calificacion: this.valorEstrellas,
+        queja: this.queja || null,
+        fecha: current.toISOString()
+      }).subscribe(data => {
+        console.log('Comentario enviado:', data);
+        // Actualizamos el comentario existente con la respuesta
+        this.comentarioExistente = data;
+        // Mostramos mensaje de éxito
+        // Puedes implementar aquí tu sistema de notificaciones
+      }, error => {
+        console.error('Error al enviar comentario:', error);
+        // Mostrar mensaje de error
+      });
+    }
   }
 }
