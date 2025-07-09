@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <div class="title_inner d-flex">
+        Nueva dirección
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg_color" fullscreen>
+  <ion-list>
+    <div>
+      <ion-item>
+        <ion-label position="floating">Dirección completa</ion-label>
+        <ion-input type="text" [(ngModel)]="nuevaDireccion.direccion"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Interior (Opcional)</ion-label>
+        <ion-input type="text" [(ngModel)]="nuevaDireccion.interior"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Nombre y apellido</ion-label>
+        <ion-input type="text" [(ngModel)]="nuevaDireccion.nombre"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Código Postal</ion-label>
+        <ion-input type="number" [(ngModel)]="nuevaDireccion.cp"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Teléfono de contacto</ion-label>
+        <ion-input type="tel" [(ngModel)]="nuevaDireccion.tel"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Indicación adicional (opcional)</ion-label>
+        <ion-input [(ngModel)]="nuevaDireccion.indicacion"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Alias (Ej: Casa, Oficina, etc)</ion-label>
+        <ion-input type="text" [(ngModel)]="nuevaDireccion.alias"></ion-input>
+      </ion-item>
+
+      <!-- Mensaje de error -->
+      <ion-text *ngIf="errorMessage" color="danger" style="margin: 16px; display: block;">
+        {{ errorMessage }}
+      </ion-text>
+
+      <ion-button style="margin-top: 16px; margin-bottom: 16px" size="large" shape="block" class="btn" (click)="actualizarDireccion()">
+        Actualizar dirección
+      </ion-button>
+      <ion-item>
+        <ion-button color="light" (click)="irAZonaDeCobertura()">
+          <ion-icon name="map-outline" style="margin-right: 6px"></ion-icon>
+          Ver Zona de Cobertura
+        </ion-button>
+      </ion-item>
+    </div>
+  </ion-list>
+  <div style="visibility: hidden" #map id="map"></div>
+</ion-content>
