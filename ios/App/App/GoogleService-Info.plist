@@ -6,9 +6,31 @@
 	<string>726792798295-55gl8j4qa4ur80d9acrvkjqrdqrkqsa4.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.726792798295-55gl8j4qa4ur80d9acrvkjqrdqrkqsa4</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>726792798295-3r4n9lc462ruarjjmshgh1p87d4cvlnf.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB-8Lq3H4D0fCiC6WUVJTVtrYylJlquc9M</string>
+	<key>GCM_SENDER_ID</key>
+	<string>726792798295</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.bucapps.sango</string>
+	<key>PROJECT_ID</key>
+	<string>sango-tintorerias</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sango-tintorerias.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:726792798295:ios:909401a8012d46c03e2312</string>
 </dict>
 </plist>
