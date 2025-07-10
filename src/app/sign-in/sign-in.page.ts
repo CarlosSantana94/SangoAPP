@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {AlertController, LoadingController, NavController, Platform, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
-import '@codetrix-studio/capacitor-google-auth';
 import {RESTService} from '../rest.service';
 import {environment} from '../../environments/environment';
-import {GoogleAuth} from '@codetrix-studio/capacitor-google-auth';
 import {SignInWithApple, SignInWithAppleOptions} from "@capacitor-community/apple-sign-in";
 import {Device} from '@capacitor/device';
 import {UsuarioV2} from "../models/usuario-v2";
 import {FacebookLogin} from "@capacitor-community/facebook-login";
+import {SocialLogin} from "@capgo/capacitor-social-login";
 
 interface FacebookProfile {
   id: string;
@@ -49,7 +48,11 @@ export class SignInPage implements OnInit {
 
   async ngOnInit() {
     await this.platform.ready();
-    GoogleAuth.initialize();
+    await SocialLogin.initialize({
+      google: {
+        webClientId:'726792798295-uo0npr3s50esgkst21chgq1pdo9fhi89.apps.googleusercontent.com',
+      },
+    });
     await this.checkPlatform();
     this.serverUrl = environment.url;
 
@@ -95,9 +98,20 @@ export class SignInPage implements OnInit {
       if (!this.servidor) {
         throw new Error('Servidor no disponible');
       } else {
-        const googleUser = await GoogleAuth.signIn();
 
-        let userV2 = new UsuarioV2(
+
+
+
+        const googleUser =  await SocialLogin.login({
+          provider: 'google',
+          options: {
+            scopes: ['email', 'profile'],
+          },
+        });
+
+        console.log('Google user: ', googleUser);
+
+      /*  let userV2 = new UsuarioV2(
           googleUser.id,
           googleUser.email,
           false,
@@ -123,7 +137,7 @@ export class SignInPage implements OnInit {
           }
         );
 
-
+*/
       }
 
     } catch (error) {
