@@ -50,7 +50,7 @@ export class SignInPage implements OnInit {
     await this.platform.ready();
     await SocialLogin.initialize({
       google: {
-        webClientId:'726792798295-uo0npr3s50esgkst21chgq1pdo9fhi89.apps.googleusercontent.com',
+        webClientId:'726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com',
       },
     });
     await this.checkPlatform();

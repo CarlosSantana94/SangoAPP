@@ -1,31 +1,27 @@
 package com.tintorerias.sango;
 
-import android.os.Bundle;
-
-import com.getcapacitor.community.facebooklogin.FacebookLogin;
-import com.getcapacitor.BridgeActivity;
-
 import ee.forgr.capacitor.social.login.GoogleProvider;
 import ee.forgr.capacitor.social.login.SocialLoginPlugin;
+import ee.forgr.capacitor.social.login.ModifiedMainActivityForSocialLoginPlugin;
 import com.getcapacitor.PluginHandle;
 import com.getcapacitor.Plugin;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
+import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.community.facebooklogin.FacebookLogin;
 
-public class MainActivity extends BridgeActivity {
+public class MainActivity extends BridgeActivity implements ModifiedMainActivityForSocialLoginPlugin {
 
   public void onCreate(Bundle savedInstanceState){
     super.onCreate(savedInstanceState);
-
-
-    // Registers the Facebook plugin
     registerPlugin(FacebookLogin.class);
+    registerPlugin(SocialLoginPlugin.class);
   }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-
     if (requestCode >= GoogleProvider.REQUEST_AUTHORIZE_GOOGLE_MIN && requestCode < GoogleProvider.REQUEST_AUTHORIZE_GOOGLE_MAX) {
       PluginHandle pluginHandle = getBridge().getPlugin("SocialLogin");
       if (pluginHandle == null) {
@@ -41,5 +37,7 @@ public class MainActivity extends BridgeActivity {
     }
   }
 
+  @Override
   public void IHaveModifiedTheMainActivityForTheUseWithSocialLoginPlugin() {}
+
 }
