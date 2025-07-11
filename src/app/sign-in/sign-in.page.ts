@@ -20,6 +20,32 @@ interface FacebookProfile {
   };
 }
 
+// Interfaces for the Google user response
+interface GoogleAccessToken {
+  token: string;
+}
+
+interface GoogleProfile {
+  id: string;
+  name: string;
+  email: string;
+  familyName: string;
+  givenName: string;
+  imageUrl: string;
+}
+
+interface GoogleLoginResult {
+  accessToken: GoogleAccessToken;
+  profile: GoogleProfile;
+  idToken: string;
+  responseType: string;
+}
+
+interface SocialLoginResponse {
+  provider: string;
+  result: GoogleLoginResult;
+}
+
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.page.html',
@@ -51,6 +77,7 @@ export class SignInPage implements OnInit {
     await SocialLogin.initialize({
       google: {
         webClientId:'726792798295-vbgcc63j11lu3k81fc588ft4duguat34.apps.googleusercontent.com',
+        iOSClientId:'726792798295-q9gs9rg4reuled80kmtcdc6v09ao92f8.apps.googleusercontent.com'
       },
     });
     await this.checkPlatform();
@@ -98,35 +125,45 @@ export class SignInPage implements OnInit {
       if (!this.servidor) {
         throw new Error('Servidor no disponible');
       } else {
-
-
-
-
         const googleUser =  await SocialLogin.login({
           provider: 'google',
           options: {
             scopes: ['email', 'profile'],
           },
-        });
+        }) as SocialLoginResponse;
 
-        console.log('Google user: ', googleUser);
+        console.log('Google user name: ', googleUser.result.profile.name);
+        console.log('Google user email: ', googleUser.result.profile.email);
+        console.log('Access token: ', googleUser.result.accessToken.token);
 
-      /*  let userV2 = new UsuarioV2(
-          googleUser.id,
-          googleUser.email,
+// Example of creating your user object
+        const userData = {
+          id: googleUser.result.profile.id,
+          email: googleUser.result.profile.email,
+          isVerified: true, // Google emails are typically verified
+          imageUrl: googleUser.result.profile.imageUrl,
+          fullName: googleUser.result.profile.name,
+          authMethod: "GOOGLE LOGIN",
+          accessToken: googleUser.result.accessToken.token,
+          idToken: googleUser.result.idToken
+        };
+
+       let userV2 = new UsuarioV2(
+         googleUser.result.profile.id,
+         googleUser.result.profile.email,
           false,
-          googleUser.imageUrl,
-          googleUser.givenName + " " + googleUser.familyName,
+         googleUser.result.profile.imageUrl,
+         googleUser.result.profile.name,
           "GOOGLE LOGIN",
           null,
-          googleUser.authentication.accessToken,
+         googleUser.result.idToken,
           null
         );
-        localStorage.setItem('uid', googleUser.id);
+        localStorage.setItem('uid', googleUser.result.profile.id);
         this.rest.postUsuarioV2(userV2).subscribe(
           response => {
 
-              this.setUserInfo(googleUser.email, `${googleUser.givenName} ${googleUser.familyName}`, googleUser.imageUrl, googleUser.id);
+              this.setUserInfo(googleUser.result.profile.email, `${ googleUser.result.profile.name} `, googleUser.result.profile.imageUrl, googleUser.result.profile.id);
               this.presentToast('Inicio de sesión exitoso, Bienvenido');
               this.navCtrl.navigateRoot(['./tabs']);
 
@@ -137,7 +174,7 @@ export class SignInPage implements OnInit {
           }
         );
 
-*/
+
       }
 
     } catch (error) {
