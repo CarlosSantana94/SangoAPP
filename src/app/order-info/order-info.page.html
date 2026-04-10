@@ -1,180 +1,223 @@
-<ion-header>
-    <ion-toolbar>
-        <div class="toolbar-inner d-flex">
-            <ion-buttons slot="start">
-                <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
-            </ion-buttons>
-            <ion-title>
-                <div class="title_inner ion-text-center">
-                    <h2>Orden #{{resumen.id}}</h2>
-                    <p>Realizada el {{fechaCreado | date:'dd/MMM/yyyy'}}</p>
-
-                </div>
-            </ion-title>
-        </div>
-    </ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="toolbar-title">Orden #{{ resumen.id }}</span>
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
+<ion-content>
 
-<ion-content class="bg_color" fullscreen>
-  <ion-card class="rating-card" *ngIf="resumen.estadoCarrito==='FINALIZADO'">
-    <ion-card-header>
-      <ion-card-title class="rating-title">
-        {{ comentarioExistente ? 'Tu calificación anterior' : 'Califica tu experiencia' }}
-      </ion-card-title>
-    </ion-card-header>
+  <!-- ─── Status Card ─── -->
+  <div class="status-card" [ngClass]="'status-' + getStatusKey(resumen.estadoCarrito)"
+       *ngIf="resumen.id">
+    <div class="status-left">
+      <div class="status-icon-badge">
+        <ion-icon [name]="getStatusIcon(resumen.estadoCarrito)"></ion-icon>
+      </div>
+      <div class="status-texts">
+        <span class="status-eyebrow">Estado del pedido</span>
+        <span class="status-label">{{ getStatusLabel(resumen.estadoCarrito) }}</span>
+      </div>
+    </div>
+    <div class="order-meta">
+      <span class="order-meta-label">Realizada</span>
+      <span class="order-meta-val">{{ fechaCreado | date:'dd MMM' : 'UTC' }}</span>
+    </div>
+  </div>
 
-    <ion-card-content>
-      <!-- Sección del repartidor -->
-      <div class="delivery-person">
-        <img class="profile-img" src="assets/imgs/profile.png" alt="Repartidor">
-        <div class="delivery-info">
-          <h3 class="section-title">Te atendió</h3>
-          <h2 class="delivery-name">{{resumen.nombreRepartidor || 'Felipe'}}</h2>
+  <!-- ─── Rating Card (FINALIZADO only) ─── -->
+  <div class="rating-card" *ngIf="resumen.estadoCarrito === 'FINALIZADO'">
+
+    <!-- Delivery person header -->
+    <div class="rating-header">
+      <div class="rating-avatar-wrap">
+        <img class="rating-avatar" src="assets/imgs/profile.png" alt="Repartidor">
+        <div class="rating-avatar-badge">
+          <ion-icon name="star"></ion-icon>
         </div>
       </div>
+      <div class="rating-person-info">
+        <span class="rating-eyebrow">Te atendió</span>
+        <span class="rating-person-name">{{ resumen.nombreRepartidor || 'Felipe' }}</span>
+      </div>
+      <div class="rating-done-tag" *ngIf="comentarioExistente">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        <span>Calificado</span>
+      </div>
+    </div>
 
-      <!-- Sección de calificación con estrellas -->
-      <div class="rating-section">
-        <h3 class="section-title">Calificación del servicio</h3>
-        <div class="stars-container">
-          <ion-icon *ngFor="let star of [1,2,3,4,5]; let i = index"
-                    size="large"
-                    [name]="(comentarioExistente ? valorEstrellas : valorEstrellas) > i ? 'star' : 'star-outline'"
-                    [style.color]="(comentarioExistente ? valorEstrellas : valorEstrellas) > i ? '#FFD700' : '#D3D3D3'"
-                    (click)="!comentarioExistente && calificar(i+1)">
-          </ion-icon>
+    <!-- Stars -->
+    <div class="stars-section">
+      <span class="stars-eyebrow">{{ comentarioExistente ? 'Tu calificación' : 'Califica tu experiencia' }}</span>
+      <div class="stars-row">
+        <ion-icon
+          *ngFor="let star of [1,2,3,4,5]"
+          [name]="valorEstrellas >= star ? 'star' : 'star-outline'"
+          class="star-icon"
+          [class.star-filled]="valorEstrellas >= star"
+          [class.star-readonly]="!!comentarioExistente"
+          (click)="!comentarioExistente && calificar(star)">
+        </ion-icon>
+      </div>
+      <span class="stars-count">{{ valorEstrellas }} de 5 estrellas</span>
+    </div>
+
+    <!-- Read-only feedback (when already rated) -->
+    <ng-container *ngIf="comentarioExistente">
+      <div class="feedback-read-item" *ngIf="comentarioExistente.comentario">
+        <div class="feedback-read-header">
+          <ion-icon name="chatbubble-outline"></ion-icon>
+          <span>Comentario</span>
         </div>
-        <p class="rating-value">{{ (comentarioExistente ? valorEstrellas : valorEstrellas) }} de 5 estrellas</p>
+        <p class="feedback-read-body">{{ comentarioExistente.comentario }}</p>
+      </div>
+      <div class="feedback-read-item complaint-item" *ngIf="comentarioExistente.queja">
+        <div class="feedback-read-header">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>Problema reportado</span>
+        </div>
+        <p class="feedback-read-body">{{ comentarioExistente.queja }}</p>
+      </div>
+    </ng-container>
+
+    <!-- Editable feedback (not yet rated) -->
+    <ng-container *ngIf="!comentarioExistente">
+      <button class="feedback-toggle" (click)="agregarComentario()">
+        <span class="feedback-toggle-icon">
+          <ion-icon [name]="hayComentario ? 'chatbubble' : 'chatbubble-outline'"></ion-icon>
+        </span>
+        {{ hayComentario ? 'Ocultar comentario' : 'Agregar comentario' }}
+      </button>
+      <div class="feedback-input-wrap" *ngIf="hayComentario">
+        <textarea class="feedback-textarea" [(ngModel)]="comentario"
+                  placeholder="¿Qué te gustó del servicio?" rows="3"></textarea>
       </div>
 
-      <!-- Sección de comentarios -->
-      <div class="feedback-section">
-        <!-- Comentario -->
-        <div class="feedback-item">
-          <h4 class="feedback-label">
-            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-            Comentario
-          </h4>
-          <div class="feedback-content" *ngIf="comentarioExistente?.comentario; else noComment">
-            {{ comentarioExistente.comentario }}
-          </div>
-          <ng-template #noComment>
-            <div class="feedback-empty">No se hicieron comentarios</div>
-          </ng-template>
-        </div>
-
-        <!-- Queja -->
-        <div class="feedback-item">
-          <h4 class="feedback-label">
-            <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-            Queja o problema
-          </h4>
-          <div class="feedback-content" *ngIf="comentarioExistente?.queja; else noComplaint">
-            {{ comentarioExistente.queja }}
-          </div>
-          <ng-template #noComplaint>
-            <div class="feedback-empty">No se reportaron problemas</div>
-          </ng-template>
-        </div>
-
-        <!-- Sección editable solo si no existe comentario -->
-        <div *ngIf="!comentarioExistente">
-          <ion-button expand="block" fill="outline" color="primary" (click)="agregarComentario()">
-            <ion-icon name="chatbubble-outline" slot="start"></ion-icon>
-            Agregar Comentario
-          </ion-button>
-
-          <ion-item *ngIf="hayComentario" class="feedback-input">
-            <ion-textarea [(ngModel)]="comentario"
-                          placeholder="¿Qué te gustó del servicio?"
-                          rows="3"></ion-textarea>
-          </ion-item>
-
-          <ion-button expand="block" fill="outline" color="danger" (click)="agregarQueja()">
-            <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-            Reportar un problema
-          </ion-button>
-
-          <ion-item *ngIf="hayQueja" class="feedback-input">
-            <ion-textarea [(ngModel)]="queja"
-                          placeholder="Describe el problema que tuviste"
-                          rows="3"></ion-textarea>
-          </ion-item>
-
-          <!-- Botón de enviar solo en modo edición -->
-          <ion-button expand="block" color="success" (click)="enviarCalificacion()" class="submit-btn">
-            <ion-icon name="send-outline" slot="start"></ion-icon>
-            Enviar calificación
-          </ion-button>
-        </div>
+      <button class="feedback-toggle complaint" (click)="agregarQueja()">
+        <span class="feedback-toggle-icon complaint">
+          <ion-icon [name]="hayQueja ? 'alert-circle' : 'alert-circle-outline'"></ion-icon>
+        </span>
+        {{ hayQueja ? 'Ocultar problema' : 'Reportar un problema' }}
+      </button>
+      <div class="feedback-input-wrap" *ngIf="hayQueja">
+        <textarea class="feedback-textarea complaint-area" [(ngModel)]="queja"
+                  placeholder="Describe el problema que tuviste" rows="3"></textarea>
       </div>
-    </ion-card-content>
-  </ion-card>
 
-  <ion-card class="info">
-    <ion-row>
-      <ion-col size="6">
-        <h2>Recoleccion</h2>
-        <h3>{{recogerFecha | date: 'dd/MMM/yyyy'}} </h3>
+      <button class="rating-submit" (click)="enviarCalificacion()">
+        <ion-icon name="send-outline"></ion-icon>
+        Enviar calificación
+      </button>
+    </ng-container>
 
-      </ion-col>
+  </div>
 
-      <ion-col size="6">
-        <h2>Entrega</h2>
-        <h3>{{entregarFecha | date: 'dd/MMM/yyyy'}}</h3>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="12">
-        <h3><ion-icon name="home-outline"></ion-icon>{{direccion.alias}}</h3>
-        <ion-text>{{direccion.direccion}}</ion-text>
-        <ion-text> CP: {{direccion.cp}}</ion-text>
-        <ion-row>
-          <ion-col><ion-text>
-            <ion-icon name="person-circle-outline" style="margin-right: 2px"></ion-icon>
-            {{direccion.nombre}}</ion-text></ion-col>
-          <ion-col><ion-text>
-            <ion-icon name="call-outline" style="margin-right: 2px"></ion-icon>
-            {{direccion.tel}}</ion-text></ion-col>
-        </ion-row>
+  <!-- ─── Dates Card ─── -->
+  <div class="dates-card">
+    <div class="date-col">
+      <div class="date-icon-wrap pickup">
+        <ion-icon name="arrow-up-circle-outline"></ion-icon>
+      </div>
+      <span class="date-label">Recolección</span>
+      <span class="date-value">{{ recogerFecha | date: 'dd MMM' : 'UTC' }}</span>
+      <span class="date-year">{{ recogerFecha | date: 'yyyy' : 'UTC' }}</span>
+    </div>
+    <div class="date-divider">
+      <div class="date-dash"></div>
+      <ion-icon name="shirt-outline" class="date-center-icon"></ion-icon>
+      <div class="date-dash"></div>
+    </div>
+    <div class="date-col">
+      <div class="date-icon-wrap delivery">
+        <ion-icon name="arrow-down-circle-outline"></ion-icon>
+      </div>
+      <span class="date-label">Entrega</span>
+      <span class="date-value">{{ entregarFecha | date: 'dd MMM' : 'UTC' }}</span>
+      <span class="date-year">{{ entregarFecha | date: 'yyyy' : 'UTC' }}</span>
+    </div>
+  </div>
 
-      </ion-col>
-    </ion-row>
-  </ion-card>
+  <!-- ─── Address Card ─── -->
+  <div class="info-card">
+    <div class="info-card-header">
+      <div class="info-icon-wrap">
+        <ion-icon name="location-outline"></ion-icon>
+      </div>
+      <div class="info-card-labels">
+        <span class="info-card-eyebrow">Dirección de entrega</span>
+        <span class="info-card-title">{{ direccion.alias }}</span>
+      </div>
+    </div>
+    <div class="addr-detail-row">
+      <ion-icon name="map-outline" class="addr-detail-icon"></ion-icon>
+      <span class="addr-detail-text">{{ direccion.direccion }}</span>
+    </div>
+    <div class="addr-chips-row">
+      <div class="addr-chip">
+        <ion-icon name="mail-outline"></ion-icon>
+        <span>CP {{ direccion.cp }}</span>
+      </div>
+      <div class="addr-chip">
+        <ion-icon name="person-outline"></ion-icon>
+        <span>{{ direccion.nombre }}</span>
+      </div>
+      <div class="addr-chip">
+        <ion-icon name="call-outline"></ion-icon>
+        <span>{{ direccion.tel }}</span>
+      </div>
+    </div>
+  </div>
 
-  <ion-grid>
-    <ion-row *ngFor="let servicio of groupedPrendas | keyvalue">
-      <ion-col size="12">
-        <ion-card class="item_info">
-          <h2 [ngClass]="getServiceClass(servicio.key)" style="font-weight: bold; margin-bottom: 10px;">
-            {{ servicio.key }} <!-- Nombre del servicio -->
-          </h2>
-          <div *ngFor="let servicioPadre of servicio.value | keyvalue">
-            <p style="font-weight: bold; padding-left: 10px;">
-              {{ servicioPadre.key }} <!-- Nombre del servicioPadre -->
-            </p>
-            <div class="item_list" style="padding-left: 20px;">
-              <div class="item" *ngFor="let prenda of servicioPadre.value">
-                <h3 class="d-flex" style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="flex-grow: 1;">
-                    <span class="quantity">{{ prenda.cantidad }}</span>
-                    <span class="multiply">x</span>
-                    <span class="item_name">{{ prenda.nombrePrenda }}
-                      <span style="color: #6e7b82; margin-right: 2px; font-size: .7em"
-                            class="item_name">(${{ prenda.precioUnitario }})</span>
-                  </span>
-                  </div>
-                  <span style="color: #5b80d9; font-weight: bold;"
-                        class="amount ion-text-end">${{ prenda.subtotal | number : '1.2-2' }}</span>
-                </h3>
-              </div>
-            </div>
+  <!-- ─── Items grouped by service ─── -->
+  <div class="service-section"
+       *ngFor="let servicio of groupedPrendas | keyvalue; let si = index"
+       [style.animation-delay]="(si * 0.07 + 0.24) + 's'">
+    <div class="section-header">
+      <div class="service-chip" [ngClass]="getServiceClass(servicio.key)">
+        <ion-icon name="shirt-outline" class="chip-icon"></ion-icon>
+        <span>{{ servicio.key }}</span>
+      </div>
+    </div>
+    <div class="items-card">
+      <div class="category-block"
+           *ngFor="let categoria of servicio.value | keyvalue; let lastCat = last">
+        <span class="category-label">{{ categoria.key }}</span>
+        <div class="item-row" *ngFor="let prenda of categoria.value">
+          <div class="item-qty-badge">{{ prenda.cantidad }}</div>
+          <div class="item-info">
+            <span class="item-name">{{ prenda.nombrePrenda }}</span>
+            <span class="item-unit-price">${{ prenda.precioUnitario }} c/u</span>
           </div>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          <span class="item-subtotal">${{ prenda.subtotal | number: '1.2-2' }}</span>
+        </div>
+        <div class="cat-divider" *ngIf="!lastCat"></div>
+      </div>
+    </div>
+  </div>
 
-
+  <div class="bottom-spacer"></div>
 </ion-content>
+
+<!-- ─── Footer ─── -->
+<ion-footer class="ion-no-border" *ngIf="resumen.total">
+  <div class="footer-bar">
+    <div class="footer-totals">
+      <div class="footer-row-minor">
+        <span class="footer-label-minor">Envío</span>
+        <span class="footer-val-free">Gratis</span>
+      </div>
+      <div class="footer-row-main">
+        <span class="footer-label-main">Total</span>
+        <span class="footer-total-amount">${{ resumen.total | number: '1.2-2' }}</span>
+      </div>
+    </div>
+    <div class="status-footer-pill" [ngClass]="'status-' + getStatusKey(resumen.estadoCarrito)">
+      <ion-icon [name]="getStatusIcon(resumen.estadoCarrito)"></ion-icon>
+      <span>{{ getStatusLabel(resumen.estadoCarrito) }}</span>
+    </div>
+  </div>
+</ion-footer>

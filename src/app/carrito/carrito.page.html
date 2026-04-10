@@ -1,97 +1,109 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>Mi Carrito</ion-title>
+    <ion-title>
+      <span class="toolbar-title">Mi Carrito</span>
+    </ion-title>
+    <ion-buttons slot="end">
+      <div class="total-chip" *ngIf="!cargando && carrito.total > 0">${{ carrito.total }}</div>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg_color" fullscreen>
-  <ion-card class="item_info">
-    <h2 style="font-weight: bold; margin-bottom: 16px;">
-      {{ totalPrendas }} Prendas
-    </h2>
+<ion-content>
 
+  <!-- Loading skeleton -->
+  <ng-container *ngIf="cargando">
+    <div class="count-header">
+      <div class="skeleton-line" style="width:160px; height:14px;"></div>
+    </div>
+    <div class="skeleton-card" *ngFor="let i of [1,2]">
+      <div class="skeleton-service-head"></div>
+      <div class="skeleton-item" *ngFor="let j of [1,2]">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line" style="width:70%; height:12px;"></div>
+          <div class="skeleton-line" style="width:40%; height:10px; margin-top:5px;"></div>
+          <div class="skeleton-line" style="width:30%; height:14px; margin-top:5px;"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 
-    <ion-accordion-group>
-      <!-- Agrupado por Servicio -->
-      <ion-accordion *ngFor="let servicio of groupedPrendas | keyvalue">
-        <!-- Encabezado del Servicio -->
-        <ion-item slot="header" color="light">
-          <h2 class="service-title" [ngClass]="getServiceClass(servicio.key)">
-            {{ servicio.key }} ({{ servicio.value.cantidadTotal }} prendas)
-          </h2>
-        </ion-item>
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="!cargando && totalPrendas === 0">
+    <div class="empty-icon">
+      <ion-icon name="cart-outline"></ion-icon>
+    </div>
+    <p>Tu carrito está vacío</p>
+    <span>Agrega prendas desde los servicios disponibles</span>
+  </div>
 
-        <!-- Contenido del Servicio -->
-        <div class="item_list" slot="content">
-          <!-- Agrupado por Categoría dentro del Servicio -->
-          <div *ngFor="let categoria of servicio.value.categorias | keyvalue" class="categoria-group">
-            <h3 class="service-padre-title">
-              {{ categoria.key }}
-            </h3>
+  <!-- Cart content -->
+  <ng-container *ngIf="!cargando && totalPrendas > 0">
 
-            <!-- Listado de Prendas dentro de la Categoría -->
-            <div class="item" *ngFor="let prenda of categoria.value">
-              <ion-grid class="item-grid">
-                <ion-row class="align-items-center">
-                  <ion-col size="2">
-                    <!-- Placeholder para la imagen (agregar lógica de imagen si está disponible) -->
-                    <img src="{{prenda.imgPrenda}}" alt="{{ prenda.nombrePrenda }}" class="item-image" />
-                  </ion-col>
-                  <ion-col size="7">
-                    <h3 class="item-details">
-                      <span class="quantity">{{ prenda.cantidad }}</span> x {{ prenda.nombrePrenda }}
-                      <span class="price">(${{ prenda.precioUnitario }})</span>
-                    </h3>
-                  </ion-col>
-                  <ion-col size="3" class="ion-text-end">
-                    <span class="amount">${{ prenda.subtotal | number: '1.2-2' }}</span>
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col>
-                    <ion-button color="danger" size="small" (click)="removerPrenda(prenda)">
-                      <ion-icon name="remove-outline" *ngIf="prenda.cantidad > 1"></ion-icon>
-                      <ion-icon name="trash-outline" *ngIf="prenda.cantidad === 1"></ion-icon>
-                    </ion-button>
-                  </ion-col>
-                  <ion-col>
-                    <ion-button color="primary" size="small" (click)="agregarPrenda(prenda)">
-                      <ion-icon name="add-outline"></ion-icon>
-                    </ion-button>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-            </div>
+    <div class="count-header">
+      <span class="count-label">{{ totalPrendas }} prenda{{ totalPrendas !== 1 ? 's' : '' }} seleccionada{{ totalPrendas !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <!-- Service sections -->
+    <div
+      class="service-section"
+      *ngFor="let servicio of groupedPrendas | keyvalue; let si = index"
+      [style.animation-delay]="(si * 0.08) + 's'">
+
+      <!-- Section header -->
+      <div class="section-header">
+        <div class="service-chip" [ngClass]="getServiceClass(servicio.key)">
+          <ion-icon name="shirt-outline" class="chip-icon"></ion-icon>
+          <span>{{ servicio.key }}</span>
+        </div>
+        <span class="section-count">{{ servicio.value.cantidadTotal }} prenda{{ servicio.value.cantidadTotal !== 1 ? 's' : '' }}</span>
+      </div>
+
+      <!-- Category blocks -->
+      <div class="category-block" *ngFor="let categoria of servicio.value.categorias | keyvalue">
+        <div class="cat-label">{{ categoria.key }}</div>
+
+        <!-- Item rows -->
+        <div class="item-row"
+             *ngFor="let prenda of categoria.value">
+          <img [src]="prenda.imgPrenda" [alt]="prenda.nombrePrenda" class="item-thumb" />
+          <div class="item-body">
+            <span class="item-name">{{ prenda.nombrePrenda }}</span>
+            <span class="item-unit">${{ prenda.precioUnitario }} c/u</span>
+            <span class="item-sub">${{ prenda.subtotal | number:'1.2-2' }}</span>
+          </div>
+          <div class="item-stepper">
+            <button class="step-btn minus" (click)="removerPrenda(prenda)">
+              <ion-icon [name]="prenda.cantidad === 1 ? 'trash-outline' : 'remove-outline'"></ion-icon>
+            </button>
+            <span class="step-num">{{ prenda.cantidad }}</span>
+            <button class="step-btn plus" (click)="agregarPrenda(prenda)">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
           </div>
         </div>
-      </ion-accordion>
-    </ion-accordion-group>
 
+      </div>
+    </div>
 
+  </ng-container>
 
-
-  </ion-card>
+  <div class="bottom-spacer"></div>
 </ion-content>
 
-<ion-footer class="ion-no-border">
-  <ion-card class="payment_info">
-    <h2>Total en carrito: <span class="end">${{ carrito.total }}</span></h2>
-  </ion-card>
-  <ion-footer class="ion-no-border">
-    <ion-button
-      expand="full"
-      color="success"
-      *ngIf="!cargando && carrito.total > 0"
-      (click)="irARecoleccion()"
-    >
-      <ion-icon name="calendar-outline" slot="start"></ion-icon>
-      Programar Recolección
-    </ion-button>
-    <ion-button expand="full" color="medium" disabled *ngIf="cargando">
-      Obteniendo Carrito
-    </ion-button>
-  </ion-footer>
+<ion-footer class="ion-no-border" *ngIf="!cargando && carrito.total > 0">
+  <div class="footer-bar">
+    <div class="footer-summary">
+      <span class="footer-label">Total</span>
+      <span class="footer-total">${{ carrito.total }}</span>
+    </div>
+    <button class="footer-cta" (click)="irARecoleccion()">
+      Recolección
+      <ion-icon name="calendar-outline"></ion-icon>
+    </button>
+  </div>
 </ion-footer>

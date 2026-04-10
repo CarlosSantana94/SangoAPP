@@ -1,24 +1,41 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>Preguntas Frecuentes</ion-title>
+    <ion-title>
+      <span class="toolbar-title">Preguntas Frecuentes</span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list>
-    <ion-item-group *ngFor="let faq of faqs; let i = index">
-      <ion-item button (click)="toggleAnswer(i)">
-        <ion-label>
-          <h2>{{ faq.question }}</h2>
-        </ion-label>
-        <ion-icon [name]="expandedIndex === i ? 'chevron-up-outline' : 'chevron-down-outline'" slot="end"></ion-icon>
-      </ion-item>
-      <ion-item *ngIf="expandedIndex === i">
-        <p class="answer">{{ faq.answer }}</p>
-      </ion-item>
-    </ion-item-group>
-  </ion-list>
+<ion-content>
+
+  <div class="faq-intro">
+    <span class="faq-count">{{ faqs.length }} preguntas</span>
+  </div>
+
+  <div class="faq-list">
+    <div
+      class="faq-item"
+      *ngFor="let faq of faqs; let i = index"
+      [class.expanded]="expandedIndex === i"
+      [style.animation-delay]="(i * 0.04) + 's'"
+      (click)="toggleAnswer(i)">
+
+      <div class="faq-header">
+        <span class="faq-q">{{ faq.question }}</span>
+        <div class="faq-toggle" [class.open]="expandedIndex === i">
+          <ion-icon name="chevron-down-outline"></ion-icon>
+        </div>
+      </div>
+
+      <div class="faq-answer" [class.visible]="expandedIndex === i">
+        <p class="faq-a">{{ faq.answer }}</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>

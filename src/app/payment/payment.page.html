@@ -1,142 +1,227 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>Pago</ion-title>
+    <ion-title>
+      <span class="toolbar-title">Método de Pago</span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="payment-method-container" fullscreen>
-  <ion-grid class="content-grid">
-    <!-- Payment buttons -->
-    <ion-row class="button-row" *ngIf="puedePagarConCC">
-      <ion-col size="12" class="button-col">
-        <ion-button expand="block" class="method-btn efectivo-btn" (click)="seleccionarMetodo('efectivo')">
-          <ion-icon slot="start" name="cash-outline"></ion-icon>
-          Efectivo
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row class="button-row">
-      <ion-col size="12" class="button-col">
-        <ion-button expand="block" class="method-btn tarjeta-btn" (click)="seleccionarMetodo('tarjeta')">
-          <ion-icon slot="start" name="card-outline"></ion-icon>
-          Tarjeta
-        </ion-button>
-      </ion-col>
-    </ion-row>
+<ion-content>
 
-    <!-- Payment options directly below buttons based on the selected method -->
-    <ion-row *ngIf="metodo === 'efectivo'" class="option-row">
-      <ion-col size="12">
-        <ion-text class="custom-title">Selecciona en qué momento deseas pagar en efectivo:</ion-text>
-      </ion-col>
-      <ion-col size="12">
-        <ion-row class="button-row">
-          <ion-col size="12" class="button-col">
-            <ion-button expand="block" class="method-btn recibir-btn" (click)="seleccionarCuandoEfectivo('entregar')">
-              <ion-icon slot="start" name="exit-outline"></ion-icon>
-              Al entregar mis prendas
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row class="button-row">
-          <ion-col size="12" class="button-col">
-            <ion-button expand="block" class="method-btn entregar-btn" (click)="seleccionarCuandoEfectivo('recibir')">
-              <ion-icon slot="start" name="enter-outline"></ion-icon>
-              Al recibir mis prendas
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
+  <div class="section-label">¿Cómo quieres pagar?</div>
 
+  <!-- ─── Method selector cards ─── -->
+  <div class="method-cards">
 
-    <ion-row *ngIf="metodo === 'tarjeta'" class="option-row">
-      <ion-col size="12">
-        <ion-card class="card-input">
-          <ion-card-header>
-            <ion-label>Datos de tarjeta bancaria</ion-label>
-          </ion-card-header>
+    <!-- Cash (only if puedePagarConCC) -->
+    <div class="method-card"
+         *ngIf="puedePagarConCC"
+         [class.selected]="metodo === 'efectivo'"
+         (click)="seleccionarMetodo('efectivo')">
+      <div class="method-icon-wrap" [class.cash-active]="metodo === 'efectivo'">
+        <ion-icon name="cash-outline"></ion-icon>
+      </div>
+      <div class="method-info">
+        <span class="method-name">Efectivo</span>
+        <span class="method-desc">Paga en el momento que prefieras</span>
+      </div>
+      <div class="method-radio" [class.checked]="metodo === 'efectivo'">
+        <div class="radio-dot"></div>
+      </div>
+    </div>
 
-          <ion-card-content>
-            <!-- Cardholder Name -->
-            <ion-item class="input-item">
-              <ion-icon slot="start" name="person-outline"></ion-icon>
-              <ion-label position="floating">Nombre en tarjeta</ion-label>
-              <ion-input type="text" [(ngModel)]="tarjeta.card.name"></ion-input>
-            </ion-item>
+    <!-- Card -->
+    <div class="method-card"
+         [class.selected]="metodo === 'tarjeta'"
+         (click)="seleccionarMetodo('tarjeta')">
+      <div class="method-icon-wrap" [class.card-active]="metodo === 'tarjeta'">
+        <ion-icon name="card-outline"></ion-icon>
+      </div>
+      <div class="method-info">
+        <span class="method-name">Tarjeta</span>
+        <span class="method-desc">Crédito o débito · Visa / Mastercard</span>
+      </div>
+      <div class="method-radio" [class.checked]="metodo === 'tarjeta'">
+        <div class="radio-dot"></div>
+      </div>
+    </div>
 
-            <ion-item class="input-item"  [class.invalid]="!isEmailValid">
-              <ion-icon slot="start" name="person-outline"></ion-icon>
-              <ion-label position="floating">Email</ion-label>
-              <ion-input type="text" [(ngModel)]="email" (ngModelChange)="validateEmail()"></ion-input>
-            </ion-item>
+  </div>
 
-            <!-- Optional: Display an error message when email is invalid -->
-            <ion-text color="danger" *ngIf="!isEmailValid">
-              Ingresa un Email Valido.
-            </ion-text>
+  <!-- ─── Cash timing ─── -->
+  <div class="timing-section" *ngIf="metodo === 'efectivo'">
+    <div class="section-label">¿Cuándo deseas pagar?</div>
 
-            <!-- Card Number -->
-            <ion-item class="input-item">
-              <ion-icon slot="start" name="card-outline"></ion-icon>
-              <ion-label position="floating">Número de tarjeta</ion-label>
-              <ion-input maxlength="16" type="tel" inputmode="numeric" [(ngModel)]="tarjeta.card.number"></ion-input>
-            </ion-item>
+    <div class="timing-cards">
 
-            <!-- Expiration Date (Month and Year) -->
-            <ion-grid class="expiration-grid">
-              <ion-row>
-                <ion-col size="6">
-                  <ion-item class="input-item">
-                    <ion-label position="floating">Mes</ion-label>
-                    <ion-select placeholder="Seleccionar" [(ngModel)]="tarjeta.card.exp_month">
-                      <ion-select-option [value]="mes" *ngFor="let mes of meses">{{ mes }}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ion-col>
-                <ion-col size="6">
-                  <ion-item class="input-item">
-                    <ion-label position="floating">Año</ion-label>
-                    <ion-select placeholder="Seleccionar" [(ngModel)]="tarjeta.card.exp_year">
-                      <ion-select-option [value]="anio" *ngFor="let anio of anios">{{ anio }}</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
-            </ion-grid>
+      <div class="timing-card"
+           [class.selected]="cuandoEfectivo === 'entregar'"
+           (click)="seleccionarCuandoEfectivo('entregar')">
+        <div class="timing-icon-wrap" [class.active]="cuandoEfectivo === 'entregar'">
+          <ion-icon name="exit-outline"></ion-icon>
+        </div>
+        <div class="timing-info">
+          <span class="timing-name">Al entregar mis prendas</span>
+          <span class="timing-desc">Paga cuando te recojamos la ropa</span>
+        </div>
+        <div class="timing-check" [class.visible]="cuandoEfectivo === 'entregar'">
+          <ion-icon name="checkmark-outline"></ion-icon>
+        </div>
+      </div>
 
-            <!-- CVV -->
-            <ion-item class="input-item">
-              <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
-              <ion-label position="floating">Código de seguridad (CVV)</ion-label>
-              <ion-input type="password" maxlength="4" inputmode="numeric" [(ngModel)]="tarjeta.card.cvc"></ion-input>
-            </ion-item>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+      <div class="timing-card"
+           [class.selected]="cuandoEfectivo === 'recibir'"
+           (click)="seleccionarCuandoEfectivo('recibir')">
+        <div class="timing-icon-wrap" [class.active]="cuandoEfectivo === 'recibir'">
+          <ion-icon name="enter-outline"></ion-icon>
+        </div>
+        <div class="timing-info">
+          <span class="timing-name">Al recibir mis prendas</span>
+          <span class="timing-desc">Paga cuando te entreguemos tu ropa</span>
+        </div>
+        <div class="timing-check" [class.visible]="cuandoEfectivo === 'recibir'">
+          <ion-icon name="checkmark-outline"></ion-icon>
+        </div>
+      </div>
 
-    </ion-row>
-  </ion-grid>
+    </div>
+  </div>
+
+  <!-- ─── Card form ─── -->
+  <div class="card-form" *ngIf="metodo === 'tarjeta'">
+
+    <div class="form-header">
+      <div class="form-header-icon">
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+      </div>
+      <div class="form-header-labels">
+        <span class="form-header-title">Datos de tarjeta</span>
+        <span class="form-header-sub">Procesado de forma segura por Conekta</span>
+      </div>
+    </div>
+
+    <!-- Cardholder Name -->
+    <div class="field-row">
+      <div class="field-icon-wrap">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Nombre en la tarjeta</span>
+        <input class="field-input" type="text"
+               [(ngModel)]="tarjeta.card.name"
+               placeholder="Como aparece en la tarjeta" />
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Email -->
+    <div class="field-row" [class.field-error]="!isEmailValid && email !== ''">
+      <div class="field-icon-wrap" [class.error-icon]="!isEmailValid && email !== ''">
+        <ion-icon name="mail-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Correo electrónico <span class="required-star">*</span></span>
+        <input class="field-input" type="email" inputmode="email"
+               [(ngModel)]="email" (ngModelChange)="validateEmail()"
+               placeholder="tu@correo.com" />
+        <span class="error-msg" *ngIf="!isEmailValid && email !== ''">Correo electrónico no válido</span>
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Card Number -->
+    <div class="field-row">
+      <div class="field-icon-wrap">
+        <ion-icon name="card-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Número de tarjeta</span>
+        <input class="field-input" type="tel" inputmode="numeric" maxlength="16"
+               [(ngModel)]="tarjeta.card.number"
+               placeholder="0000 0000 0000 0000" />
+      </div>
+    </div>
+
+    <!-- Expiry + CVV row -->
+    <div class="expiry-cvv-row">
+
+      <div class="expiry-field">
+        <div class="expiry-icon-wrap">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="field-body">
+          <span class="field-label">Mes</span>
+          <select class="field-select" [(ngModel)]="tarjeta.card.exp_month">
+            <option value="" disabled>MM</option>
+            <option [value]="mes" *ngFor="let mes of meses">{{ mes }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="expiry-sep"></div>
+
+      <div class="expiry-field">
+        <div class="field-body">
+          <span class="field-label">Año</span>
+          <select class="field-select" [(ngModel)]="tarjeta.card.exp_year">
+            <option value="" disabled>AAAA</option>
+            <option [value]="anio" *ngFor="let anio of anios">{{ anio }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="expiry-sep"></div>
+
+      <div class="expiry-field">
+        <div class="expiry-icon-wrap">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+        </div>
+        <div class="field-body">
+          <span class="field-label">CVV</span>
+          <input class="field-input" type="password" inputmode="numeric" maxlength="4"
+                 [(ngModel)]="tarjeta.card.cvc" placeholder="•••" />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>
 
-<ion-footer class="ion-no-border" *ngIf="metodo !== ''">
-  <div class="btn" *ngIf="metodo === 'efectivo' && carrito.total>0">
-    <h2 class="d-flex">Total ${{ carrito.total }}
-      <span *ngIf="cuandoEfectivo !== ''" class="end" (click)="pagarEnEfectivo()">
-                <ion-icon name="cash-outline" style="margin-right: 5px"></ion-icon> Pagar en efectivo
-                <ion-icon class="zmdi zmdi-chevron-right ion-text-end"></ion-icon>
-            </span>
-    </h2>
+<!-- ─── Footer ─── -->
+<ion-footer class="ion-no-border" *ngIf="metodo !== '' && carrito.total > 0">
+
+  <!-- Efectivo footer -->
+  <div class="footer-bar" *ngIf="metodo === 'efectivo'">
+    <div class="footer-total-wrap">
+      <span class="footer-total-label">Total</span>
+      <span class="footer-total-amount">${{ carrito.total }}</span>
+    </div>
+    <button class="footer-cta"
+            [class.cta-disabled]="cuandoEfectivo === ''"
+            (click)="pagarEnEfectivo()">
+      Pagar en efectivo
+      <ion-icon name="cash-outline"></ion-icon>
+    </button>
   </div>
-  <div class="btn" *ngIf="metodo === 'tarjeta' && carrito.total>0 && isValidEmail(email)">
-    <h2 class="d-flex">Total ${{ carrito.total }}
-      <span (click)="generarToken()" class="end">
-                <ion-icon name="card-outline" style="margin-right: 5px"></ion-icon> Pagar con tarjeta
-                <ion-icon class="zmdi zmdi-chevron-right ion-text-end"></ion-icon>
-            </span>
-    </h2>
+
+  <!-- Tarjeta footer -->
+  <div class="footer-bar" *ngIf="metodo === 'tarjeta'">
+    <div class="footer-total-wrap">
+      <span class="footer-total-label">Total</span>
+      <span class="footer-total-amount">${{ carrito.total }}</span>
+    </div>
+    <button class="footer-cta"
+            [class.cta-disabled]="!isValidEmail(email)"
+            (click)="generarToken()">
+      Pagar con tarjeta
+      <ion-icon name="card-outline"></ion-icon>
+    </button>
   </div>
+
 </ion-footer>

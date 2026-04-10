@@ -1,79 +1,172 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title>¿Cuando recogemos tus prendas?</ion-title>
+    <ion-title>
+      <span class="toolbar-title">Agenda tu servicio</span>
+    </ion-title>
+    <ion-buttons slot="end">
+      <div class="cart-chip" *ngIf="carrito.cantidad > 0" (click)="irACarrito()">
+        <ion-icon name="cart-outline"></ion-icon>
+        <span>{{ carrito.cantidad }}</span>
+      </div>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <img src="assets/imgs/portadas%202-01.jpg" alt="Banner de recolección y entrega" class="banner-image" />
 
+  <!-- Steps bar -->
+  <div class="steps-bar">
+    <div class="step-item">
+      <div class="step-dot" [class.done]="fechaRecoleccionSeleccionada" [class.active]="!fechaRecoleccionSeleccionada">
+        <ion-icon name="checkmark-outline" *ngIf="fechaRecoleccionSeleccionada"></ion-icon>
+        <span *ngIf="!fechaRecoleccionSeleccionada">1</span>
+      </div>
+      <span class="step-label" [class.active]="!fechaRecoleccionSeleccionada" [class.done]="fechaRecoleccionSeleccionada">Recolección</span>
+    </div>
 
-    <!-- Selector de Fecha de Recolección -->
-    <ion-card-header>
-      <!-- Título de Recolección -->
-      <ion-label class="section-title"><ion-icon name="arrow-redo-outline"></ion-icon> Recolección</ion-label>
+    <div class="step-line" [class.filled]="fechaRecoleccionSeleccionada"></div>
 
-      <!-- Selector de Fecha de Recolección -->
-      <ion-item>
-        <ion-select
-          [(ngModel)]="fechaRecoleccionSeleccionada"
-          (ionChange)="escogerFechaRecoleccion($event.detail.value)">
-          <ion-select-option *ngFor="let rec of fechasRecoleccion" [value]="rec">
-            {{ rec.fechaFormat }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="fechaRecoleccionSeleccionada">
-        <h3 class="selected-date">{{ fechaRecoleccionSeleccionada.fechaFormat }}</h3>
-      </ion-item>
-    </ion-card-header>
+    <div class="step-item">
+      <div class="step-dot" [class.done]="fechaEntregaSeleccionada" [class.active]="fechaRecoleccionSeleccionada && !fechaEntregaSeleccionada">
+        <ion-icon name="checkmark-outline" *ngIf="fechaEntregaSeleccionada"></ion-icon>
+        <span *ngIf="!fechaEntregaSeleccionada">2</span>
+      </div>
+      <span class="step-label" [class.active]="fechaRecoleccionSeleccionada && !fechaEntregaSeleccionada" [class.done]="fechaEntregaSeleccionada">Entrega</span>
+    </div>
+  </div>
 
-    <!-- Selector de Fecha de Entrega (Visible solo si se seleccionó recolección) -->
-    <ion-card-header *ngIf="fechaRecoleccionSeleccionada">
-      <!-- Título de Recolección -->
-      <ion-label class="section-title2"><ion-icon name="arrow-undo-outline"></ion-icon> Entrega</ion-label>
-      <ion-item>
-        <ion-select
-          [(ngModel)]="fechaEntregaSeleccionada"
-          (ionChange)="escogerFechaEntrega($event.detail.value)">
-          <ion-select-option *ngFor="let ent of fechasEntrega" [value]="ent">
-            {{ ent.fechaFormat }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item *ngIf="fechaEntregaSeleccionada">
-        <h3 class="selected-date">{{ fechaEntregaSeleccionada.fechaFormat }}</h3>
-      </ion-item>
-    </ion-card-header>
+  <!-- ─── Step 1: Recolección ─────────────────────────────── -->
+  <div class="date-section">
 
-    <!-- Mensaje de Confirmación -->
-    <ion-card-content *ngIf="fechaRecoleccionSeleccionada && fechaEntregaSeleccionada">
-      <h5>
-        En caso de recolección o entrega anticipada, nos pondremos en contacto contigo.
-      </h5>
-    </ion-card-content>
-  </ion-card>
+    <div class="section-head">
+      <div class="section-icon pickup">
+        <ion-icon name="arrow-up-circle-outline"></ion-icon>
+      </div>
+      <div class="section-labels">
+        <span class="section-step">Paso 1</span>
+        <span class="section-title">¿Cuándo recogemos?</span>
+      </div>
+    </div>
+
+    <!-- Date strip -->
+    <div class="dates-scroll-wrap">
+      <div class="dates-strip">
+        <div
+          class="date-card"
+          *ngFor="let rec of fechasRecoleccion; let i = index"
+          [class.selected]="fechaRecoleccionSeleccionada?.fecha === rec.fecha"
+          [style.animation-delay]="(i * 0.05) + 's'"
+          (click)="escogerFechaRecoleccion(rec)">
+
+          <span class="dc-weekday">{{ rec.fecha | date:'EEE':'UTC' }}</span>
+          <span class="dc-day">{{ rec.fecha | date:'d':'UTC' }}</span>
+          <span class="dc-month">{{ rec.fecha | date:'MMM':'UTC' }}</span>
+
+          <div class="dc-check" *ngIf="fechaRecoleccionSeleccionada?.fecha === rec.fecha">
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmed pickup date -->
+    <div class="confirm-row" *ngIf="fechaRecoleccionSeleccionada">
+      <ion-icon name="checkmark-circle-outline" class="confirm-icon pickup-c"></ion-icon>
+      <span class="confirm-text">{{ fechaRecoleccionSeleccionada.fechaFormat }}</span>
+    </div>
+
+  </div>
+
+  <!-- ─── Step 2: Entrega ───────────────────────────────────── -->
+  <div class="date-section delivery-section" *ngIf="fechaRecoleccionSeleccionada">
+
+    <div class="section-head">
+      <div class="section-icon delivery">
+        <ion-icon name="arrow-down-circle-outline"></ion-icon>
+      </div>
+      <div class="section-labels">
+        <span class="section-step">Paso 2</span>
+        <span class="section-title">¿Cuándo entregamos?</span>
+      </div>
+    </div>
+
+    <!-- Loading placeholder -->
+    <div class="dates-scroll-wrap" *ngIf="fechasEntrega.length === 0">
+      <div class="dates-strip">
+        <div class="date-card skeleton" *ngFor="let i of [1,2,3,4]"></div>
+      </div>
+    </div>
+
+    <!-- Date strip -->
+    <div class="dates-scroll-wrap" *ngIf="fechasEntrega.length > 0">
+      <div class="dates-strip">
+        <div
+          class="date-card"
+          *ngFor="let ent of fechasEntrega; let i = index"
+          [class.selected-delivery]="fechaEntregaSeleccionada?.fecha === ent.fecha"
+          [style.animation-delay]="(i * 0.05) + 's'"
+          (click)="escogerFechaEntrega(ent)">
+
+          <span class="dc-weekday">{{ ent.fecha | date:'EEE':'UTC' }}</span>
+          <span class="dc-day">{{ ent.fecha | date:'d':'UTC' }}</span>
+          <span class="dc-month">{{ ent.fecha | date:'MMM':'UTC' }}</span>
+
+          <div class="dc-check delivery-check" *ngIf="fechaEntregaSeleccionada?.fecha === ent.fecha">
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmed delivery date -->
+    <div class="confirm-row" *ngIf="fechaEntregaSeleccionada">
+      <ion-icon name="checkmark-circle-outline" class="confirm-icon delivery-c"></ion-icon>
+      <span class="confirm-text">{{ fechaEntregaSeleccionada.fechaFormat }}</span>
+    </div>
+
+    <!-- Info note -->
+    <div class="info-note" *ngIf="fechaEntregaSeleccionada">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <span>En caso de recolección o entrega anticipada, nos pondremos en contacto contigo.</span>
+    </div>
+
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>
 
-<ion-footer>
-  <ion-toolbar>
-    <ion-buttons slot="start" *ngIf="carrito.cantidad > 0">
-      <ion-button (click)="irACarrito()">
-        <ion-badge>{{ carrito.cantidad }}</ion-badge>
-        Prendas
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button
-        (click)="irADirecciones()"
-        *ngIf="fechaRecoleccionSeleccionada && fechaEntregaSeleccionada">
-        Continuar
-        <ion-icon name="caret-forward-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+<!-- ─── Footer ─────────────────────────────────────────────── -->
+<ion-footer class="ion-no-border">
+
+  <!-- Full summary + CTA -->
+  <div class="footer-bar full" *ngIf="fechaRecoleccionSeleccionada && fechaEntregaSeleccionada">
+    <div class="footer-dates">
+      <div class="footer-date-row">
+        <ion-icon name="arrow-up-circle-outline" class="fd-icon pickup-fd"></ion-icon>
+        <span class="fd-text">{{ fechaRecoleccionSeleccionada.fechaFormat }}</span>
+      </div>
+      <div class="footer-date-row">
+        <ion-icon name="arrow-down-circle-outline" class="fd-icon delivery-fd"></ion-icon>
+        <span class="fd-text">{{ fechaEntregaSeleccionada.fechaFormat }}</span>
+      </div>
+    </div>
+    <button class="footer-cta" (click)="irADirecciones()">
+      Continuar
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Hint only -->
+  <div class="footer-bar hint" *ngIf="!(fechaRecoleccionSeleccionada && fechaEntregaSeleccionada)">
+    <div class="hint-content">
+      <div class="hint-dot" [class.active]="fechaRecoleccionSeleccionada"></div>
+      <span class="hint-text">
+        {{ fechaRecoleccionSeleccionada ? 'Ahora elige la fecha de entrega' : 'Elige la fecha de recolección' }}
+      </span>
+    </div>
+  </div>
+
 </ion-footer>

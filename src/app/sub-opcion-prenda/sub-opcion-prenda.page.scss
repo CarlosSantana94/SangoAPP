@@ -1,89 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
+$green:  #059669;
+
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
+}
+
+// ─── Header ───────────────────────────────────────────────────
 ion-header {
   ion-toolbar {
-    --background: #ffffff; /* Use a light background for modern feel */
-    ion-title {
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-    }
-    .icon-forward {
-      color: #eaf350;
-      padding-top: 5px;
-      margin-left: 4px;
-    }
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
   }
+}
+
+ion-header::after { display: none; }
+
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+// Breadcrumb title
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.bc-parent {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: $light;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+  flex-shrink: 1;
+}
+
+.bc-sep {
+  font-size: 13px;
+  color: $border;
+  flex-shrink: 0;
+}
+
+.bc-current {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.3px;
+  flex-shrink: 1;
+}
+
+// ─── Page Header ──────────────────────────────────────────────
+.page-header {
+  padding: 16px 20px 6px;
 }
 
 .page-title {
-  padding: 16px;
-  color: rgb(107, 140, 205);
-  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: $mid;
+  margin: 0;
+}
+
+// ─── Prendas Grid ─────────────────────────────────────────────
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.prendas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 10px 16px 0;
 }
 
 .prenda-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: $white;
+  border-radius: 18px;
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
-  text-align: center; // Center text and elements within the card
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1.5px solid transparent;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
 
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  &.has-items {
+    border-color: rgba(26, 108, 245, 0.25);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(26, 108, 245, 0.14);
   }
 
-  .prenda-img {
-    width: 100%; /* Take full width of the card */
-    height: 200px; /* Set a fixed height for the image container */
-    object-fit: contain; /* Ensure the image covers the container */
-    object-position: center; /* Center the image */
-    display: block;
-    border-radius: 12px 12px 0 0;
+  &:active { transform: scale(0.97); }
+}
+
+// Image section
+.prenda-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: $bg;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.prenda-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.prenda-img-wrap:active .prenda-img {
+  transform: scale(1.04);
+}
+
+.img-zoom-hint {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.90);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  ion-icon { font-size: 12px; color: $mid; }
+}
+
+// Text info
+.prenda-info {
+  padding: 10px 12px 6px;
+  flex: 1;
+}
+
+.prenda-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: $dark;
+  margin: 0 0 3px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prenda-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: $light;
+  margin: 0 0 6px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prenda-price {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: $green;
+  display: block;
+  letter-spacing: -0.3px;
+}
+
+// ─── Quantity Stepper ─────────────────────────────────────────
+.qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px 12px;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, background 0.15s;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 16px; }
+
+  &.minus {
+    background: $bg;
+    color: $mid;
+    border: 1.5px solid $border;
+
+    &.invisible { visibility: hidden; pointer-events: none; }
+    &:active { transform: scale(0.88); }
   }
 
-  ion-card-header {
-    ion-card-subtitle {
-      font-size: 0.9em;
-      color: #333;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    ion-card-title {
-      color: #29af5d;
-    }
-  }
+  &.plus {
+    background: $accent;
+    color: $white;
+    box-shadow: 0 3px 10px rgba(26, 108, 245, 0.32);
 
-  .quantity-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding-top: 5px;
-  }
-
-  .center-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    &:active { transform: scale(0.88); }
   }
 }
 
+.qty-num {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: $border;
+  flex: 1;
+  text-align: center;
+  transition: color 0.2s;
 
+  &.positive { color: $accent; }
+}
+
+// ─── Footer ───────────────────────────────────────────────────
 ion-footer {
-  ion-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    ion-button {
-      margin: 0 10px;
-    }
-  }
+  --background: transparent;
+  --border-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: $bg;
 }
 
-@media (min-width: 768px) {
-  .prenda-card {
-    .prenda-img {
-      height: 250px; /* Larger image size for tablets */
-    }
-  }
+.footer-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: $white;
+  margin: 6px 16px 12px;
+  border-radius: 22px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.10);
 }
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.footer-badge {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 100px;
+  background: rgba(26, 108, 245, 0.10);
+  color: $accent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+}
+
+.footer-items {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $mid;
+}
+
+.footer-total {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.6px;
+  flex: 1;
+  text-align: right;
+}
+
+.footer-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 100px;
+  padding: 11px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 14px rgba(26, 108, 245, 0.36);
+  transition: transform 0.15s;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 15px; }
+  &:active { transform: scale(0.95); }
+}
+
+.bottom-spacer { height: 24px; }

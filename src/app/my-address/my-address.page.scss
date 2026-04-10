@@ -1,41 +1,219 @@
-.address-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
+
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
+}
+
+// ─── Header ───────────────────────────────────────────────────
+ion-header {
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+ion-header::after { display: none; }
+
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
+}
+
+// ─── List Wrap ────────────────────────────────────────────────
+.list-wrap {
+  padding: 16px 16px 0;
+}
+
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: $mid;
   margin-bottom: 10px;
-  padding: 10px;
-  background: var(--white);
-  border: 1px solid rgba(204, 204, 204, 0.6);
-  border-radius: 6px;
-  transition: all 0.3s;
+  padding-left: 2px;
 }
 
-.address-info {
+// ─── Address Card ─────────────────────────────────────────────
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.address-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: $white;
+  border-radius: 18px;
+  padding: 15px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  animation: card-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.addr-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(26, 108, 245, 0.10);
   display: flex;
   align-items: center;
-  flex-grow: 1;
-  cursor: pointer;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+
+  ion-icon { font-size: 18px; color: $accent; }
 }
 
-ion-radio {
-  margin-right: 10px;
-}
-
-ion-label h2 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: bold;
-  color: var(--text-black);
-}
-
-ion-label p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: var(--text-gray);
-}
-
-.address-actions {
+.addr-body {
+  flex: 1;
   display: flex;
-  gap: 5px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
+
+.addr-alias {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: $dark;
+}
+
+.addr-street {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: $mid;
+  line-height: 1.4;
+  display: block;
+}
+
+.addr-meta {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: $light;
+  margin-top: 2px;
+}
+
+.addr-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.addr-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+
+  ion-icon { font-size: 16px; }
+  &:active { transform: scale(0.88); }
+
+  &.edit   { background: rgba(26, 108, 245, 0.10); color: $accent; }
+  &.delete { background: rgba(220, 38, 38, 0.10); color: #DC2626; }
+}
+
+// ─── Empty State ──────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 24px;
+  text-align: center;
+
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(26, 108, 245, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    ion-icon { font-size: 28px; color: $accent; }
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: $dark;
+    margin: 0 0 6px;
+  }
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: $light;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────
+ion-footer {
+  --background: transparent;
+  --border-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: $bg;
+}
+
+.footer-bar {
+  display: flex;
+  justify-content: center;
+  padding: 8px 16px 12px;
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 100px;
+  padding: 14px 28px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 18px rgba(26, 108, 245, 0.36);
+  transition: transform 0.15s;
+  width: 100%;
+  justify-content: center;
+
+  ion-icon { font-size: 18px; }
+  &:active { transform: scale(0.97); }
+}
+
+.bottom-spacer { height: 16px; }

@@ -1,183 +1,147 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
-        path: '',
-        redirectTo: '/sign-in',
-        pathMatch: 'full'
-    },
-    {
-        path: 'sign-in',
-        loadChildren: () => import('./sign-in/sign-in.module').then(m => m.SignInPageModule)
-    },
-    {
-      path: '',
-      loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+    path: '',
+    redirectTo: '/sign-in',
+    pathMatch: 'full'
   },
-  {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-},
 
-{
-  path: 'carrito',
-  loadChildren: () => import('./carrito/carrito.module').then(m => m.CarritoPageModule)
-},
-
-// {
-//     path: 'resiter-now',
-//     loadChildren: () => import('./resiter-now/resiter-now.module').then(m => m.ResiterNowPageModule)
-// },
-// {
-//     path: 'forgot-password',
-//     loadChildren: () => import('./forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule)
-// },
-// {
-//     path: 'verification',
-//     loadChildren: () => import('./verification/verification.module').then(m => m.VerificationPageModule)
-// },
-// {
-//     path: 'home',
-//     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-// },
- {
-     path: 'confirm-order',
-     loadChildren: () => import('./confirm-order/confirm-order.module').then(m => m.ConfirmOrderPageModule)
- },
-// {
-//     path: 'select-time',
-//     loadChildren: () => import('./select-time/select-time.module').then(m => m.SelectTimePageModule)
-// },
- {
-     path: 'payment',
-     loadChildren: () => import('./payment/payment.module').then(m => m.PaymentPageModule)
- },
- {
-     path: 'order-info',
-     loadChildren: () => import('./order-info/order-info.module').then(m => m.OrderInfoPageModule)
- },
-// {
-//     path: 'offers',
-//     loadChildren: () => import('./offers/offers.module').then(m => m.OffersPageModule)
-// },
- {
-     path: 'account',
-     loadChildren: () => import('./account/account.module').then(m => m.AccountPageModule)
- },
- {
-     path: 'my-profile',
-     loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfilePageModule)
- },
- {
-     path: 'add-address',
-     loadChildren: () => import('./add-address/add-address.module').then(m => m.AddAddressPageModule)
- },
- {
-     path: 'my-address',
-     loadChildren: () => import('./my-address/my-address.module').then(m => m.MyAddressPageModule)
- },
- {
-     path: 'faq',
-     loadChildren: () => import('./faq/faq.module').then(m => m.FaqPageModule)
- },
- {
-     path: 'contact-us',
-     loadChildren: () => import('./contact-us/contact-us.module').then(m => m.ContactUsPageModule)
- },
- {
-     path: 'terms-conditions',
-     loadChildren: () => import('./terms-conditions/terms-conditions.module').then(m => m.TermsConditionsPageModule)
- },
-// {
-//     path: 'chat',
-//     loadChildren: () => import('./chat/chat.module').then(m => m.ChatPageModule)
-// },
-{
-     path: 'address-title',
-     loadChildren: () => import('./address-title/address-title.module').then(m => m.AddressTitlePageModule)
- },
-// {
-//     path: 'notification',
-//     loadChildren: () => import('./notification/notification.module').then(m => m.NotificationPageModule)
-// },
-{
-     path: 'my-orders',
-     loadChildren: () => import('./my-orders/my-orders.module').then(m => m.MyOrdersPageModule)
- },
-// {
-//     path: 'change-language',
-//     loadChildren: () => import('./change-language/change-language.module').then(m => m.ChangeLanguagePageModule)
-// },
-// {
-//     path: 'promocode',
-//     loadChildren: () => import('./promocode/promocode.module').then(m => m.PromocodePageModule)
-// },
-// {
-//     path: 'select-task',
-//     loadChildren: () => import('./select-task/select-task.module').then(m => m.SelectTaskPageModule)
-// },
-// {
-//     path: 'cart',
-//     loadChildren: () => import('./cart/cart.module').then(m => m.CartPageModule)
-// },
- {
-     path: 'select-address',
-     loadChildren: () => import('./select-address/select-address.module').then(m => m.SelectAddressPageModule)
- },
-// {
-//     path: 'buyappalert',
-//     loadChildren: () => import('./buyappalert/buyappalert.module').then(m => m.BuyappalertPageModule)
-// },
-// {
-//     path: 'contact-us2',
-//     loadChildren: () => import('./contact-us2/contact-us2.module').then(m => m.ContactUs2PageModule)
-// },
-// {
-//     path: 'planchado',
-//     loadChildren: () => import('./planchado/planchado.module').then(m => m.PlanchadoPageModule)
-// },
- {
-     path: 'seccion',
-     loadChildren: () => import('./seccion/seccion.module').then(m => m.SeccionPageModule)
- },
- {
-     path: 'sub-opcion-prenda',
-     loadChildren: () => import('./sub-opcion-prenda/sub-opcion-prenda.module').then(m => m.SubOpcionPrendaPageModule)
- },
- {
-    path: 'envios',
-     loadChildren: () => import('./envios/envios.module').then(m => m.EnviosPageModule)
- },
- {
-     path: 'zona-de-cobertura',
-     loadChildren: () => import('./zona-de-cobertura/zona-de-cobertura.module').then(m => m.ZonaDeCoberturaPageModule)
- },  {
-    path: 'aviso-de-privacidad',
-    loadChildren: () => import('./aviso-de-privacidad/aviso-de-privacidad.module').then( m => m.AvisoDePrivacidadPageModule)
-  },
+  // ── Rutas públicas (sin login) ─────────────────────────────
   {
-    path: 'delete-account',
-    loadChildren: () => import('./delete-account/delete-account.module').then( m => m.DeleteAccountPageModule)
+    path: 'sign-in',
+    loadChildren: () => import('./sign-in/sign-in.module').then(m => m.SignInPageModule)
   },
   {
     path: 'servicios-sin-cuenta',
-    loadChildren: () => import('./servicios-sin-cuenta/servicios-sin-cuenta.module').then( m => m.ServiciosSinCuentaPageModule)
+    loadChildren: () => import('./servicios-sin-cuenta/servicios-sin-cuenta.module').then(m => m.ServiciosSinCuentaPageModule)
+  },
+
+  // ── Rutas protegidas (requieren login) ─────────────────────
+  {
+    path: '',
+    canActivate: [authGuard],
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'home',
+    canActivate: [authGuard],
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+  },
+  {
+    path: 'carrito',
+    canActivate: [authGuard],
+    loadChildren: () => import('./carrito/carrito.module').then(m => m.CarritoPageModule)
+  },
+  {
+    path: 'confirm-order',
+    canActivate: [authGuard],
+    loadChildren: () => import('./confirm-order/confirm-order.module').then(m => m.ConfirmOrderPageModule)
+  },
+  {
+    path: 'payment',
+    canActivate: [authGuard],
+    loadChildren: () => import('./payment/payment.module').then(m => m.PaymentPageModule)
+  },
+  {
+    path: 'order-info',
+    canActivate: [authGuard],
+    loadChildren: () => import('./order-info/order-info.module').then(m => m.OrderInfoPageModule)
+  },
+  {
+    path: 'account',
+    canActivate: [authGuard],
+    loadChildren: () => import('./account/account.module').then(m => m.AccountPageModule)
+  },
+  {
+    path: 'my-profile',
+    canActivate: [authGuard],
+    loadChildren: () => import('./my-profile/my-profile.module').then(m => m.MyProfilePageModule)
+  },
+  {
+    path: 'add-address',
+    canActivate: [authGuard],
+    loadChildren: () => import('./add-address/add-address.module').then(m => m.AddAddressPageModule)
+  },
+  {
+    path: 'my-address',
+    canActivate: [authGuard],
+    loadChildren: () => import('./my-address/my-address.module').then(m => m.MyAddressPageModule)
+  },
+  {
+    path: 'faq',
+    canActivate: [authGuard],
+    loadChildren: () => import('./faq/faq.module').then(m => m.FaqPageModule)
+  },
+  {
+    path: 'contact-us',
+    canActivate: [authGuard],
+    loadChildren: () => import('./contact-us/contact-us.module').then(m => m.ContactUsPageModule)
+  },
+  {
+    path: 'terms-conditions',
+    canActivate: [authGuard],
+    loadChildren: () => import('./terms-conditions/terms-conditions.module').then(m => m.TermsConditionsPageModule)
+  },
+  {
+    path: 'address-title',
+    canActivate: [authGuard],
+    loadChildren: () => import('./address-title/address-title.module').then(m => m.AddressTitlePageModule)
+  },
+  {
+    path: 'my-orders',
+    canActivate: [authGuard],
+    loadChildren: () => import('./my-orders/my-orders.module').then(m => m.MyOrdersPageModule)
+  },
+  {
+    path: 'select-address',
+    canActivate: [authGuard],
+    loadChildren: () => import('./select-address/select-address.module').then(m => m.SelectAddressPageModule)
+  },
+  {
+    path: 'seccion',
+    canActivate: [authGuard],
+    loadChildren: () => import('./seccion/seccion.module').then(m => m.SeccionPageModule)
+  },
+  {
+    path: 'sub-opcion-prenda',
+    canActivate: [authGuard],
+    loadChildren: () => import('./sub-opcion-prenda/sub-opcion-prenda.module').then(m => m.SubOpcionPrendaPageModule)
+  },
+  {
+    path: 'envios',
+    canActivate: [authGuard],
+    loadChildren: () => import('./envios/envios.module').then(m => m.EnviosPageModule)
+  },
+  {
+    path: 'zona-de-cobertura',
+    canActivate: [authGuard],
+    loadChildren: () => import('./zona-de-cobertura/zona-de-cobertura.module').then(m => m.ZonaDeCoberturaPageModule)
+  },
+  {
+    path: 'aviso-de-privacidad',
+    canActivate: [authGuard],
+    loadChildren: () => import('./aviso-de-privacidad/aviso-de-privacidad.module').then(m => m.AvisoDePrivacidadPageModule)
+  },
+  {
+    path: 'delete-account',
+    canActivate: [authGuard],
+    loadChildren: () => import('./delete-account/delete-account.module').then(m => m.DeleteAccountPageModule)
   },
   {
     path: 'edit-adress',
-    loadChildren: () => import('./edit-adress/edit-adress.module').then( m => m.EditAdressPageModule)
+    canActivate: [authGuard],
+    loadChildren: () => import('./edit-adress/edit-adress.module').then(m => m.EditAdressPageModule)
   },
-
-  
-  
 ];
+
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule],
-  
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppRoutingModule {}

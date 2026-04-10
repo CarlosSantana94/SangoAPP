@@ -1,65 +1,114 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
     <ion-title>
-     Mi perfil
+      <span class="toolbar-title">Mi Perfil</span>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button *ngIf="!isEditing" (click)="toggleEdit()">
-        <ion-icon name="pencil-outline"></ion-icon> Edit
-      </ion-button>
-      <ion-button *ngIf="isEditing" (click)="saveChanges()">
-        <ion-icon name="save-outline"></ion-icon> Save
-      </ion-button>
-      <ion-button *ngIf="isEditing" (click)="cancelChanges()">
-        <ion-icon name="close-outline"></ion-icon> Cancel
-      </ion-button>
+      <button class="header-action-btn" *ngIf="!isEditing" (click)="toggleEdit()">
+        <ion-icon name="pencil-outline"></ion-icon>
+        <span>Editar</span>
+      </button>
+      <button class="header-action-btn save" *ngIf="isEditing" (click)="saveChanges()">
+        <ion-icon name="checkmark-outline"></ion-icon>
+        <span>Guardar</span>
+      </button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="form">
-    <!--<div class="img_box center_img" (click)="editPhoto()">
-      <img [src]="photoURL" class="crop_img">
-      <ion-icon class="zmdi zmdi-camera ion-text-center" *ngIf="!photoURL"></ion-icon>
-    </div>-->
-    <ion-list lines="none">
-      <ion-item lines="none">
-        <div class="item_inner d-flex">
-          <ion-icon class="zmdi zmdi-account ion-text-start"></ion-icon>
-          <div class="input_box">
-            <ion-label position="floating">Nombre</ion-label>
-            <ion-input mode="md" type="text" [(ngModel)]="nombre" [readonly]="!isEditing" [ngClass]="{'editable': isEditing}"></ion-input>
-          </div>
-        </div>
-      </ion-item>
 
-      <ion-item lines="none">
-        <div class="item_inner d-flex">
-          <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
-          <div class="input_box">
-            <ion-label position="floating">Email</ion-label>
-            <ion-input mode="md" type="email" [(ngModel)]="email" [readonly]="!isEditing" [ngClass]="{'editable': isEditing}"></ion-input>
-          </div>
-        </div>
-      </ion-item>
-
-      <ion-item lines="none">
-        <div class="item_inner d-flex">
-          <ion-icon class="zmdi zmdi-smartphone-iphone ion-text-start"></ion-icon>
-          <div class="input_box">
-            <ion-label position="floating">{{'Phone_Number' | translate}}</ion-label>
-            <ion-input mode="md" type="text" [(ngModel)]="tel" [readonly]="!isEditing" [ngClass]="{'editable': isEditing}"></ion-input>
-          </div>
-        </div>
-      </ion-item>
-    </ion-list>
+  <!-- Avatar Section -->
+  <div class="avatar-section">
+    <div class="avatar-circle">
+      <span class="avatar-initial">{{ nombre ? nombre.charAt(0).toUpperCase() : '?' }}</span>
+    </div>
+    <span class="avatar-name">{{ nombre || 'Mi Perfil' }}</span>
+    <span class="avatar-edit-hint" *ngIf="isEditing">Editando perfil</span>
   </div>
-  <ion-item style="padding-top: 95px;">
-    <ion-label>Eliminar mi cuenta</ion-label>
-    <ion-button color="danger" (click)="confirmAccountDeletion()">Eliminar mi cuenta y datos</ion-button>
-  </ion-item>
+
+  <!-- Form Card -->
+  <div class="form-card">
+
+    <div class="field-row">
+      <div class="field-icon-wrap">
+        <ion-icon name="person-outline" class="field-icon"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Nombre</span>
+        <input
+          class="field-input"
+          type="text"
+          [(ngModel)]="nombre"
+          [readonly]="!isEditing"
+          [class.editable]="isEditing"
+          placeholder="Tu nombre completo" />
+      </div>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-row">
+      <div class="field-icon-wrap">
+        <ion-icon name="mail-outline" class="field-icon"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Correo electrónico</span>
+        <input
+          class="field-input"
+          type="email"
+          [(ngModel)]="email"
+          [readonly]="!isEditing"
+          [class.editable]="isEditing"
+          placeholder="correo@ejemplo.com" />
+      </div>
+    </div>
+
+    <div class="field-divider"></div>
+
+    <div class="field-row">
+      <div class="field-icon-wrap">
+        <ion-icon name="call-outline" class="field-icon"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Teléfono</span>
+        <input
+          class="field-input"
+          type="tel"
+          [(ngModel)]="tel"
+          [readonly]="!isEditing"
+          [class.editable]="isEditing"
+          placeholder="+52 00 0000 0000" />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cancel button when editing -->
+  <div class="cancel-wrap" *ngIf="isEditing">
+    <button class="cancel-btn" (click)="cancelChanges()">
+      <ion-icon name="close-outline"></ion-icon>
+      Cancelar cambios
+    </button>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="danger-zone" *ngIf="!isEditing">
+    <div class="group-label">Zona de Peligro</div>
+    <div class="danger-card" (click)="confirmAccountDeletion()">
+      <div class="danger-icon-wrap">
+        <ion-icon name="trash-outline"></ion-icon>
+      </div>
+      <div class="danger-info">
+        <span class="danger-title">Eliminar mi cuenta</span>
+        <span class="danger-sub">Esta acción no se puede deshacer</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="danger-chevron"></ion-icon>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>

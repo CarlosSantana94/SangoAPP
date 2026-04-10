@@ -1,58 +1,167 @@
-ion-list {
-    padding: 0;
-    margin: 0;
-    margin-top: 6px;
-    background: var(--white);
-    min-height: calc(100vh - 62px);
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
 
-    ion-item {
-        background: var(--white);
-        --background: var(--transparent);
-        --inner-padding-end: 0px;
-        --inner-min-height: unset !important;
-        --padding-start: 0;
-        --highligh-color-focused: var(--transparent) !important;
-        --min-height: unset;
-        padding:24px 20px;
-        border-bottom: 4px solid var(--bg-color);
-
-        .text_box {
-            width: 100%;
-
-            p {
-                margin: 0;
-                color: var(--text-light);
-                font-weight: 500;
-                font-size: .95rem;
-                letter-spacing: .5px;
-                padding-bottom: 7px;
-            }
-
-            h2 {
-                margin: 0;
-                color: var(--text-dark);
-                font-size: 0.95rem;
-                line-height: 21px;
-            }
-        }
-
-        ion-icon {
-            min-width: 48px;
-            height: 48px;
-            background: var(--primary);
-            color: var(--white);
-            line-height: 48px;
-            font-size: 1.35rem;
-            border-radius: 50%;
-
-            &.zmdi-navigation {
-                transform: rotate(39deg);
-            }
-        }
-
-        &:last-child {
-            border: none !important;
-        }
-    }
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
 }
+
+// ─── Header ───────────────────────────────────────────────────
+ion-header {
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+ion-header::after { display: none; }
+
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
+}
+
+// ─── Hero ─────────────────────────────────────────────────────
+.contact-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 24px 20px;
+  text-align: center;
+}
+
+.hero-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 20px rgba(26, 108, 245, 0.28);
+
+  ion-icon { font-size: 28px; color: $white; }
+}
+
+.hero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.hero-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  color: $light;
+}
+
+// ─── Contact Cards ────────────────────────────────────────────
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.contact-list {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: $white;
+  border-radius: 18px;
+  padding: 16px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-decoration: none;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active { transform: scale(0.98); }
+  &.static { cursor: default; &:active { transform: none; } }
+}
+
+.contact-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 22px; }
+
+  &.green { background: rgba(5, 150, 105, 0.10);  color: #059669; }
+  &.blue  { background: rgba(26, 108, 245, 0.10); color: $accent; }
+  &.amber { background: rgba(217, 119, 6, 0.10);  color: #D97706; }
+}
+
+.contact-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.contact-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 2px;
+}
+
+.contact-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.contact-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: $accent;
+  margin-top: 2px;
+}
+
+.contact-arrow {
+  font-size: 16px;
+  color: $border;
+  flex-shrink: 0;
+}
+
+.bottom-spacer { height: 32px; }

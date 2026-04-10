@@ -1,172 +1,388 @@
-ion-card {
-  margin: 0;
-  padding: 16px;
-  background: var(--ion-color-light);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 12px;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-  .item-grid {
-    align-items: center;
-  }
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
+$green:  #059669;
 
-  .item-image {
-    max-width: 100%;
-    border-radius: 4px;
-  }
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
+}
 
-  .item-service {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--ion-color-medium);
-    margin: 0;
-  }
-
-  .item-details {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--ion-color-dark);
-  }
-
-  .price {
-    font-size: 0.8rem;
-    color: var(--ion-color-medium);
-  }
-
-  .amount {
-    font-size: 1rem;
-    color: var(--ion-color-primary);
-    font-weight: 700;
+// ─── Header ───────────────────────────────────────────────────
+ion-header {
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
   }
 }
 
-.payment_info {
-  padding: 10px;
-  margin-bottom: 0;
+ion-header::after { display: none; }
 
-  h2 {
-    display: flex;
-    justify-content: space-between;
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--ion-color-success);
-    font-weight: bold;
-
-    .end {
-      font-size: 1.2rem;
-    }
-  }
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
 }
 
-.btn {
-  font-size: 1.2rem;
-  letter-spacing: 0 !important;
-  height: 48px;
-}
-/* confirm-order.page.scss */
-.tintoreria {
-  color: #1e25ed !important; /* Color para Tintoreria */
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
 }
 
-.planchado {
-  color: #dc7502 !important;; /* Color para Planchado */
+.total-chip {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: $accent;
+  background: rgba(26, 108, 245, 0.10);
+  border-radius: 100px;
+  padding: 5px 12px;
+  margin-right: 8px;
 }
 
-.lavanderia {
-  color: #15dddd !important;; /* Color para Lavanderia */
+// ─── Count Header ─────────────────────────────────────────────
+.count-header {
+  padding: 16px 20px 8px;
 }
 
-.blancos-y-hogar {
-  color: #debd12 !important;; /* Color para Blancos y Hogar */
+.count-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: $mid;
 }
 
-.teñidos {
-  color: #2c8310 !important;; /* Color para Teñidos */
+// ─── Service Sections ─────────────────────────────────────────
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-// Estilos generales para la vista
-.servicio-group {
-  margin-bottom: 24px;
+.service-section {
+  margin: 0 16px 12px;
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.service-header {
-  background-color: var(--ion-color-light);
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.service-title {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: var(--ion-color-primary);
+.section-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid $border;
 }
 
-.service-title ion-icon {
-  margin-right: 10px;
-}
-
-.servicio-padre-group {
-  margin-bottom: 16px;
-}
-
-.service-padre-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-left: 10px;
-  color: var(--ion-color-secondary);
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--ion-color-light);
-}
-
-.item-grid {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--ion-color-light);
-  margin-bottom: 10px;
-}
-
-.item-details {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--ion-color-dark);
-}
-
-.price {
-  font-size: 0.8rem;
-  color: var(--ion-color-medium);
-}
-
-.amount {
-  font-size: 1rem;
-  color: var(--ion-color-primary);
+.service-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 100px;
+  padding: 5px 12px 5px 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
   font-weight: 700;
+
+  .chip-icon { font-size: 14px; }
+
+  &.tintoreria     { background: rgba(26, 108, 245, 0.10); color: #1A6CF5; }
+  &.planchado      { background: rgba(245, 158, 11, 0.12); color: #D97706; }
+  &.lavanderia     { background: rgba(6, 182, 212, 0.12);  color: #0891B2; }
+  &.blancos-y-hogar { background: rgba(139, 92, 246, 0.12); color: #7C3AED; }
+  &.teñidos        { background: rgba(16, 185, 129, 0.12); color: #059669; }
 }
 
-.item-image {
-  max-width: 100%;
-  border-radius: 4px;
+.section-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: $light;
 }
 
-.payment_info {
-  padding: 10px;
-  margin-bottom: 0;
+// ─── Category Block ───────────────────────────────────────────
+.category-block {
+  padding: 0 16px;
 
-  h2 {
-    display: flex;
-    justify-content: space-between;
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--ion-color-success);
-    font-weight: bold;
-
-    .end {
-      font-size: 1.2rem;
-    }
+  & + & {
+    border-top: 1px solid $border;
   }
 }
 
+.cat-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  padding: 12px 0 4px;
+}
+
+// ─── Item Row ─────────────────────────────────────────────────
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.item-thumb {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: $bg;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+.item-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.item-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.item-unit {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  color: $light;
+}
+
+.item-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: $green;
+  letter-spacing: -0.3px;
+}
+
+// ─── Item Stepper ─────────────────────────────────────────────
+.item-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.step-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+
+  ion-icon { font-size: 14px; }
+
+  &.minus {
+    background: $bg;
+    color: $mid;
+    border: 1.5px solid $border;
+    &:active { transform: scale(0.88); }
+  }
+
+  &.plus {
+    background: $accent;
+    color: $white;
+    box-shadow: 0 2px 8px rgba(26, 108, 245, 0.32);
+    &:active { transform: scale(0.88); }
+  }
+}
+
+.step-num {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $accent;
+  min-width: 20px;
+  text-align: center;
+}
+
+// ─── Empty State ──────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 24px;
+  text-align: center;
+
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(26, 108, 245, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    ion-icon { font-size: 28px; color: $accent; }
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: $dark;
+    margin: 0 0 6px;
+  }
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: $light;
+  }
+}
+
+// ─── Skeletons ────────────────────────────────────────────────
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton-card {
+  margin: 0 16px 12px;
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-service-head {
+  height: 48px;
+  background: linear-gradient(90deg, $border 25%, darken($border, 3%) 50%, $border 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-bottom: 1px solid $border;
+}
+
+.skeleton-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.skeleton-thumb {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, $border 25%, darken($border, 3%) 50%, $border 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  flex-shrink: 0;
+}
+
+.skeleton-body {
+  flex: 1;
+}
+
+.skeleton-line {
+  border-radius: 6px;
+  display: block;
+  background: linear-gradient(90deg, $border 25%, darken($border, 3%) 50%, $border 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+// ─── Footer ───────────────────────────────────────────────────
+ion-footer {
+  --background: transparent;
+  --border-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: $bg;
+}
+
+.footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $white;
+  margin: 6px 16px 12px;
+  border-radius: 22px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.10);
+}
+
+.footer-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.footer-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.footer-total {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.7px;
+}
+
+.footer-cta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 14px rgba(26, 108, 245, 0.36);
+  transition: transform 0.15s;
+
+  ion-icon { font-size: 16px; }
+  &:active { transform: scale(0.95); }
+}
+
+.bottom-spacer { height: 24px; }

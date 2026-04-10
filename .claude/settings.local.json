@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(md|txt\\)$|README|CLAUDE|cursor\")",
+      "Bash(grep -E \"\\\\.page\\\\.ts$\")"
+    ]
+  }
+}

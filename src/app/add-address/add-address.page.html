@@ -1,76 +1,223 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      <div class="title_inner d-flex">
-        Nueva dirección
-      </div>
+      <span class="toolbar-title">Nueva Dirección</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg_color" fullscreen>
-  <ion-list>
-    <ion-item>
-      <small style="text-align: center; color: orangered; background-color: #ececec; border-radius: 5px">Si tu
-        dirección
-        <span style="font-weight: bold;">no aparece </span>
-        en el desplegado, aún no tenemos servicio en tu <span style="font-weight: bold"
-                                                              (click)="irAZonaDeCobertura()">zona</span></small>
+<ion-content>
 
-    </ion-item>
-    <ion-item>
-      <input id="pac-input" [value]="direccionMapa" type="text" placeholder="Calle y número"/>
-    </ion-item>
+  <!-- ─── Step 1: Address Search ─── -->
+  <div class="search-card">
 
-    <ion-item *ngIf="nuevaDireccion.lat===0 && nuevaDireccion.lng===0">
-      <ion-text style="color: #3c5a9a">Para continuar, Introduce tu calle y numero</ion-text>
-    </ion-item>
-
-    <div *ngIf="nuevaDireccion.lat!==0 && nuevaDireccion.lng!==0">
-      <ion-item>
-        <ion-label position="floating">Interior
-        </ion-label>
-        <ion-input type="name" [(ngModel)]="nuevaDireccion.interior"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating" color="{{nuevaDireccionColores.nombreCompleto}}">Nombre y apellido
-        </ion-label>
-        <ion-input type="name" [(ngModel)]="nuevaDireccion.nombre"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating" color="{{nuevaDireccionColores.cp}}">Código Postal</ion-label>
-        <ion-input type="postal-code" inputmode="numeric" maxlength="5"
-                   [(ngModel)]="nuevaDireccion.cp"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating" color="{{nuevaDireccionColores.tel}}">Telefono de contacto</ion-label>
-        <ion-input type="tel" inputmode="tel" [(ngModel)]="nuevaDireccion.tel"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Indicación adicional (opcional)</ion-label>
-        <ion-input [(ngModel)]="nuevaDireccion.indicacion"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating" color="{{nuevaDireccionColores.alias}}">Alias (Ej: Casa, Oficina, etc)
-        </ion-label>
-        <ion-input [(ngModel)]="nuevaDireccion.alias"></ion-input>
-      </ion-item>
-      <ion-button style="margin-top: 16px; margin-bottom: 16px" size="large" shape="block" class="btn"
-                  (click)="validarCampos()">
-        Guardar dirección
-      </ion-button>
-      <ion-item>
-        <ion-button color="light" (click)="irAZonaDeCobertura()">
-          <ion-icon name="map-outline" style="margin-right: 6px"></ion-icon>
-          Ver Zona de Cobertura
-        </ion-button>
-      </ion-item>
+    <div class="search-card-header">
+      <div class="search-card-icon">
+        <ion-icon name="search-outline"></ion-icon>
+      </div>
+      <div class="search-card-labels">
+        <span class="search-card-step">Paso 1</span>
+        <span class="search-card-title">¿Cuál es tu dirección?</span>
+      </div>
     </div>
-  </ion-list>
-  <div style="visibility: hidden" #map id="map"></div>
 
+    <!-- Calle field -->
+    <div class="search-row" [class.locked]="nuevaDireccion.lat !== 0">
+      <ion-icon name="location-outline" class="search-row-icon"></ion-icon>
+      <div class="search-row-body">
+        <span class="search-row-label">Calle</span>
+        <input
+          class="search-row-input"
+          type="text"
+          [(ngModel)]="calle"
+          (input)="buscarDirecciones()"
+          [readonly]="nuevaDireccion.lat !== 0"
+          placeholder="Nombre de la calle..." />
+      </div>
+    </div>
 
+    <div class="search-row-divider"></div>
+
+    <!-- Número field -->
+    <div class="search-row" [class.locked]="nuevaDireccion.lat !== 0" [class.row-error]="noNumberError">
+      <ion-icon name="hash-outline" class="search-row-icon" [class.icon-error]="noNumberError"></ion-icon>
+      <div class="search-row-body">
+        <span class="search-row-label">
+          Número exterior <span class="required-star">*</span>
+        </span>
+        <input
+          class="search-row-input"
+          type="text"
+          inputmode="numeric"
+          [(ngModel)]="numero"
+          (input)="buscarDirecciones()"
+          [readonly]="nuevaDireccion.lat !== 0"
+          placeholder="Ej: 4331" />
+        <span class="no-number-msg" *ngIf="noNumberError">
+          <ion-icon name="warning-outline"></ion-icon>
+          Agrega el número exterior para identificar tu dirección
+        </span>
+      </div>
+    </div>
+
+    <!-- Suggestions dropdown -->
+    <div class="suggestions-list" *ngIf="suggestions.length > 0">
+      <div
+        class="suggestion-item"
+        *ngFor="let sug of suggestions; let last = last"
+        (click)="seleccionarSugerencia(sug)">
+        <ion-icon name="location-outline" class="sug-icon"></ion-icon>
+        <div class="sug-body">
+          <span class="sug-main">{{ sug.structured_formatting.main_text }}</span>
+          <span class="sug-sub">{{ sug.structured_formatting.secondary_text }}</span>
+        </div>
+        <ion-icon name="arrow-forward-outline" class="sug-arrow"></ion-icon>
+      </div>
+    </div>
+
+    <!-- Confirmed selection -->
+    <div class="confirmed-row" *ngIf="nuevaDireccion.lat !== 0">
+      <ion-icon name="checkmark-circle-outline" class="confirmed-icon"></ion-icon>
+      <div class="confirmed-body">
+        <span class="confirmed-label">Dirección confirmada</span>
+        <span class="confirmed-addr">{{ direccionMapa }}</span>
+      </div>
+      <button class="change-btn" (click)="clearSeleccion()">Cambiar</button>
+    </div>
+
+    <!-- Coverage hint -->
+    <div class="coverage-hint">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <span>
+        Si tu dirección no aparece, aún no tenemos servicio en tu
+        <span class="zone-link" (click)="irAZonaDeCobertura()">zona de cobertura</span>
+      </span>
+    </div>
+
+  </div>
+
+  <!-- ─── Waiting hint (no lat/lng yet) ─── -->
+  <div class="await-hint" *ngIf="nuevaDireccion.lat === 0 && nuevaDireccion.lng === 0">
+    <div class="await-dot"></div>
+    <span>Selecciona tu dirección del desplegado para continuar</span>
+  </div>
+
+  <!-- ─── Step 2: Additional details ─── -->
+  <div class="details-card" *ngIf="nuevaDireccion.lat !== 0 && nuevaDireccion.lng !== 0">
+
+    <div class="details-card-header">
+      <div class="details-card-icon">
+        <ion-icon name="create-outline"></ion-icon>
+      </div>
+      <div class="details-card-labels">
+        <span class="details-step">Paso 2</span>
+        <span class="details-title">Completa los datos</span>
+      </div>
+    </div>
+
+    <!-- Interior (opcional) -->
+    <div class="field-row">
+      <div class="field-icon-wrap optional">
+        <ion-icon name="home-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Interior <span class="optional-tag">opcional</span></span>
+        <input class="field-input" type="text" [(ngModel)]="nuevaDireccion.interior" placeholder="Depto, piso, local..." />
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Nombre completo -->
+    <div class="field-row" [class.field-error]="nuevaDireccionColores.nombreCompleto === 'danger'">
+      <div class="field-icon-wrap" [class.error-icon]="nuevaDireccionColores.nombreCompleto === 'danger'">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Nombre y apellido <span class="required-star">*</span></span>
+        <input class="field-input" type="text" [(ngModel)]="nuevaDireccion.nombre" placeholder="Nombre completo" />
+        <span class="error-msg" *ngIf="nuevaDireccionColores.nombreCompleto === 'danger'">Campo requerido</span>
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Código Postal -->
+    <div class="field-row" [class.field-error]="nuevaDireccionColores.cp === 'danger'">
+      <div class="field-icon-wrap" [class.error-icon]="nuevaDireccionColores.cp === 'danger'">
+        <ion-icon name="mail-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Código Postal <span class="required-star">*</span></span>
+        <input class="field-input" type="text" inputmode="numeric" maxlength="5" [(ngModel)]="nuevaDireccion.cp" placeholder="00000" />
+        <span class="error-msg" *ngIf="nuevaDireccionColores.cp === 'danger'">Campo requerido</span>
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Teléfono -->
+    <div class="field-row" [class.field-error]="nuevaDireccionColores.tel === 'danger'">
+      <div class="field-icon-wrap" [class.error-icon]="nuevaDireccionColores.tel === 'danger'">
+        <ion-icon name="call-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Teléfono de contacto <span class="required-star">*</span></span>
+        <input class="field-input" type="tel" inputmode="tel" [(ngModel)]="nuevaDireccion.tel" placeholder="+52 00 0000 0000" />
+        <span class="error-msg" *ngIf="nuevaDireccionColores.tel === 'danger'">Campo requerido</span>
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Indicación adicional -->
+    <div class="field-row">
+      <div class="field-icon-wrap optional">
+        <ion-icon name="chatbubble-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Indicación adicional <span class="optional-tag">opcional</span></span>
+        <input class="field-input" type="text" [(ngModel)]="nuevaDireccion.indicacion" placeholder="Ej: Portón azul, timbre 2..." />
+      </div>
+    </div>
+    <div class="field-divider"></div>
+
+    <!-- Alias -->
+    <div class="field-row" [class.field-error]="nuevaDireccionColores.alias === 'danger'">
+      <div class="field-icon-wrap" [class.error-icon]="nuevaDireccionColores.alias === 'danger'">
+        <ion-icon name="bookmark-outline"></ion-icon>
+      </div>
+      <div class="field-body">
+        <span class="field-label">Alias <span class="required-star">*</span></span>
+        <input class="field-input" type="text" [(ngModel)]="nuevaDireccion.alias" placeholder="Ej: Casa, Oficina, Gym..." />
+        <span class="error-msg" *ngIf="nuevaDireccionColores.alias === 'danger'">Campo requerido</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── Coverage link (when details shown) ─── -->
+  <div class="zone-row" *ngIf="nuevaDireccion.lat !== 0 && nuevaDireccion.lng !== 0">
+    <button class="zone-btn" (click)="irAZonaDeCobertura()">
+      <ion-icon name="map-outline"></ion-icon>
+      Ver zona de cobertura
+    </button>
+  </div>
+
+  <!-- Hidden map required by Google Maps SDK -->
+  <div style="visibility: hidden; height: 1px;" #map id="map"></div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>
+
+<ion-footer class="ion-no-border" *ngIf="nuevaDireccion.lat !== 0 && nuevaDireccion.lng !== 0">
+  <div class="footer-bar">
+    <div class="footer-info">
+      <ion-icon name="location-outline" class="footer-loc-icon"></ion-icon>
+      <span class="footer-addr-text">{{ direccionMapa }}</span>
+    </div>
+    <button class="footer-cta" (click)="validarCampos()">
+      Guardar
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </button>
+  </div>
+</ion-footer>

@@ -1,258 +1,485 @@
-ion-card {
-    margin: 0;
-    padding: 20px 23px;
-    background: var(--white);
-    border-radius: 0;
-    box-shadow: none;
-    margin-bottom: 5px;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-    .banner {
-        ion-row {
-            margin: 0 -5px;
-            align-items: center;
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
+$green:  #059669;
 
-            ion-col {
-                padding: 0 5px;
-
-                img {
-                    max-width: 120px;
-                }
-
-                h3 {
-                    margin: 0;
-                    color: var(--text-light);
-                    font-weight: 400;
-                    font-size: 1rem;
-                    padding-bottom: 6px;
-                    letter-spacing: .3px;
-                }
-
-                h2 {
-                    margin: 0;
-                    color: var(--primary);
-                    font-size: 1rem;
-                    letter-spacing: .5px;
-                }
-            }
-        }
-    }
-
-    &.info {
-        ion-row {
-            margin: 0 -5px;
-            padding-bottom: 20px;
-
-            ion-col {
-                padding: 0 5px;
-
-                h2 {
-                    margin: 0;
-                    color: var(--text-light);
-                    font-weight: 400;
-                    font-size: 1rem;
-                    padding-bottom: 6px;
-                    letter-spacing: 0.3px;
-                }
-
-                h3 {
-                    margin: 0;
-                    color: var(--text-black);
-                    font-weight: 600;
-                    letter-spacing: 0;
-                    font-size: .95rem;
-                    padding-bottom: 6px;
-                }
-
-                h4 {
-                    margin: 0;
-                    color: var(--text-black);
-                    font-size: .85rem;
-                    font-weight: 400;
-                }
-            }
-
-            &:last-child {
-                padding-bottom: 0;
-            }
-        }
-    }
-
-    &.item_info {
-        margin-bottom: 0;
-
-        h2 {
-            margin: 0;
-            color: var(--text-light);
-            font-weight: 400;
-            font-size: 1rem;
-            padding-bottom: 6px;
-            letter-spacing: 0.3px;
-        }
-
-        .item_list {
-            .item {
-                width: 100%;
-                padding: 7px 0px;
-
-                h3 {
-                    margin: 0;
-                    color: var(--text-black);
-                    font-weight: 600;
-                    letter-spacing: 0;
-                    font-size: .95rem;
-
-                    span {
-                        &.quantity {
-                            min-width: 20px;
-                            color: #4d90fe;
-                        }
-
-                        &.multiply {
-                            min-width: 20px;
-                        }
-
-                        &.item_name {
-                            max-width: calc(100% - 50px);
-                            overflow: hidden;
-                            min-width: 140px;
-                        }
-
-                        &.for_this {
-                            color: var(--text-light);
-                            font-weight: 400;
-                            font-size: .83rem;
-                        }
-
-                        &.amount {
-                            min-width: 49px;
-
-                        }
-                    }
-
-                }
-            }
-        }
-    }
-
-//    &.payment_info {
-//        padding-top: 10px;
-//        margin-bottom: 0;
-//
-//        h5 {
-//            margin: 0;
-//            color: var(--text-light);
-//            font-weight: 400;
-//            font-size: 1rem;
-//            padding-bottom: 6px;
-//            letter-spacing: 0.3px;
-//
-//            .end {
-//                color: var(--text-black);
-//                font-weight: 600;
-//                letter-spacing: 0;
-//                font-size: .95rem;
-//            }
-//
-//        }
-//
-//        h2 {
-//            margin: 0;
-//            color: var(--primary);
-//            font-size: 1rem;
-//            letter-spacing: 0.5px;
-//            padding: 6px 0;
-//
-//            .end {
-//                font-size: 1.32rem;
-//            }
-//        }
-//    }
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
 }
 
+// ─── Header ───────────────────────────────────────────────────
+ion-header {
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  }
+}
 
+ion-header::after { display: none; }
+
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
+}
+
+// ─── Animations ───────────────────────────────────────────────
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -300px 0; }
+  to   { background-position: 300px 0; }
+}
+
+// ─── Skeleton ─────────────────────────────────────────────────
+.skeleton-wrap {
+  padding: 14px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-card {
+  background: $white;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.sk-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+.sk-block {
+  flex: 1;
+  height: 64px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, $border 25%, lighten($border, 4%) 37%, $border 63%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-line {
+  height: 11px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, $border 25%, lighten($border, 4%) 37%, $border 63%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s ease infinite;
+  width: 100%;
+
+  &.short  { width: 65%; }
+  &.short2 { width: 40%; }
+}
+
+// ─── Dates Card ───────────────────────────────────────────────
+.dates-card {
+  margin: 14px 16px 0;
+  background: $white;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  padding: 20px 16px;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.date-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.date-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+
+  ion-icon { font-size: 20px; }
+
+  &.pickup {
+    background: rgba(26, 108, 245, 0.10);
+    ion-icon { color: $accent; }
+  }
+
+  &.delivery {
+    background: rgba(5, 150, 105, 0.10);
+    ion-icon { color: $green; }
+  }
+}
+
+.date-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.date-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.5px;
+  text-transform: capitalize;
+}
+
+.date-year {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $mid;
+}
+
+.date-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+}
+
+.date-dash {
+  width: 1px;
+  height: 18px;
+  background: $border;
+}
+
+.date-center-icon {
+  font-size: 18px;
+  color: $border;
+}
+
+// ─── Address Card ─────────────────────────────────────────────
+.info-card {
+  margin: 12px 16px 0;
+  background: $white;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid $border;
+}
+
+.info-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(26, 108, 245, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 20px; color: $accent; }
+}
+
+.info-card-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.info-card-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.info-card-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $dark;
+}
+
+.addr-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px 8px;
+}
+
+.addr-detail-icon {
+  font-size: 14px;
+  color: $light;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.addr-detail-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: $mid;
+  line-height: 1.4;
+}
+
+.addr-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 14px;
+}
+
+.addr-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: $bg;
+  border-radius: 100px;
+  padding: 4px 10px;
+
+  ion-icon { font-size: 12px; color: $mid; flex-shrink: 0; }
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: $mid;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+}
+
+// ─── Service Sections ─────────────────────────────────────────
+.service-section {
+  margin: 12px 16px 0;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.section-header {
+  padding-bottom: 8px;
+}
+
+.service-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 100px;
+  padding: 5px 12px 5px 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+
+  .chip-icon { font-size: 14px; }
+
+  &.tintoreria       { background: rgba(26, 108, 245, 0.10); color: #1A6CF5; }
+  &.planchado        { background: rgba(217, 119, 6, 0.10);  color: #D97706; }
+  &.lavanderia       { background: rgba(8, 145, 178, 0.10);  color: #0891B2; }
+  &.blancos-y-hogar  { background: rgba(124, 58, 237, 0.10); color: #7C3AED; }
+  &.teñidos          { background: rgba(5, 150, 105, 0.10);  color: #059669; }
+}
+
+.items-card {
+  background: $white;
+  border-radius: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.category-block {
+  padding: 12px 16px 8px;
+}
+
+.category-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+
+.item-qty-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(26, 108, 245, 0.08);
+  color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.item-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-unit-price {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: $light;
+}
+
+.item-subtotal {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: $accent;
+  flex-shrink: 0;
+}
+
+.cat-divider {
+  height: 1px;
+  background: $border;
+  margin: 6px 0 4px;
+}
+
+// ─── Footer ───────────────────────────────────────────────────
 ion-footer {
-    ion-card {
-        &.promo-code {
-            padding-top: 15px;
-            padding-bottom: 15px;
-
-            h2 {
-                padding: 0;
-                color: var(--primary);
-                font-weight: 500;
-                font-size: 1rem;
-                letter-spacing: 0;
-
-                ion-icon {
-                    font-size: 1.1rem;
-                    min-width: 31px;
-                }
-            }
-        }
-
-        &.payment_info {
-            margin-bottom: 0;
-            padding-bottom: 10px;
-
-            h5 {
-                margin: 0;
-                color: var(--text-light);
-                font-weight: 400;
-                font-size: 1rem;
-                padding-bottom: 6px;
-                letter-spacing: 0.3px;
-
-                .end {
-                    color: var(--text-black);
-                    font-weight: 600;
-                    letter-spacing: 0;
-                    font-size: .95rem;
-                }
-
-            }
-
-            h2 {
-                margin: 0;
-                color: var(--primary);
-                font-size: 1rem;
-                letter-spacing: 0.5px;
-                padding: 6px 0;
-                font-weight: 600;
-                letter-spacing: 0;
-
-                .end {
-                    font-size: 1.32rem;
-                }
-            }
-        }
-    }
-
-    .button.btn {
-        font-size: 1.1rem;
-        letter-spacing: 0 !important;
-        height: 53px;
-    }
+  --background: transparent;
+  --border-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: $bg;
 }
 
-/* confirm-order.page.scss */
-.tintoreria {
-  color: #1e25ed !important; /* Color para Tintoreria */
+.footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $white;
+  margin: 6px 16px 12px;
+  border-radius: 22px;
+  padding: 14px 14px 14px 18px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.10);
 }
 
-.planchado {
-  color: #dc7502 !important;; /* Color para Planchado */
+.footer-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.lavanderia {
-  color: #15dddd !important;; /* Color para Lavanderia */
+.footer-row-minor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.blancos-y-hogar {
-  color: #f3dd66 !important;; /* Color para Blancos y Hogar */
+.footer-label-minor {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: $light;
 }
 
-.teñidos {
-  color: #2c8310 !important;; /* Color para Teñidos */
+.footer-val-free {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: $green;
 }
 
+.footer-row-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
 
+.footer-label-main {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: $mid;
+}
+
+.footer-total-amount {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.8px;
+}
+
+.footer-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 100px;
+  padding: 13px 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 14px rgba(26, 108, 245, 0.36);
+  transition: transform 0.15s;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 16px; }
+  &:active { transform: scale(0.95); }
+}
+
+.bottom-spacer { height: 24px; }

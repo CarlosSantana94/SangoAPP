@@ -1,44 +1,65 @@
-<ion-header>
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
-        </ion-buttons>
-        <ion-title>
-            Contacto
-        </ion-title>
-    </ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="toolbar-title">Contacto</span>
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg_color" fullscreen>
-    <ion-list lines="none">
-        <ion-item>
-            <div class="item_inner d-flex">
-                <div class="text_box">
-                    <p>Tel</p>
-                    <h2><a href="tel:+52 33-3122-1189">+52 33-3122-1189</a> </h2>
-                </div>
-                <ion-icon href="tel:+52 33-3122-1189" class="zmdi zmdi-phone ion-text-center end"></ion-icon>
-            </div>
-        </ion-item>
+<ion-content>
 
-        <ion-item>
-            <div class="item_inner d-flex">
-                <div class="text_box">
-                    <p>Email</p>
-                    <h2><a href="mailto:tintoreriaelectronicasango@gmail.com">tintoreriaelectronicasango&#64;gmail.com</a></h2>
-                </div>
-                <ion-icon class="zmdi zmdi-email ion-text-center end"></ion-icon>
-            </div>
-        </ion-item>
+  <!-- Hero -->
+  <div class="contact-hero">
+    <div class="hero-icon">
+      <ion-icon name="headset-outline"></ion-icon>
+    </div>
+    <span class="hero-title">¿En qué podemos ayudarte?</span>
+    <span class="hero-sub">Estamos disponibles de lunes a sábado, 8am – 6pm</span>
+  </div>
 
-        <ion-item>
-            <div class="item_inner d-flex">
-                <div class="text_box">
-                    <p>Dirección</p>
-                    <h2>Av Guadalupe 4331<br>Cd de los Niños<br>45030 Zapopan, Jal.</h2>
-                </div>
-                <ion-icon class="zmdi zmdi-navigation ion-text-center end"></ion-icon>
-            </div>
-        </ion-item>
-    </ion-list>
+  <!-- Contact Cards -->
+  <div class="contact-list">
+
+    <a class="contact-card" href="tel:+523331221189" style="animation-delay: 0.06s">
+      <div class="contact-icon green">
+        <ion-icon name="call-outline"></ion-icon>
+      </div>
+      <div class="contact-body">
+        <span class="contact-label">Teléfono</span>
+        <span class="contact-value">+52 33-3122-1189</span>
+        <span class="contact-hint">Toca para llamar</span>
+      </div>
+      <ion-icon name="arrow-forward-outline" class="contact-arrow"></ion-icon>
+    </a>
+
+    <a class="contact-card" href="mailto:tintoreriaelectronicasango@gmail.com" style="animation-delay: 0.12s">
+      <div class="contact-icon blue">
+        <ion-icon name="mail-outline"></ion-icon>
+      </div>
+      <div class="contact-body">
+        <span class="contact-label">Correo electrónico</span>
+        <span class="contact-value">tintoreriaelectronicasango&#64;gmail.com</span>
+        <span class="contact-hint">Toca para enviar email</span>
+      </div>
+      <ion-icon name="arrow-forward-outline" class="contact-arrow"></ion-icon>
+    </a>
+
+    <div class="contact-card static" style="animation-delay: 0.18s">
+      <div class="contact-icon amber">
+        <ion-icon name="location-outline"></ion-icon>
+      </div>
+      <div class="contact-body">
+        <span class="contact-label">Dirección</span>
+        <span class="contact-value">Av Guadalupe 4331</span>
+        <span class="contact-value">Cd de los Niños, 45030</span>
+        <span class="contact-value">Zapopan, Jalisco</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>

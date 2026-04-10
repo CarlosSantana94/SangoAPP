@@ -1,94 +1,94 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Menu</ion-title>
+    <ion-title>
+      <span class="toolbar-title">Cuenta</span>
+    </ion-title>
   </ion-toolbar>
-  <div class="banner d-flex" (click)="my_profile()">
-   <!-- <div class="img_box center_img">
-      <img src="{{photoURL}}" class="crop_img" referrerpolicy=“no-referrer”>
-    </div>-->
-    <div class="text_box">
-      <h2 *ngIf="nombre!=='undefined'">Hola, {{ nombre }}</h2>
-      <h3 class="d-flex"> {{ email }}
-        <ion-icon class="zmdi zmdi-chevron-right ion-text-end end"></ion-icon>
-      </h3>
-    </div>
-  </div>
 </ion-header>
 
 <ion-content>
-  <ion-list lines="none">
-    <!--  <ion-item (click)="my_orders()">
-         <div class="item_inner d-flex">
-             <ion-icon class="zmdi zmdi-storage ion-text-start"></ion-icon>
-             <h2> {{'My_Orders' | translate}}</h2>
-         </div>
-     </ion-item> -->
 
-    <ion-item (click)="my_address()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-pin ion-text-start"></ion-icon>
-        <h2> Mis Direcciones</h2>
+  <!-- Profile Hero Card -->
+  <div class="profile-card" (click)="my_profile()" style="animation-delay: 0s">
+    <div class="avatar">
+      <span class="avatar-initial">{{ nombre && nombre !== 'undefined' ? nombre.charAt(0).toUpperCase() : '?' }}</span>
+    </div>
+    <div class="profile-info">
+      <span class="profile-name">{{ nombre && nombre !== 'undefined' ? nombre : 'Mi Perfil' }}</span>
+      <span class="profile-email">{{ email }}</span>
+    </div>
+    <ion-icon name="chevron-forward-outline" class="profile-chevron"></ion-icon>
+  </div>
+
+  <!-- Group: Mi Cuenta -->
+  <div class="settings-group" style="animation-delay: 0.07s">
+    <div class="group-label">Mi Cuenta</div>
+    <div class="settings-card">
+      <div class="settings-item" (click)="my_address()">
+        <div class="item-icon blue"><ion-icon name="location-outline"></ion-icon></div>
+        <span class="item-label">Mis Direcciones</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron"></ion-icon>
       </div>
-    </ion-item>
-
-    <ion-item (click)="zonaDeCobertura()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-map ion-text-start" name="map-outline"></ion-icon>
-        <h2> Zona de Cobertura</h2>
+      <div class="item-divider"></div>
+      <div class="settings-item" (click)="zonaDeCobertura()">
+        <div class="item-icon green"><ion-icon name="map-outline"></ion-icon></div>
+        <span class="item-label">Zona de Cobertura</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron"></ion-icon>
       </div>
-    </ion-item>
+    </div>
+  </div>
 
-    <ion-item (click)="faq()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-assignment-check ion-text-start"></ion-icon>
-        <h2> {{ 'faqs' | translate }}</h2>
+  <!-- Group: Soporte -->
+  <div class="settings-group" style="animation-delay: 0.13s">
+    <div class="group-label">Soporte</div>
+    <div class="settings-card">
+      <div class="settings-item" (click)="faq()">
+        <div class="item-icon purple"><ion-icon name="help-circle-outline"></ion-icon></div>
+        <span class="item-label">Preguntas Frecuentes</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron"></ion-icon>
       </div>
-    </ion-item>
-
-
-    <ion-item (click)="contact_us()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-email ion-text-start"></ion-icon>
-        <h2> Contacto</h2>
+      <div class="item-divider"></div>
+      <div class="settings-item" (click)="contact_us()">
+        <div class="item-icon amber"><ion-icon name="call-outline"></ion-icon></div>
+        <span class="item-label">Contacto</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron"></ion-icon>
       </div>
-    </ion-item>
+    </div>
+  </div>
 
-    <!-- <ion-item (click)="chat_with_us()">
-         <div class="item_inner d-flex">
-             <ion-icon class="zmdi zmdi-comments ion-text-start"></ion-icon>
-             <h2> {{'chat_with_us' | translate}}</h2>
-         </div>
-     </ion-item>-->
-
-    <ion-item (click)="terms_conditions()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-assignment-alert ion-text-start"></ion-icon>
-        <h2>Terminos & Condiciones</h2>
+  <!-- Group: Legal -->
+  <div class="settings-group" style="animation-delay: 0.19s">
+    <div class="group-label">Legal</div>
+    <div class="settings-card">
+      <div class="settings-item" (click)="terms_conditions()">
+        <div class="item-icon slate"><ion-icon name="document-text-outline"></ion-icon></div>
+        <span class="item-label">Términos y Condiciones</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron"></ion-icon>
       </div>
-    </ion-item>
-
-    <ion-item (click)="avisoDePrivacidad()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-assignment-alert ion-text-start"></ion-icon>
-        <h2> Aviso de Privacidad</h2>
+      <div class="item-divider"></div>
+      <div class="settings-item" (click)="avisoDePrivacidad()">
+        <div class="item-icon slate"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
+        <span class="item-label">Aviso de Privacidad</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron"></ion-icon>
       </div>
-    </ion-item>
-    <!--
-            <ion-item (click)="change_language()">
-                <div class="item_inner d-flex">
-                    <ion-icon class="zmdi zmdi-globe ion-text-start"></ion-icon>
-                    <h2> {{'change_language' | translate}}</h2>
-                </div>
-            </ion-item>-->
+    </div>
+  </div>
 
-    <ion-item (click)="logout()">
-      <div class="item_inner d-flex">
-        <ion-icon class="zmdi zmdi-open-in-new ion-text-start"></ion-icon>
-        <h2> {{ 'Logout' | translate }}</h2>
+  <!-- Logout -->
+  <div class="settings-group logout-group" style="animation-delay: 0.25s">
+    <div class="settings-card">
+      <div class="settings-item danger-item" (click)="logout()">
+        <div class="item-icon red"><ion-icon name="log-out-outline"></ion-icon></div>
+        <span class="item-label danger-label">Cerrar Sesión</span>
+        <ion-icon name="chevron-forward-outline" class="item-chevron danger-chevron"></ion-icon>
       </div>
-    </ion-item>
-  </ion-list>
+    </div>
+  </div>
 
+  <div class="footer-brand">
+    <span class="brand-name">SANGO Tintorería</span>
+    <span class="brand-version">v3.0</span>
+  </div>
 
+  <div class="bottom-spacer"></div>
 </ion-content>
-

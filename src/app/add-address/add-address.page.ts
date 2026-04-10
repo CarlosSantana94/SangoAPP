@@ -9,7 +9,6 @@ import {NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions} from '@ioni
 
 declare const google;
 
-
 @Component({
   selector: 'app-add-address',
   templateUrl: './add-address.page.html',
@@ -17,13 +16,19 @@ declare const google;
 })
 export class AddAddressPage implements OnInit {
   locations: Observable<any>;
-  // Map related
   @ViewChild('map') mapElement: ElementRef;
-
 
   map: any;
   markers = [];
-  direccionABuscar: string;
+
+  // ── Split-search state ───────────────────────────────────────
+  calle: string = '';
+  numero: string = '';
+  suggestions: any[] = [];
+  noNumberError: boolean = false;
+  debounceTimer: any = null;
+  autocompleteService: any = null;
+  placesService: any = null;
 
   nuevaDireccion = {
     direccion: '',
@@ -46,146 +51,140 @@ export class AddAddressPage implements OnInit {
   };
   direccionMapa = '';
 
-
   constructor(private modalController: ModalController,
               private rest: RESTService,
               private route: Router,
               private geolocation: Geolocation,
               private nativeGeocoder: NativeGeocoder,
               public zone: NgZone,
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
     setTimeout(() => {
       this.loadMap();
     }, 1500);
-
   }
 
   async loadMap() {
-    /*Geolocation.requestPermissions().then(p => {
-        console.log(p);
-    }).catch(e => {
-        console.log(e);
-    });*/
-    let coordinates = {lat: 20.663930, lng: -103.414894};
+    const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
+    let coordinates = matrizUbicacion;
+
     this.geolocation.getCurrentPosition().then((resp) => {
-      coordinates = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-    });
-    console.log('Current position:', coordinates);
-    if (coordinates) {
-      const latLng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
+      coordinates = {lat: resp.coords.latitude, lng: resp.coords.longitude};
+    }).catch(() => {});
 
-      const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
-      // Create a bounding box with sides ~30km away from the center point
-      const defaultBounds = {
-        north: matrizUbicacion.lat + 0.03,
-        south: matrizUbicacion.lat - 0.03,
-        east: matrizUbicacion.lng + 0.03,
-        west: matrizUbicacion.lng - 0.03,
-      };
+    const latLng = new google.maps.LatLng(coordinates.lat, coordinates.lng);
 
+    const mapOptions = {
+      center: latLng,
+      zoom: 16,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+    };
 
-      const mapOptions = {
-        center: latLng,
-        zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        strictBounds: true,
-        bounds: defaultBounds,
-      };
+    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
-      this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-
-      const markerLocal = new google.maps.Marker({
-        map: this.map,
-        animation: google.maps.Animation.DROP,
-        position: latLng
-      });
-
-
-      const matrizMarker = new google.maps.Marker({
-        map: this.map,
-        animation: google.maps.Animation.DROP,
-        position: matrizUbicacion,
-        icon: 'assets/imgs/logo_sango_mini.png'
-      });
-
-      const cityCircle = new google.maps.Rectangle({
-        strokeColor: '#3560ee',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: 'rgba(149,255,82,0.53)',
-        fillOpacity: 0.35,
-        map: this.map,
-        center: matrizUbicacion,
-        bounds: defaultBounds
-      });
-
-
-      markerLocal.setMap(this.map);
-      matrizMarker.setMap(this.map);
-      const input = document.getElementById('pac-input') as HTMLInputElement;
-
-
-      const options = {
-        fields: ['formatted_address', 'geometry', 'name'],
-        strictBounds: true,
-        bounds: defaultBounds,
-        types: ['address'],
-        componentRestrictions: {
-          country: ['mx']
-        }
-      };
-
-
-      const autocomplete = new google.maps.places.Autocomplete(input, options);
-
-
-      autocomplete.addListener('place_changed', () => {
-
-        markerLocal.setVisible(false);
-        const place = autocomplete.getPlace();
-
-        if (!place.geometry || !place.geometry.location) {
-          // User entered the name of a Place that was not suggested and
-          // pressed the Enter key, or the Place Details request failed.
-          window.alert('No details available for input: \'' + place.name + '\'');
-          return;
-        }
-        this.nuevaDireccion.lat = place.geometry.location.lat();
-        this.nuevaDireccion.lng = place.geometry.location.lng();
-
-        // If the place has a geometry, then present it on a map.
-        if (place.geometry.viewport) {
-          this.map.fitBounds(place.geometry.viewport);
-        } else {
-          this.map.setCenter(place.geometry.location);
-          this.map.setZoom(17);
-        }
-        markerLocal.setPosition(place.geometry.location);
-        markerLocal.setVisible(true);
-
-        console.log(place.geometry.location);
-
-        console.log(this.nuevaDireccion);
-
-        this.direccionMapa = input.value;
-        console.log(this.direccionMapa);
-      });
-    }
+    // Use AutocompleteService + PlacesService for custom two-field search
+    this.autocompleteService = new google.maps.places.AutocompleteService();
+    this.placesService = new google.maps.places.PlacesService(this.map);
   }
 
+  // Combined query from calle + numero
+  get searchQuery(): string {
+    const c = this.calle.trim();
+    const n = this.numero.trim();
+    return n ? `${c} ${n}` : c;
+  }
 
-  address_title() {
-    this.modalController.create({component: AddressTitlePage}).then((modalElement) => {
-        modalElement.present();
+  // Called on input change in either calle or numero fields
+  buscarDirecciones() {
+    this.noNumberError = false;
+
+    // Clear previous selection when user edits the street
+    if (this.nuevaDireccion.lat !== 0) {
+      this.clearSeleccion();
+    }
+
+    if (this.calle.trim().length < 3 || !this.autocompleteService) {
+      this.suggestions = [];
+      return;
+    }
+
+    if (this.debounceTimer) clearTimeout(this.debounceTimer);
+
+    this.debounceTimer = setTimeout(() => {
+      const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
+      const bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(matrizUbicacion.lat - 0.03, matrizUbicacion.lng - 0.03),
+        new google.maps.LatLng(matrizUbicacion.lat + 0.03, matrizUbicacion.lng + 0.03)
+      );
+
+      this.autocompleteService.getPlacePredictions({
+        input: this.searchQuery,
+        bounds,
+        componentRestrictions: {country: 'mx'},
+        types: ['address']
+      }, (predictions: any[], status: string) => {
+        this.zone.run(() => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+            this.suggestions = predictions;
+          } else {
+            this.suggestions = [];
+          }
+        });
+      });
+    }, 350);
+  }
+
+  // Called when user taps a suggestion from the list
+  seleccionarSugerencia(sugerencia: any) {
+    if (!this.placesService) return;
+    this.suggestions = [];
+
+    this.placesService.getDetails(
+      {placeId: sugerencia.place_id, fields: ['geometry', 'formatted_address', 'address_components']},
+      (place: any, status: string) => {
+        this.zone.run(() => {
+          if (status !== google.maps.places.PlacesServiceStatus.OK || !place) return;
+
+          // Check for street_number in Google's address components
+          const streetNumComp = place.address_components?.find(
+            (c: any) => c.types.includes('street_number')
+          );
+
+          // No number from Google AND user hasn't typed one → block and ask for number
+          if (!streetNumComp && !this.numero.trim()) {
+            this.noNumberError = true;
+            return;
+          }
+
+          // Capture lat/lng and formatted address
+          this.nuevaDireccion.lat = place.geometry.location.lat();
+          this.nuevaDireccion.lng = place.geometry.location.lng();
+          this.direccionMapa = place.formatted_address || sugerencia.description;
+
+          // Auto-fill numero field from Google if user hadn't typed one
+          if (streetNumComp && !this.numero.trim()) {
+            this.numero = streetNumComp.long_name;
+          }
+        });
       }
     );
   }
 
+  // Reset address selection so user can start over
+  clearSeleccion() {
+    this.nuevaDireccion.lat = 0;
+    this.nuevaDireccion.lng = 0;
+    this.direccionMapa = '';
+    this.noNumberError = false;
+    this.suggestions = [];
+  }
+
+  address_title() {
+    this.modalController.create({component: AddressTitlePage}).then((modalElement) => {
+      modalElement.present();
+    });
+  }
 
   validarCampos() {
     let existeError = false;
@@ -198,7 +197,9 @@ export class AddAddressPage implements OnInit {
       cp: 'black',
       alias: 'black',
     };
+
     this.nuevaDireccion.direccion = this.direccionMapa;
+
     if (this.nuevaDireccion.nombre === '') {
       this.nuevaDireccionColores.nombreCompleto = 'danger';
       existeError = true;
@@ -216,15 +217,11 @@ export class AddAddressPage implements OnInit {
       existeError = true;
     }
 
-    console.log(this.nuevaDireccion);
-
     if (!existeError) {
       this.rest.postDireccion(this.nuevaDireccion).subscribe(data => {
         console.log(data);
         this.select_address();
       });
-    } else {
-      console.log('error');
     }
   }
 

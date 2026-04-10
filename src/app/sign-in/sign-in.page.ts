@@ -132,22 +132,6 @@ export class SignInPage implements OnInit {
           },
         }) as SocialLoginResponse;
 
-        console.log('Google user name: ', googleUser.result.profile.name);
-        console.log('Google user email: ', googleUser.result.profile.email);
-        console.log('Access token: ', googleUser.result.accessToken.token);
-
-// Example of creating your user object
-        const userData = {
-          id: googleUser.result.profile.id,
-          email: googleUser.result.profile.email,
-          isVerified: true, // Google emails are typically verified
-          imageUrl: googleUser.result.profile.imageUrl,
-          fullName: googleUser.result.profile.name,
-          authMethod: "GOOGLE LOGIN",
-          accessToken: googleUser.result.accessToken.token,
-          idToken: googleUser.result.idToken
-        };
-
        let userV2 = new UsuarioV2(
          googleUser.result.profile.id,
          googleUser.result.profile.email,

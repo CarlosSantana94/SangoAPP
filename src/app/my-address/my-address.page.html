@@ -1,44 +1,64 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Mis Direcciones
+      <span class="toolbar-title">Mis Direcciones</span>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg_color" fullscreen>
-  <div class="form">
-    <h1>Seleccionar Dirección</h1>
-    <ion-list lines="none">
-      <ion-radio-group>
-        <div *ngFor="let direccion of direcciones" class="address-item">
-          <div class="address-info">
-            <ion-label>
-              <h2>{{ direccion.alias }}</h2>
-              <p>
-                {{ direccion.direccion }}<br>
-                {{ direccion.cp }}<br>
-                {{ direccion.tel }}
-              </p>
-            </ion-label>
-          </div>
-          <div class="address-actions">
-            <ion-button color="primary" size="small" (click)="edit_address(direccion.id)">
-              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-            </ion-button>
-            <ion-button color="danger" size="small" (click)="deleteAddress(direccion)">
-              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-            </ion-button>
-          </div>
-        </div>
-      </ion-radio-group>
-    </ion-list>
+<ion-content>
+
+  <!-- Empty state -->
+  <div class="empty-state" *ngIf="direcciones.length === 0">
+    <div class="empty-icon">
+      <ion-icon name="location-outline"></ion-icon>
+    </div>
+    <p>Sin direcciones guardadas</p>
+    <span>Agrega una dirección para agilizar tus pedidos</span>
   </div>
-  <ion-button size="large" shape="block" class="btn" (click)="add_address()">
-    <ion-icon name="add-circle-outline"></ion-icon>
-    Agregar Dirección
-  </ion-button>
+
+  <!-- Address list -->
+  <div class="list-wrap" *ngIf="direcciones.length > 0">
+    <div class="section-label">{{ direcciones.length }} dirección{{ direcciones.length !== 1 ? 'es' : '' }}</div>
+
+    <div
+      class="address-card"
+      *ngFor="let direccion of direcciones; let i = index"
+      [style.animation-delay]="(i * 0.06) + 's'">
+
+      <div class="addr-icon-wrap">
+        <ion-icon name="home-outline"></ion-icon>
+      </div>
+
+      <div class="addr-body">
+        <span class="addr-alias">{{ direccion.alias }}</span>
+        <span class="addr-street">{{ direccion.direccion }}</span>
+        <span class="addr-meta">CP {{ direccion.cp }} · {{ direccion.tel }}</span>
+      </div>
+
+      <div class="addr-actions">
+        <button class="addr-btn edit" (click)="edit_address(direccion.id)">
+          <ion-icon name="create-outline"></ion-icon>
+        </button>
+        <button class="addr-btn delete" (click)="deleteAddress(direccion)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>
+
+<ion-footer class="ion-no-border">
+  <div class="footer-bar">
+    <button class="add-btn" (click)="add_address()">
+      <ion-icon name="add-outline"></ion-icon>
+      Nueva Dirección
+    </button>
+  </div>
+</ion-footer>

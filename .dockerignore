@@ -1,0 +1,10 @@
+node_modules
+android
+ios
+www
+dist
+.git
+.github
+.claude
+*.md
+.env*

@@ -1,145 +1,521 @@
-.payment-method-container {
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
+$green:  #059669;
+$danger: #DC2626;
+
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
+}
+
+// ─── Header ───────────────────────────────────────────────────
+ion-header {
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+  }
+}
+
+ion-header::after { display: none; }
+
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
+}
+
+// ─── Animations ───────────────────────────────────────────────
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Section Label ────────────────────────────────────────────
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: $mid;
+  padding: 18px 20px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+// ─── Method Cards ─────────────────────────────────────────────
+.method-cards {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 0 20px;
+  gap: 10px;
+  padding: 0 16px;
+  animation: card-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.content-grid {
+.method-card {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: auto;
+  align-items: center;
+  gap: 14px;
+  background: $white;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+
+  &:active { transform: scale(0.985); }
+
+  &.selected {
+    border-color: rgba(26, 108, 245, 0.28);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(26, 108, 245, 0.14);
+  }
 }
 
-.button-row {
-  margin-bottom: 20px;
-}
-
-.button-col {
+.method-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: $bg;
+  color: $light;
   display: flex;
+  align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+
+  ion-icon { font-size: 22px; }
+
+  &.cash-active {
+    background: rgba(5, 150, 105, 0.12);
+    color: $green;
+  }
+
+  &.card-active {
+    background: rgba(26, 108, 245, 0.12);
+    color: $accent;
+  }
 }
 
-.method-btn {
-  width: 100%;
-  height: 70px;
-  font-size: 1.4rem;
-  --border-radius: 8px;
-  --background: var(--primary);
-  --color: var(--white);
+.method-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.efectivo-btn {
-  --background: darkgreen;
+.method-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $dark;
 }
 
-.tarjeta-btn {
-  --background: #3c5a9a;
-}
-/* Specific styles for each button variation */
-.recibir-btn {
-  color: green;
-  --background: #d9e1d4; /* Custom color */
+.method-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: $light;
+  line-height: 1.3;
 }
 
-.entregar-btn {
-  color: green;
-  --background: #d9e1d4; /* Different custom color */
-}
-/* Add a hover effect */
-.entregar-btn:hover,
-.recibir-btn:hover {
-  transform: scale(1.02); /* Slight scaling effect */
-  --background:darkgreen; /* Changes color on hover */
-  color: white;
-}
-/* Ensure ion-row and ion-col don't constrain width */
-ion-row, ion-col {
-  flex-wrap: wrap; /* Allow the content to wrap */
-  display: flex; /* Make sure flex behavior is active */
-}
-.input-item.invalid {
-  --background: #ffe6e6; /* Light red background for invalid input */
-  --border-color: #ff4d4d; /* Red border for invalid input */
-}
+.method-radio {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid $border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
 
-.custom-title {
-  font-size: 1.4rem;
-  font-weight: bold;
-  text-align: center;
-  color: var(--ion-color-primary);
-  margin-bottom: 15px;
-  white-space: normal;
-  max-width: 100%; /* Ensure it takes the full width available */
-  display: block; /* Make sure it behaves as a block element */
-}
+  .radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.2s, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: scale(0);
+  }
 
+  &.checked {
+    border-color: $accent;
 
-
-.option-row {
-  margin-top: 20px;
-  width: 100%;
-}
-
-.card-input {
-  --background: var(--ion-color-light);
-  --box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 15px;
-}
-
-.card-input ion-card-header {
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: var(--ion-color-dark);
-  border-bottom: 1px solid var(--ion-color-medium);
-}
-
-.input-item {
-  margin-top: 10px;
-  --inner-padding-start: 12px;
-}
-
-.expiration-grid {
-  margin-top: 15px;
-}
-
-.expiration-grid ion-item {
-  --inner-padding-start: 12px;
-}
-
-ion-item ion-icon {
-  font-size: 1.2rem;
-  color: var(--ion-color-primary);
-}
-
-ion-footer {
-  .btn {
-    display: flex;
-    align-items: center;
-    min-height: 53px;
-    background: var(--primary);
-    padding: 5px 20px;
-
-    h2 {
-      margin: auto;
-      color: var(--white);
-      font-size: .98rem;
-      letter-spacing: 0;
-
-      span {
-        display: flex;
-        align-items: center;
-        font-size: 1.15rem;
-        min-width: fit-content;
-
-        ion-icon {
-          font-size: 1.3rem;
-        }
-      }
-
+    .radio-dot {
+      background: $accent;
+      transform: scale(1);
     }
   }
 }
+
+// ─── Timing Section ───────────────────────────────────────────
+.timing-section {
+  animation: slide-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.timing-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px;
+}
+
+.timing-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: $white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+
+  &:active { transform: scale(0.985); }
+
+  &.selected {
+    border-color: rgba(5, 150, 105, 0.32);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(5, 150, 105, 0.14);
+  }
+}
+
+.timing-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: $bg;
+  color: $light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+
+  ion-icon { font-size: 20px; }
+
+  &.active {
+    background: rgba(5, 150, 105, 0.12);
+    color: $green;
+  }
+}
+
+.timing-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timing-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: $dark;
+}
+
+.timing-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  color: $light;
+}
+
+.timing-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: $green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.25s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  ion-icon { font-size: 14px; color: $white; }
+
+  &.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ─── Card Form ────────────────────────────────────────────────
+.card-form {
+  margin: 14px 16px 0;
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  animation: slide-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid $border;
+}
+
+.form-header-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(26, 108, 245, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 20px; color: $accent; }
+}
+
+.form-header-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.form-header-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $dark;
+}
+
+.form-header-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: $light;
+}
+
+// ─── Field Rows ───────────────────────────────────────────────
+.field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  transition: background 0.15s;
+
+  &.field-error { background: rgba(220, 38, 38, 0.03); }
+}
+
+.field-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(26, 108, 245, 0.08);
+  color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: background 0.2s, color 0.2s;
+
+  ion-icon { font-size: 17px; }
+
+  &.error-icon {
+    background: rgba(220, 38, 38, 0.10);
+    color: $danger;
+  }
+}
+
+.field-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.required-star {
+  color: $accent;
+  font-size: 11px;
+}
+
+.field-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: $dark;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 3px 0;
+
+  &::placeholder { color: $light; font-weight: 400; font-size: 13.5px; }
+}
+
+.field-select {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: $dark;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 3px 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.error-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: $danger;
+  margin-top: 2px;
+}
+
+.field-divider {
+  height: 1px;
+  background: $border;
+  margin-left: 64px;
+}
+
+// ─── Expiry / CVV row ─────────────────────────────────────────
+.expiry-cvv-row {
+  display: flex;
+  align-items: stretch;
+  border-top: 1px solid $border;
+}
+
+.expiry-field {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px 10px 11px 12px;
+}
+
+.expiry-icon-wrap {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(26, 108, 245, 0.08);
+  color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 10px;
+
+  ion-icon { font-size: 13px; }
+}
+
+.expiry-sep {
+  width: 1px;
+  background: $border;
+  align-self: stretch;
+  margin: 8px 0;
+  flex-shrink: 0;
+}
+
+// ─── Footer ───────────────────────────────────────────────────
+ion-footer {
+  --background: transparent;
+  --border-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: $bg;
+}
+
+.footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $white;
+  margin: 6px 16px 12px;
+  border-radius: 22px;
+  padding: 14px 14px 14px 18px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.10);
+}
+
+.footer-total-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.footer-total-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-total-amount {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.8px;
+}
+
+.footer-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 14px rgba(26, 108, 245, 0.36);
+  transition: transform 0.15s, opacity 0.2s;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 15px; }
+  &:active { transform: scale(0.95); }
+
+  &.cta-disabled {
+    opacity: 0.4;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+}
+
+.bottom-spacer { height: 24px; }

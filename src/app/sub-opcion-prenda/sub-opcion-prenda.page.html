@@ -1,73 +1,75 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header class="ion-no-border">
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button style="color: white" text="" icon="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
     <ion-title>
-      {{nombreServicio}}<span class="icon-forward"><ion-icon name="caret-forward-outline"></ion-icon></span>{{nombreOpcion}}
+      <div class="breadcrumb">
+        <span class="bc-parent">{{ nombreServicio }}</span>
+        <ion-icon name="chevron-forward-outline" class="bc-sep"></ion-icon>
+        <span class="bc-current">{{ nombreOpcion }}</span>
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        <h2 class="page-title" *ngIf="tieneCuenta">Seleccione sus prendas</h2>
-        <h2 class="page-title" *ngIf="!tieneCuenta">Prendas</h2>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6" size-md="4" *ngFor="let prenda of subPrendas; trackBy: trackByFn">
-        <ion-card class="prenda-card" >
-          <img [src]="prenda.img" class="prenda-img" (click)="abrirModal(prenda.img)" />
-          <ion-card-header>
-            <ion-card-subtitle>{{prenda.nombre}}</ion-card-subtitle>
-            <ion-card-title>${{prenda.precio}}</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <p>{{prenda.descripcion}}</p>
-            <ion-row class="quantity-row" *ngIf="tieneCuenta">
-              <ion-col size="4" class="center-content">
-                <ion-button fill="clear" size="small" (click)="removerPrenda(prenda)" *ngIf="prenda.cantidad > 0">
-                  <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
-                </ion-button>
-              </ion-col>
-              <ion-col size="4" class="center-content">
-                <h3>{{prenda.cantidad}}</h3>
-              </ion-col>
-              <ion-col size="4" class="center-content">
-                <ion-button fill="clear" size="small" (click)="agregarPrenda(prenda)">
-                  <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-                </ion-button>
-              </ion-col>
-            </ion-row>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
-  <ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="tieneCuenta">
-    <ion-badge color="success" style="left: -5px; z-index: 3; position: absolute;">{{totalPrendas}}</ion-badge>
-    <ion-fab-button color="tertiary" (click)="goToCart()">
-      <ion-icon name="cart-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+
+  <div class="page-header">
+    <h2 class="page-title">{{ tieneCuenta ? 'Selecciona tus prendas' : 'Prendas disponibles' }}</h2>
+  </div>
+
+  <div class="prendas-grid">
+    <div
+      class="prenda-card"
+      *ngFor="let prenda of subPrendas; trackBy: trackByFn; let i = index"
+      [style.animation-delay]="(i * 0.06) + 's'"
+      [class.has-items]="prenda.cantidad > 0">
+
+      <div class="prenda-img-wrap" (click)="abrirModal(prenda.img)">
+        <img [src]="prenda.img" class="prenda-img" />
+        <div class="img-zoom-hint">
+          <ion-icon name="expand-outline"></ion-icon>
+        </div>
+      </div>
+
+      <div class="prenda-info">
+        <h3 class="prenda-name">{{ prenda.nombre }}</h3>
+        <p class="prenda-desc" *ngIf="prenda.descripcion">{{ prenda.descripcion }}</p>
+        <span class="prenda-price">${{ prenda.precio }}</span>
+      </div>
+
+      <div class="qty-row" *ngIf="tieneCuenta">
+        <button
+          class="qty-btn minus"
+          (click)="removerPrenda(prenda)"
+          [class.invisible]="!prenda.cantidad">
+          <ion-icon name="remove-outline"></ion-icon>
+        </button>
+        <span class="qty-num" [class.positive]="prenda.cantidad > 0">
+          {{ prenda.cantidad || 0 }}
+        </span>
+        <button class="qty-btn plus" (click)="agregarPrenda(prenda)">
+          <ion-icon name="add-outline"></ion-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>
 
-<ion-footer *ngIf="tieneCuenta">
-  <ion-toolbar>
-    <ion-buttons slot="start" *ngIf="totalPrendas > 0">
-      <ion-button (click)="goToCart()">
-        <ion-badge color="tertiary">{{totalPrendas}}</ion-badge>
-        Prendas
-      </ion-button>
-    </ion-buttons>
-    <ion-title>${{total}}</ion-title>
-    <ion-buttons slot="end" *ngIf="total>0">
-      <ion-button color="success" (click)="irAEnvios()">Continuar
-        <ion-icon slot="end" name="caret-forward-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+<ion-footer class="ion-no-border" *ngIf="tieneCuenta">
+  <div class="footer-bar">
+    <div class="footer-left" (click)="goToCart()" *ngIf="totalPrendas > 0">
+      <div class="footer-badge">{{ totalPrendas }}</div>
+      <span class="footer-items">prendas</span>
+    </div>
+    <div class="footer-total">${{ total || 0 }}</div>
+    <button class="footer-cta" (click)="irAEnvios()" *ngIf="total > 0">
+      Continuar
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </button>
+  </div>
 </ion-footer>

@@ -1,59 +1,289 @@
-.form {
-  padding-top: 40px;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
-  .img_box {
-    background: var(--bg-color);
-    margin: 0 auto;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    cursor: pointer;
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
 
-    img {
-      border-radius: 50%;
-    }
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
+}
 
-    ion-icon {
-      font-size: 1.8rem;
-      color: var(--primary-color);
-      margin: auto;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  }
-
-  ion-item {
-    border: none !important;
-
-    &::after {
-      display: none;
-    }
-
-    .item_inner {
-      display: flex;
-      align-items: center;
-
-      .input_box {
-        flex: 1;
-        margin-left: 10px;
-      }
-
-      ion-input {
-        transition: background-color 0.3s, border 0.3s;
-
-        &.editable {
-          background-color: var(--ion-color-light);
-          border: 1px solid var(--ion-color-primary);
-          border-radius: 5px;
-          padding: 5px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-      }
-    }
+// ─── Header ───────────────────────────────────────────────────
+ion-header {
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
   }
 }
+
+ion-header::after { display: none; }
+
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
+}
+
+.header-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(26, 108, 245, 0.10);
+  color: $accent;
+  border: none;
+  border-radius: 100px;
+  padding: 7px 13px;
+  margin-right: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+
+  ion-icon { font-size: 15px; }
+  &:active { transform: scale(0.94); }
+
+  &.save {
+    background: $accent;
+    color: $white;
+    box-shadow: 0 3px 12px rgba(26, 108, 245, 0.32);
+  }
+}
+
+// ─── Avatar Section ───────────────────────────────────────────
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 24px 20px;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(26, 108, 245, 0.30);
+  margin-bottom: 12px;
+}
+
+.avatar-initial {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.avatar-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.3px;
+}
+
+.avatar-edit-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: $accent;
+  margin-top: 4px;
+}
+
+// ─── Form Card ────────────────────────────────────────────────
+.form-card {
+  margin: 0 16px;
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.field-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(26, 108, 245, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.field-icon {
+  font-size: 18px;
+  color: $accent;
+}
+
+.field-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.field-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: $dark;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 0;
+
+  &[readonly] {
+    color: $dark;
+    cursor: default;
+  }
+
+  &.editable {
+    color: $accent;
+    border-bottom: 1.5px solid rgba(26, 108, 245, 0.30);
+    padding-bottom: 2px;
+  }
+
+  &::placeholder { color: $light; }
+}
+
+.field-divider {
+  height: 1px;
+  background: $border;
+  margin-left: 64px;
+}
+
+// ─── Cancel Button ────────────────────────────────────────────
+.cancel-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+
+.cancel-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: $mid;
+  border: 1.5px solid $border;
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+
+  ion-icon { font-size: 16px; }
+  &:active { transform: scale(0.96); }
+}
+
+// ─── Danger Zone ──────────────────────────────────────────────
+.danger-zone {
+  margin: 22px 16px 0;
+}
+
+.group-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 8px;
+  padding-left: 4px;
+}
+
+.danger-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: $white;
+  border-radius: 18px;
+  padding: 15px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: background 0.15s;
+
+  &:active { background: #FEF2F2; }
+}
+
+.danger-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 18px; color: #DC2626; }
+}
+
+.danger-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.danger-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #DC2626;
+}
+
+.danger-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11.5px;
+  color: $light;
+}
+
+.danger-chevron {
+  font-size: 16px;
+  color: rgba(220, 38, 38, 0.28);
+}
+
+.bottom-spacer { height: 32px; }

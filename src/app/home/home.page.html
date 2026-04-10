@@ -1,181 +1,149 @@
-<ion-header>
+<ion-header class="ion-no-border home-header">
   <ion-toolbar>
-    <ion-title><strong>Sango </strong>Tintorerias</ion-title>
+    <div class="header-inner">
+      <div class="greeting-block">
+        <p class="greeting-sub">Hola,</p>
+        <h1 class="greeting-name">{{ nombre ? (nombre | slice:0:14) : 'Bienvenido' }}</h1>
+      </div>
+      <div class="header-right">
+        <div class="refresh-dot" [class.active]="isRefreshing"></div>
+        <button class="call-pill" (click)="llamar()">
+          <ion-icon name="call-outline"></ion-icon>
+          <span>Llamar</span>
+        </button>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg_color" fullscreen>
+<ion-content [fullscreen]="true">
 
-  <div class="banner">
-    <ion-slides pager="true" loop="true">
-      <ion-slide>
-        <div class="img_box center_img">
-          <img src="assets/imgs/lavanderiapiernas.png" class="crop_img">
-        </div>
-        <div class="text_box">
-          <h1>Envio <br>Gratis</h1>
-        </div>
-      </ion-slide>
-      <!--<ion-slide (click)="offers()">
-          <div class="img_box center_img">
-              <img src="assets/imgs/SIN%20COSTO%20DE%20ENVIO.gif" class="crop_img">
-          </div>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content
+      pulling-icon="chevron-down-circle-outline"
+      refreshing-spinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
 
-      </ion-slide>-->
-
-      <!--<ion-slide (click)="offers()">
-          <div class="img_box center_img">
-              <img src="assets/imgs/banner.png" class="crop_img">
-          </div>
-          <div class="text_box">
-              <h2>Flat 50% off on <br>First Order</h2>
-              <h3 class="d-flex">{{'view_all_offers' | translate}}
-                  <ion-icon class="zmdi zmdi-arrow-right end ion-text-end"></ion-icon>
-              </h3>
-          </div>
-      </ion-slide>-->
-    </ion-slides>
-  </div>
-  <h4 style="background-color: transparent; padding-left: 20px">Bienvenido!</h4>
-  <div class="services">
-    <h2>Servicios <span style="float: right"> <ion-button href="tel:+52 33-3122-1189"><ion-icon
-      name="call-outline"></ion-icon> 33-31-22-11-89</ion-button></span></h2>
-
-
-    <div class="scroll-x">
-      <div class="service" (click)="seleccionarSeccion('Tintoreria')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-06.jpg">
-        </div>
-
-      </div>
-
-      <div class="service" (click)="seleccionarSeccion('Planchado')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-05.jpg">
-        </div>
-
-      </div>
-      <div class="service" (click)="seleccionarSeccion('Lavanderia')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-02.jpg">
-        </div>
-      </div>
-
-      <div class="service" (click)="seleccionarSeccion('Blancos y Hogar')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-04.jpg">
-        </div>
-      </div>
-
-
-      <div class="service" (click)="seleccionarSeccion('Teñidos')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-03.jpg">
-        </div>
-      </div>
-
+  <!-- Promo Banner -->
+  <div class="promo-card">
+    <div class="promo-text">
+      <span class="promo-badge">Beneficio</span>
+      <h2 class="promo-title">Envío<br><strong>Gratis</strong></h2>
+      <p class="promo-sub">En todos tus pedidos</p>
+    </div>
+    <div class="promo-img">
+      <img src="assets/imgs/lavanderiapiernas.png" alt="Envío gratis">
     </div>
   </div>
 
-  <ion-list lines="none">
-    <!--<h1 class="d-flex">Tus Ordenes <span
-            class="end">{{'Past_Orders' | translate}}</span></h1>-->
+  <!-- Servicios -->
+  <section class="section">
+    <h2 class="section-title">Servicios</h2>
+    <div class="services-scroll">
 
-    <ion-button expand="block"
-                style="--background: #3abb7c; --color: #ffffff; margin-left: 20px;margin-right: 20px; margin-bottom: 15px;"
-                (click)="ionViewDidEnter()">
-      Actualizar Ordenes {{notifMSG}}
-    </ion-button>
-    <ion-item class="no_order" *ngIf="!tieneOrdenes">
-      <div class="item_inner d-flex">
-        <div class="text_box">
-          <h2>No hay <span>ordenes</span> activas. Seleccione un servicio para continuar</h2>
-        </div>
+      <div class="svc-card" (click)="seleccionarSeccion('Tintoreria')">
+        <div class="svc-img"><img src="assets/imgs/portadas-06.jpg" alt="Tintorería"></div>
+        <span>Tintorería</span>
       </div>
-    </ion-item>
 
+      <div class="svc-card" (click)="seleccionarSeccion('Planchado')">
+        <div class="svc-img"><img src="assets/imgs/portadas-05.jpg" alt="Planchado"></div>
+        <span>Planchado</span>
+      </div>
 
-    <!--   <ion-item class="no_login">
-           <div class="item_inner d-flex">
-               <div class="img_box">
-                <ion-icon class="zmdi zmdi-account-add ion-text-center"></ion-icon>
-               </div>
-               <div class="text_box">
-                   <h2>{{'login_sign_up_to_view_orders' | translate}}</h2>
-               </div>
-           </div>
-       </ion-item>
--->
+      <div class="svc-card" (click)="seleccionarSeccion('Lavanderia')">
+        <div class="svc-img"><img src="assets/imgs/portadas-02.jpg" alt="Lavandería"></div>
+        <span>Lavandería</span>
+      </div>
 
-    <!-- Agrega esto después del botón "Actualizar Ordenes" y antes de la lista -->
-    <div class="filter-buttons" style="display: flex; justify-content: space-around; margin: 10px 20px;">
-      <ion-button (click)="filtrarOrdenes('ACTIVOS')" [color]="filtroActivo === 'ACTIVOS' ? 'primary' : 'medium'" size="small">
-        Pedidos Activos
-      </ion-button>
-      <ion-button (click)="filtrarOrdenes('COMPLETADOS')" [color]="filtroActivo === 'COMPLETADOS' ? 'primary' : 'medium'" size="small">
-        Completados
-      </ion-button>
-      <ion-button (click)="filtrarOrdenes('CANCELACIONES')" [color]="filtroActivo === 'CANCELACIONES' ? 'primary' : 'medium'" size="small">
-        Cancelaciones
-      </ion-button>
-      <ion-button (click)="filtrarOrdenes('TODOS')" [color]="filtroActivo === 'TODOS' ? 'primary' : 'medium'" size="small">
-        Todos
-      </ion-button>
+      <div class="svc-card" (click)="seleccionarSeccion('Blancos y Hogar')">
+        <div class="svc-img"><img src="assets/imgs/portadas-04.jpg" alt="Blancos y Hogar"></div>
+        <span>Blancos y Hogar</span>
+      </div>
+
+      <div class="svc-card" (click)="seleccionarSeccion('Teñidos')">
+        <div class="svc-img"><img src="assets/imgs/portadas-03.jpg" alt="Teñidos"></div>
+        <span>Teñidos</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Mis Pedidos -->
+  <section class="section">
+
+    <div class="section-row">
+      <h2 class="section-title">Mis Pedidos</h2>
+      <span class="auto-badge" [class.pulsing]="isRefreshing">
+        <ion-icon name="sync-outline"></ion-icon>
+        Auto
+      </span>
     </div>
 
+    <!-- Filter chips -->
+    <div class="chips-row">
+      <button class="chip" [class.active]="filtroActivo === 'ACTIVOS'" (click)="filtrarOrdenes('ACTIVOS')">Activos</button>
+      <button class="chip" [class.active]="filtroActivo === 'COMPLETADOS'" (click)="filtrarOrdenes('COMPLETADOS')">Completados</button>
+      <button class="chip" [class.active]="filtroActivo === 'CANCELACIONES'" (click)="filtrarOrdenes('CANCELACIONES')">Cancelados</button>
+      <button class="chip" [class.active]="filtroActivo === 'TODOS'" (click)="filtrarOrdenes('TODOS')">Todos</button>
+    </div>
 
-    <ion-item (click)="order_info(orden.id)" *ngFor="let orden of ordenes">
-      <div class="item_inner d-flex">
-        <div class="img_box"  *ngIf="orden.estado==='CREADO'">
-          <img src="assets/imgs/confirmed.png">
-        </div>
-        <div class="img_box"  *ngIf="orden.estado==='EN_TIENDA'">
-          <img src="assets/imgs/pickedup.png">
-        </div>
-        <div class="img_box"  *ngIf="orden.estado==='TERMINADO'">
-          <img src="assets/imgs/inporcess.png">
-        </div>
-        <div class="img_box"  *ngIf="orden.estado==='EN_RUTA_REPARTIDOR'">
-          <img src="assets/imgs/dispatched.png">
-        </div>
-        <div class="img_box"  *ngIf="orden.estado==='FINALIZADO'">
-          <img src="assets/imgs/delivered.png">
-        </div>
-        <div class="text_box">
-          <h2 class="d-flex">Orden #{{ orden.id }}<span class="end"
-                                                                            style="color: #29af5d">${{ orden.total }}</span>
-          </h2>
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!tieneOrdenes">
+      <div class="empty-icon">
+        <ion-icon name="receipt-outline"></ion-icon>
+      </div>
+      <p>Sin pedidos{{ filtroActivo === 'ACTIVOS' ? ' activos' : '' }}</p>
+      <span>Elige un servicio para comenzar</span>
+    </div>
 
-          <h2 class="d-flex" *ngIf="orden.estado==='CREADO'"><span class="end" style="color: #3eb31c">Programada para recolección<ion-icon
-            name="car-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='SOLICITA_CANCELACION'"><span class="end" style="color: #b3381c">Solicita Cancelacion<ion-icon
-            name="close-circle-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='CANCELADO'"><span class="end" style="color: #a10f0f">Orden Cancelada<ion-icon
-            name="close-circle-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='CANCELADO' || orden.estado==='SOLICITA_CANCELACION'"><span class="end" style="color: #380a0a">Motivo: {{ orden.motivoCancelacion }}</span>
-          </h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='EN_TIENDA'"><span class="end" style="color: #3c5a9a">En manos de Sango Tintoreria<ion-icon
-            name="hand-left-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='TERMINADO'"><span class="end" style="color: #a52de0">Listas para ser entregadas<ion-icon
-            name="hand-left-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='EN_RUTA_REPARTIDOR'"><span class="end" style="color: #108dda">En ruta para entrega<ion-icon
-            name="hand-left-outline"></ion-icon></span></h2>
-          <h2 class="d-flex" *ngIf="orden.estado==='FINALIZADO'"><span class="end" style="color: #2d833e">Orden Entregada<ion-icon
-            name="checkmark-outline"></ion-icon></span></h2>
-          <h3 class="d-flex"><span
-            class="end">Recoleccion {{ orden.envios.fechaRecoleccion | date:'dd/MM/yyyy' }} </span>
-          </h3>
-          <h3 class="d-flex">Prendas: {{ orden.items.length }}<span
-            class="end">Entrega {{ orden.envios.fechaEntrega | date:'dd/MM/yyyy' }} </span></h3>
-          <h3 class="d-flex" *ngIf="orden.estado==='Finalizada'"><span class="end"><ion-button
-            (click)="calificarServicio(orden)">Calificar Servicio</ion-button> </span>
-          </h3>
+    <!-- Order cards -->
+    <div
+      class="order-card"
+      [ngClass]="getStatusClass(orden.estado)"
+      (click)="order_info(orden.id)"
+      *ngFor="let orden of ordenes; let i = index"
+      [style.animation-delay]="(i * 0.07) + 's'">
+
+      <div class="order-left">
+        <div class="status-bar"></div>
+      </div>
+
+      <div class="order-body">
+        <div class="order-row-top">
+          <span class="order-num">Orden #{{ orden.id }}</span>
+          <span class="order-total">${{ orden.total }}</span>
+        </div>
+
+        <div class="order-status">
+          <ion-icon [name]="getStatusIcon(orden.estado)"></ion-icon>
+          <span>{{ getStatusText(orden.estado) }}</span>
+        </div>
+
+        <div class="order-meta" *ngIf="orden.motivoCancelacion">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <span>{{ orden.motivoCancelacion }}</span>
+        </div>
+
+        <div class="order-dates">
+          <span class="date-chip">
+            <ion-icon name="car-outline"></ion-icon>
+            {{ orden.envios.fechaRecoleccion | date:'dd MMM' }}
+          </span>
+          <ion-icon name="arrow-forward-outline" class="arrow-icon"></ion-icon>
+          <span class="date-chip">
+            <ion-icon name="home-outline"></ion-icon>
+            {{ orden.envios.fechaEntrega | date:'dd MMM' }}
+          </span>
+          <span class="items-badge">{{ orden.items.length }} prendas</span>
         </div>
       </div>
-    </ion-item>
 
-  </ion-list>
+      <ion-icon name="chevron-forward-outline" class="order-chevron"></ion-icon>
+    </div>
 
+    <div class="bottom-spacer"></div>
+  </section>
 
 </ion-content>

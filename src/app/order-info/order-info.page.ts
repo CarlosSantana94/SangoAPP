@@ -107,6 +107,45 @@ export class OrderInfoPage implements OnInit {
     }
   }
 
+  getStatusLabel(estado: string): string {
+    const labels: { [key: string]: string } = {
+      'CREADO': 'Pedido creado',
+      'EN_TIENDA': 'En tintorería',
+      'TERMINADO': 'Listo para entrega',
+      'EN_RUTA_REPARTIDOR': 'En camino',
+      'FINALIZADO': 'Entregado',
+      'SOLICITA_CANCELACION': 'Cancelación solicitada',
+      'CANCELADO': 'Cancelado',
+    };
+    return labels[estado] || estado;
+  }
+
+  getStatusIcon(estado: string): string {
+    const icons: { [key: string]: string } = {
+      'CREADO': 'receipt-outline',
+      'EN_TIENDA': 'business-outline',
+      'TERMINADO': 'checkmark-circle-outline',
+      'EN_RUTA_REPARTIDOR': 'bicycle-outline',
+      'FINALIZADO': 'home-outline',
+      'SOLICITA_CANCELACION': 'alert-circle-outline',
+      'CANCELADO': 'close-circle-outline',
+    };
+    return icons[estado] || 'ellipse-outline';
+  }
+
+  getStatusKey(estado: string): string {
+    const map: { [key: string]: string } = {
+      'CREADO': 'created',
+      'EN_TIENDA': 'instore',
+      'TERMINADO': 'done',
+      'EN_RUTA_REPARTIDOR': 'inroute',
+      'FINALIZADO': 'delivered',
+      'SOLICITA_CANCELACION': 'cancelreq',
+      'CANCELADO': 'cancelled',
+    };
+    return map[estado] || 'created';
+  }
+
   calificar(number: number) {
     // Solo permite calificar si no hay comentario existente
     if (!this.comentarioExistente) {

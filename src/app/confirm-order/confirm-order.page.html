@@ -1,111 +1,146 @@
-<ion-header>
-    <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
-        </ion-buttons>
-        <ion-title>
-            Orden Nueva
-        </ion-title>
-    </ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <span class="toolbar-title">Confirmar Pedido</span>
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg_color" fullscreen>
-    <ion-card class="info">
-        <ion-row>
-            <ion-col size="6">
-                <h2>Recoleccion</h2>
-                <h3>{{recogerFecha | date: 'dd/MMM/yyyy'}} </h3>
+<ion-content>
 
-            </ion-col>
+  <!-- ─── Skeleton loading ─── -->
+  <div class="skeleton-wrap" *ngIf="!cargando">
+    <div class="skeleton-card">
+      <div class="sk-row">
+        <div class="sk-block"></div>
+        <div class="sk-block"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="sk-line"></div>
+      <div class="sk-line short"></div>
+      <div class="sk-line short2"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="sk-line"></div>
+      <div class="sk-line short"></div>
+      <div class="sk-line"></div>
+      <div class="sk-line short2"></div>
+    </div>
+  </div>
 
-            <ion-col size="6">
-                <h2>Entrega</h2>
-                <h3>{{entregarFecha | date: 'dd/MMM/yyyy'}}</h3>
+  <!-- ─── Content ─── -->
+  <ng-container *ngIf="cargando">
 
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col size="12">
-                <h2>
-                    <ion-icon name="home-outline"></ion-icon>
-                    Dirección
-                </h2>
-                <h3>{{direccion.alias}}</h3>
-                <small>CP: {{direccion.cp}}</small>
-                <ion-row>
-                    <ion-col><small>
-                        <ion-icon name="person-circle-outline" style="margin-right: 2px"></ion-icon>
-                        {{direccion.nombre}}</small></ion-col>
-                    <ion-col><small>
-                        <ion-icon name="call-outline" style="margin-right: 2px"></ion-icon>
-                        {{direccion.tel}}</small></ion-col>
-                </ion-row>
+    <!-- Dates card -->
+    <div class="dates-card">
+      <div class="date-col">
+        <div class="date-icon-wrap pickup">
+          <ion-icon name="arrow-up-circle-outline"></ion-icon>
+        </div>
+        <span class="date-label">Recolección</span>
+        <span class="date-value">{{ recogerFecha | date: 'dd MMM' : 'UTC' }}</span>
+        <span class="date-year">{{ recogerFecha | date: 'yyyy' : 'UTC' }}</span>
+      </div>
+      <div class="date-divider">
+        <div class="date-dash"></div>
+        <ion-icon name="shirt-outline" class="date-center-icon"></ion-icon>
+        <div class="date-dash"></div>
+      </div>
+      <div class="date-col">
+        <div class="date-icon-wrap delivery">
+          <ion-icon name="arrow-down-circle-outline"></ion-icon>
+        </div>
+        <span class="date-label">Entrega</span>
+        <span class="date-value">{{ entregarFecha | date: 'dd MMM' : 'UTC' }}</span>
+        <span class="date-year">{{ entregarFecha | date: 'yyyy' : 'UTC' }}</span>
+      </div>
+    </div>
 
-            </ion-col>
-        </ion-row>
-    </ion-card>
+    <!-- Address card -->
+    <div class="info-card">
+      <div class="info-card-header">
+        <div class="info-icon-wrap">
+          <ion-icon name="location-outline"></ion-icon>
+        </div>
+        <div class="info-card-labels">
+          <span class="info-card-eyebrow">Dirección de entrega</span>
+          <span class="info-card-title">{{ direccion.alias }}</span>
+        </div>
+      </div>
+      <div class="addr-detail-row">
+        <ion-icon name="map-outline" class="addr-detail-icon"></ion-icon>
+        <span class="addr-detail-text">{{ direccion.direccion }}</span>
+      </div>
+      <div class="addr-chips-row">
+        <div class="addr-chip">
+          <ion-icon name="mail-outline"></ion-icon>
+          <span>CP {{ direccion.cp }}</span>
+        </div>
+        <div class="addr-chip">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>{{ direccion.nombre }}</span>
+        </div>
+        <div class="addr-chip">
+          <ion-icon name="call-outline"></ion-icon>
+          <span>{{ direccion.tel }}</span>
+        </div>
+      </div>
+    </div>
 
-  <ion-grid>
-    <ion-row *ngFor="let servicio of groupedPrendas | keyvalue">
-      <ion-col size="12">
-        <ion-card class="item_info">
-          <h2 [ngClass]="getServiceClass(servicio.key)" style="font-weight: bold; margin-bottom: 10px;">
-            {{ servicio.key }} <!-- Nombre del servicio -->
-          </h2>
-          <div *ngFor="let servicioPadre of servicio.value | keyvalue">
-            <p style="font-weight: bold; padding-left: 10px;">
-              {{ servicioPadre.key }} <!-- Nombre del servicioPadre -->
-            </p>
-            <div class="item_list" style="padding-left: 20px;">
-              <div class="item" *ngFor="let prenda of servicioPadre.value">
-                <h3 class="d-flex" style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="flex-grow: 1;">
-                    <span class="quantity">{{ prenda.cantidad }}</span>
-                    <span class="multiply">x</span>
-                    <span class="item_name">{{ prenda.nombrePrenda }}
-                      <span style="color: #6e7b82; margin-right: 2px; font-size: .7em"
-                            class="item_name">(${{ prenda.precioUnitario }})</span>
-                  </span>
-                  </div>
-                  <span style="color: #5b80d9; font-weight: bold;"
-                        class="amount ion-text-end">${{ prenda.subtotal | number : '1.2-2' }}</span>
-                </h3>
-              </div>
+    <!-- ─── Items grouped by service ─── -->
+    <div class="service-section"
+         *ngFor="let servicio of groupedPrendas | keyvalue; let si = index"
+         [style.animation-delay]="(si * 0.07 + 0.1) + 's'">
+
+      <div class="section-header">
+        <div class="service-chip" [ngClass]="getServiceClass(servicio.key)">
+          <ion-icon name="shirt-outline" class="chip-icon"></ion-icon>
+          <span>{{ servicio.key }}</span>
+        </div>
+      </div>
+
+      <div class="items-card">
+        <div class="category-block"
+             *ngFor="let categoria of servicio.value | keyvalue; let lastCat = last">
+          <span class="category-label">{{ categoria.key }}</span>
+          <div class="item-row" *ngFor="let prenda of categoria.value">
+            <div class="item-qty-badge">{{ prenda.cantidad }}</div>
+            <div class="item-info">
+              <span class="item-name">{{ prenda.nombrePrenda }}</span>
+              <span class="item-unit-price">${{ prenda.precioUnitario }} c/u</span>
             </div>
+            <span class="item-subtotal">${{ prenda.subtotal | number: '1.2-2' }}</span>
           </div>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+          <div class="cat-divider" *ngIf="!lastCat"></div>
+        </div>
+      </div>
 
+    </div>
+
+  </ng-container>
+
+  <div class="bottom-spacer"></div>
 </ion-content>
 
-
-<ion-footer class="ion-no-border">
-    <!--
-        <ion-card class="promo-code" (click)="promocode()">
-            <h2 class="d-flex">
-                <ion-icon class="zmdi zmdi-label"></ion-icon>{{'Have_Promocode' | translate}}
-            </h2>
-        </ion-card>
-    -->
-
-    <ion-card class="payment_info">
-        <h5 class="d-flex" style="color: black !important;">Envio <span class="end ion-text-end">$0</span></h5>
-        <h2 class="d-flex" style="color: #29af5d !important;">Total a pagar<span
-                class="end ion-text-end">${{resumen.total | number : '1.2-2'}}</span></h2>
-    </ion-card>
-
-    <ion-footer class="ion-no-border" *ngIf="cargando">
-        <ion-button size="large" shape="full" class="btn" (click)="payment()">
-            <ion-icon name="cash-outline" style="margin-right: 6px"></ion-icon>
-            Pagar
-        </ion-button>
-    </ion-footer>
-
-    <ion-footer class="ion-no-border" *ngIf="!cargando">
-        <ion-button disabled size="large" shape="full" class="btn">
-            Obteniendo Pedido
-        </ion-button>
-    </ion-footer>
+<ion-footer class="ion-no-border" *ngIf="cargando">
+  <div class="footer-bar">
+    <div class="footer-totals">
+      <div class="footer-row-minor">
+        <span class="footer-label-minor">Envío</span>
+        <span class="footer-val-free">Gratis</span>
+      </div>
+      <div class="footer-row-main">
+        <span class="footer-label-main">Total</span>
+        <span class="footer-total-amount">${{ resumen.total | number: '1.2-2' }}</span>
+      </div>
+    </div>
+    <button class="footer-cta" (click)="payment()">
+      Pagar
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </button>
+  </div>
 </ion-footer>

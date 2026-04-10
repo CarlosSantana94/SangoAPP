@@ -1,32 +1,52 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button text="" name="arrow-back-outline"></ion-back-button>
+      <ion-back-button text="" icon="arrow-back-outline" class="back-btn"></ion-back-button>
     </ion-buttons>
-    <ion-title style="color: black">{{nombreServicio}}</ion-title>
-    <ion-buttons slot="primary" (click)="goToCart()" *ngIf="totalPrendas > 0">
-      <ion-icon slot="icon-only" ios="cart-outline" md="cart-outline"></ion-icon>
-      <ion-button>
-        <ion-badge style="background-color: #6780ab">{{totalPrendas}}</ion-badge>
-      </ion-button>
+    <ion-title class="toolbar-title">{{ nombreServicio }}</ion-title>
+    <ion-buttons slot="end">
+      <button class="cart-pill" (click)="goToCart()" *ngIf="totalPrendas > 0">
+        <ion-icon name="cart-outline"></ion-icon>
+        <span>{{ totalPrendas }}</span>
+      </button>
     </ion-buttons>
   </ion-toolbar>
 
-  <!-- Search Bar with (ionInput) event to detect typing -->
-  <ion-toolbar>
-    <ion-searchbar [(ngModel)]="searchText" (ionInput)="filterOpciones()" placeholder="Buscar Categoria"></ion-searchbar>
+  <ion-toolbar class="search-toolbar">
+    <div class="search-wrap">
+      <ion-icon name="search-outline" class="search-icon"></ion-icon>
+      <ion-searchbar
+        [(ngModel)]="searchText"
+        (ionInput)="filterOpciones()"
+        placeholder="Buscar categoría..."
+        [showCancelButton]="'never'"
+        class="custom-searchbar">
+      </ion-searchbar>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6" *ngFor="let opc of filteredOpciones" (click)="seleccionarOpcionPrenda(opc)">
-        <div class="opc-container">
-          <div class="opc-background" [ngStyle]="{'background-image': 'url(' + opc.img + ')'}"></div>
-          <h2>{{ opc.nombre }}</h2>
-        </div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+  <div class="opc-grid">
+    <div
+      class="opc-card"
+      *ngFor="let opc of filteredOpciones; let i = index"
+      [style.animation-delay]="(i * 0.07) + 's'"
+      (click)="seleccionarOpcionPrenda(opc)">
+      <div class="opc-img" [ngStyle]="{'background-image': 'url(' + opc.img + ')'}"></div>
+      <div class="opc-overlay"></div>
+      <span class="opc-name">{{ opc.nombre }}</span>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="filteredOpciones.length === 0">
+    <div class="empty-icon">
+      <ion-icon name="search-outline"></ion-icon>
+    </div>
+    <p>Sin resultados</p>
+    <span>Intenta con otro término</span>
+  </div>
+
+  <div class="bottom-spacer"></div>
 </ion-content>

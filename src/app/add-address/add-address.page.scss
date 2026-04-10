@@ -1,130 +1,619 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+// ─── Variables ────────────────────────────────────────────────
+$white:  #FFFFFF;
+$bg:     #F4F7FB;
+$dark:   #111827;
+$mid:    #6B7280;
+$light:  #9CA3AF;
+$border: #E5E7EB;
+$accent: #1A6CF5;
+$green:  #059669;
+$danger: #DC2626;
+
+// ─── Content ──────────────────────────────────────────────────
+ion-content {
+  --background: #{$bg};
+}
+
+// ─── Header ───────────────────────────────────────────────────
 ion-header {
-  ion-toolbar ion-title {
-    span {
-      color: var(--primary);
-      font-size: 1.1rem;
-    }
-  }
-
-  .search_box {
-    width: calc(100% - 0px);
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-    min-height: 50px;
-    z-index: 99;
-    background: var(--white);
-    padding: 0 15px;
-
-    ion-icon {
-      font-size: 1.4rem;
-      min-width: 35px;
-      height: 35px;
-      line-height: 35px;
-      z-index: 99;
-      position: relative;
-      top: 0px;
-      padding: 0 2px;
-      color: var(--text-black);
-
-      &.zmdi-gps-dot {
-        font-size: 1.3rem;
-        left: unset;
-        right: 0;
-        z-index: 99;
-        color: var(--text-light);
-      }
-    }
-
-    ion-searchbar {
-      --background: var(--transparent) !important;
-      --color: var(--text-black);
-      font-weight: 500 !important;
-      --placeholder-opacity: 1;
-      --placeholder-color: var(--text-light) !important;
-      --placeholder-font-weight: 400 !important;
-      --box-shadow: none !important;
-      padding: 0 !important;
-    }
+  ion-toolbar {
+    --background: #{$white};
+    --border-color: transparent;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
   }
 }
 
-.map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+ion-header::after { display: none; }
 
-  img {
-    min-width: 30px;
-    min-height: 30px;
-  }
+.back-btn {
+  --color: #{$dark};
+  --icon-font-size: 20px;
+}
+
+.toolbar-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.4px;
+}
+
+// ─── Animations ───────────────────────────────────────────────
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Search Card ──────────────────────────────────────────────
+.search-card {
+  margin: 14px 16px 0;
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  animation: slide-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.search-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid $border;
+}
+
+.search-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(26, 108, 245, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 20px; color: $accent; }
+}
+
+.search-card-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.search-card-step {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.search-card-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.2px;
+}
+
+// ─── Two-field address search ─────────────────────────────────
+.search-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 16px;
+  transition: background 0.2s;
+
+  &.locked { background: rgba(26, 108, 245, 0.02); }
+  &.row-error { background: rgba(220, 38, 38, 0.03); }
+}
+
+.search-row-icon {
+  font-size: 20px;
+  color: $light;
+  flex-shrink: 0;
+  margin-top: 14px;
+  transition: color 0.2s;
+
+  &.icon-error { color: $danger; }
+}
+
+.search-row-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.search-row-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.search-row-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: $dark;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 3px 0;
+
+  &[readonly] { cursor: default; color: $mid; }
+  &::placeholder { color: $light; font-weight: 400; }
+}
+
+.search-row-divider {
+  height: 1px;
+  background: $border;
+  margin-left: 46px;
+}
+
+// Error: no number entered
+.no-number-msg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: $danger;
+  margin-top: 4px;
+  animation: shake 0.35s ease;
+
+  ion-icon { font-size: 13px; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+
+// ─── Suggestions dropdown ─────────────────────────────────────
+.suggestions-list {
+  border-top: 1px solid $border;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+  &:active { background: $bg; }
+}
+
+.sug-icon {
+  font-size: 16px;
+  color: $accent;
+  flex-shrink: 0;
+}
+
+.sug-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.sug-main {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sug-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: $light;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sug-arrow {
+  font-size: 14px;
+  color: $border;
+  flex-shrink: 0;
+}
+
+// ─── Confirmed selection row ──────────────────────────────────
+.confirmed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(5, 150, 105, 0.05);
+  border-top: 1px solid rgba(5, 150, 105, 0.15);
+}
+
+.confirmed-icon {
+  font-size: 20px;
+  color: $green;
+  flex-shrink: 0;
+}
+
+.confirmed-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.confirmed-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $green;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.confirmed-addr {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.change-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: $mid;
+  background: transparent;
+  border: 1.5px solid $border;
+  border-radius: 100px;
+  padding: 5px 12px;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:active { color: $accent; border-color: $accent; }
+}
+
+// ─── Coverage Hint ────────────────────────────────────────────
+.coverage-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
 
   ion-icon {
-    position: absolute;
-    z-index: 99;
-    color: red;
-    font-size: 2.2rem;
+    font-size: 14px;
+    color: $light;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11.5px;
+    color: $light;
+    line-height: 1.5;
   }
 }
 
-
-#map {
-  width: 100%;
-  height: 30%;
+.zone-link {
+  color: $accent;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
-
-/* Optional: Makes the sample page fill the window. */
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+// ─── Await hint ───────────────────────────────────────────────
+.await-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 20px 0;
 }
 
-#description {
-  font-family: Roboto;
-  font-size: 15px;
-  font-weight: 300;
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
 }
 
-#infowindow-content .title {
-  font-weight: bold;
+.await-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $accent;
+  flex-shrink: 0;
+  animation: pulse 1.8s ease-in-out infinite;
 }
 
-#infowindow-content {
-  display: none;
-}
-
-#map #infowindow-content {
-  display: inline;
-}
-
-
-#pac-input {
-  background-color: #fff;
-
-
-}
-
-#pac-input:focus {
-  border-color: #4d90fe;
-}
-
-#title {
-  color: #fff;
-  background-color: #4d90fe;
-  font-size: 25px;
+.await-hint span {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
   font-weight: 500;
-  padding: 6px 12px;
+  color: $mid;
 }
 
+// ─── Details Card ─────────────────────────────────────────────
+.details-card {
+  margin: 12px 16px 0;
+  background: $white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.06);
+  animation: slide-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
-input {
+.details-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid $border;
+}
+
+.details-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(5, 150, 105, 0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 20px; color: $green; }
+}
+
+.details-card-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.details-step {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+
+.details-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $dark;
+  letter-spacing: -0.2px;
+}
+
+// ─── Form Fields ──────────────────────────────────────────────
+.field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 16px;
+  transition: background 0.15s;
+
+  &.field-error {
+    background: rgba(220, 38, 38, 0.03);
+  }
+}
+
+.field-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(26, 108, 245, 0.08);
+  color: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: background 0.2s, color 0.2s;
+
+  ion-icon { font-size: 17px; }
+
+  &.optional {
+    background: $bg;
+    color: $light;
+  }
+
+  &.error-icon {
+    background: rgba(220, 38, 38, 0.10);
+    color: $danger;
+  }
+}
+
+.field-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: $light;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.required-star {
+  color: $accent;
+  font-size: 11px;
+}
+
+.optional-tag {
+  color: $border;
+  font-size: 9px;
+  text-transform: none;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.field-input {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: $dark;
+  background: transparent;
+  border: none;
+  outline: none;
   width: 100%;
+  padding: 0;
+  padding-top: 1px;
 
+  .field-error & {
+    color: $danger;
+  }
+
+  &::placeholder {
+    color: $light;
+    font-weight: 400;
+    font-size: 13.5px;
+  }
 }
+
+.error-msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: $danger;
+  margin-top: 2px;
+}
+
+.field-divider {
+  height: 1px;
+  background: $border;
+  margin-left: 64px;
+}
+
+// ─── Zone Button ──────────────────────────────────────────────
+.zone-row {
+  display: flex;
+  justify-content: center;
+  padding: 14px 16px 0;
+}
+
+.zone-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: $mid;
+  border: 1.5px solid $border;
+  border-radius: 100px;
+  padding: 9px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s, color 0.15s;
+
+  ion-icon { font-size: 15px; }
+  &:active { transform: scale(0.96); color: $accent; }
+}
+
+// ─── Footer ───────────────────────────────────────────────────
+ion-footer {
+  --background: transparent;
+  --border-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: $bg;
+}
+
+.footer-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: $white;
+  margin: 6px 16px 12px;
+  border-radius: 22px;
+  padding: 13px 14px 13px 16px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.10);
+}
+
+.footer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.footer-loc-icon {
+  font-size: 16px;
+  color: $accent;
+  flex-shrink: 0;
+}
+
+.footer-addr-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: $dark;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 3px 14px rgba(26, 108, 245, 0.36);
+  transition: transform 0.15s;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 15px; }
+  &:active { transform: scale(0.95); }
+}
+
+.bottom-spacer { height: 24px; }
