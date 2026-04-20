@@ -146,15 +146,18 @@ export class SignInPage implements OnInit {
         localStorage.setItem('uid', googleUser.result.profile.id);
         this.rest.postUsuarioV2(userV2).subscribe(
           response => {
-
-              this.setUserInfo(googleUser.result.profile.email, `${ googleUser.result.profile.name} `, googleUser.result.profile.imageUrl, googleUser.result.profile.id);
-              this.presentToast('Inicio de sesión exitoso, Bienvenido');
-              this.navCtrl.navigateRoot(['./tabs']);
-
+            this.setUserInfo(googleUser.result.profile.email, `${ googleUser.result.profile.name} `, googleUser.result.profile.imageUrl, googleUser.result.profile.id);
+            this.presentToast('Inicio de sesión exitoso, Bienvenido');
+            this.navCtrl.navigateRoot(['./tabs']);
           },
           error => {
-            console.error('Error en la solicitud:', error);
-            this.presentToast('Error en el inicio de sesión, intente de nuevo');
+            localStorage.removeItem('uid');
+            if (error.status === 403) {
+              this.presentAlertBloqueado();
+            } else {
+              console.error('Error en la solicitud:', error);
+              this.presentToast('Error en el inicio de sesión, intente de nuevo');
+            }
           }
         );
 
@@ -201,8 +204,13 @@ export class SignInPage implements OnInit {
             }
           },
           error => {
-            console.error('Error en la solicitud:', error);
-            this.presentToast('Error en el inicio de sesión, intente de nuevo');
+            localStorage.removeItem('uid');
+            if (error.status === 403) {
+              this.presentAlertBloqueado();
+            } else {
+              console.error('Error en la solicitud:', error);
+              this.presentToast('Error en el inicio de sesión, intente de nuevo');
+            }
           }
         );
 
@@ -230,6 +238,15 @@ export class SignInPage implements OnInit {
       duration: 2500
     });
     toast.present();
+  }
+
+  async presentAlertBloqueado() {
+    const alert = await this.alertController.create({
+      header: 'Cuenta bloqueada',
+      message: 'Tu cuenta ha sido bloqueada. Contáctanos para más información.',
+      buttons: ['Entendido'],
+    });
+    await alert.present();
   }
 
   private setUserInfo(email: string, displayName: string, photoUrl: string, uid: string) {
@@ -288,8 +305,13 @@ export class SignInPage implements OnInit {
               }
             },
             error => {
-              console.error('Error en la solicitud:', error);
-              this.presentToast('Error en el inicio de sesión, intente de nuevo');
+              localStorage.removeItem('uid');
+              if (error.status === 403) {
+                this.presentAlertBloqueado();
+              } else {
+                console.error('Error en la solicitud:', error);
+                this.presentToast('Error en el inicio de sesión, intente de nuevo');
+              }
             }
           );
         } else {

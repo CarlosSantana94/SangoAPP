@@ -1,5 +1,33 @@
 # CLAUDE.md
 
+## Vault de Documentación Obsidian
+
+**Ruta:** `D:/DEV/sango-obsidian-vault/Sango/`
+
+### Antes de empezar cualquier tarea, lee:
+
+| Si tocas... | Lee primero... |
+|-------------|---------------|
+| Pantallas / Navegación | `App Movil/Pantallas - App Movil.md` |
+| Login / OAuth social | `App Movil/Autenticacion Social - App.md` |
+| Push / GPS / Camera | `App Movil/Features Nativos - App.md` |
+| Llamadas al API | `API/Endpoints V2.md` |
+| Flujo del pedido | `Flujos/Flujo de Pedido Completo.md` |
+| Pago con tarjeta | `Flujos/Flujo de Pago.md` + `Infraestructura/Conekta - Pagos.md` |
+| Modelos TypeScript | `Entidades/<NombreEntidad>.md` |
+| Contexto general | `App Movil/App Movil - Overview.md` |
+
+### Cuándo actualizar el vault (después de hacer cambios):
+
+- **Nueva pantalla/ruta** → agregar en `App Movil/Pantallas - App Movil.md`
+- **Nuevo endpoint en `rest.service.ts`** → agregar en `API/Endpoints V1.md` o `API/Endpoints V2.md`
+- **Nuevo plugin Capacitor** → documentar en `App Movil/Features Nativos - App.md` con permisos iOS/Android
+- **Cambio en auth o localStorage keys** → actualizar `App Movil/Autenticacion Social - App.md`
+- **Cambio en modelo TypeScript** → actualizar `Entidades/<Nombre>.md` correspondiente
+- **Cambio en flujo de pago** → actualizar `Flujos/Flujo de Pago.md`
+
+---
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview

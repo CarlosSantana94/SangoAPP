@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {RESTService} from '../rest.service';
 import {CallNumber} from '@awesome-cordova-plugins/call-number/ngx';
 import {App as CapacitorApp} from '@capacitor/app';
+import {Capacitor} from '@capacitor/core';
 import {FcmService} from "../services/fcm.service";
 import {ActionPerformed, PushNotifications, PushNotificationSchema, Token} from "@capacitor/push-notifications";
 
@@ -164,9 +165,13 @@ export class HomePage implements OnInit {
   }
 
   llamar() {
-    this.callNumber.callNumber('3331221189', true)
-      .then(res => console.log('Launched dialer!', res))
-      .catch(err => console.log('Error launching dialer', err));
+    if (Capacitor.isNativePlatform()) {
+      this.callNumber.callNumber('3331221189', true)
+        .then(res => console.log('Launched dialer!', res))
+        .catch(err => console.log('Error launching dialer', err));
+    } else {
+      window.open('tel:+523331221189', '_self');
+    }
   }
 
   getStatusClass(estado: string): string {

@@ -32,39 +32,44 @@
       <h2 class="promo-title">Envío<br><strong>Gratis</strong></h2>
       <p class="promo-sub">En todos tus pedidos</p>
     </div>
-    <div class="promo-img">
-      <img src="assets/imgs/lavanderiapiernas.png" alt="Envío gratis">
+    <div class="promo-logo">
+      <img src="assets/imgs/logo_sango.png" alt="SANGO">
     </div>
   </div>
 
   <!-- Servicios -->
   <section class="section">
     <h2 class="section-title">Servicios</h2>
-    <div class="services-scroll">
+    <div class="services-grid">
 
-      <div class="svc-card" (click)="seleccionarSeccion('Tintoreria')">
-        <div class="svc-img"><img src="assets/imgs/portadas-06.jpg" alt="Tintorería"></div>
-        <span>Tintorería</span>
+      <div class="svc-card tintoreria-card" (click)="seleccionarSeccion('Tintoreria')">
+        <img src="assets/imgs/portadas-06.jpg" alt="Tintorería">
+        <div class="svc-overlay"></div>
+        <span class="svc-label">Tintorería</span>
       </div>
 
-      <div class="svc-card" (click)="seleccionarSeccion('Planchado')">
-        <div class="svc-img"><img src="assets/imgs/portadas-05.jpg" alt="Planchado"></div>
-        <span>Planchado</span>
+      <div class="svc-card planchado-card" (click)="seleccionarSeccion('Planchado')">
+        <img src="assets/imgs/portadas-05.jpg" alt="Planchado">
+        <div class="svc-overlay"></div>
+        <span class="svc-label">Planchado</span>
       </div>
 
-      <div class="svc-card" (click)="seleccionarSeccion('Lavanderia')">
-        <div class="svc-img"><img src="assets/imgs/portadas-02.jpg" alt="Lavandería"></div>
-        <span>Lavandería</span>
+      <div class="svc-card lavanderia-card" (click)="seleccionarSeccion('Lavanderia')">
+        <img src="assets/imgs/portadas-02.jpg" alt="Lavandería">
+        <div class="svc-overlay"></div>
+        <span class="svc-label">Lavandería</span>
       </div>
 
-      <div class="svc-card" (click)="seleccionarSeccion('Blancos y Hogar')">
-        <div class="svc-img"><img src="assets/imgs/portadas-04.jpg" alt="Blancos y Hogar"></div>
-        <span>Blancos y Hogar</span>
+      <div class="svc-card blancos-card" (click)="seleccionarSeccion('Blancos y Hogar')">
+        <img src="assets/imgs/portadas-04.jpg" alt="Blancos y Hogar">
+        <div class="svc-overlay"></div>
+        <span class="svc-label">Blancos y Hogar</span>
       </div>
 
-      <div class="svc-card" (click)="seleccionarSeccion('Teñidos')">
-        <div class="svc-img"><img src="assets/imgs/portadas-03.jpg" alt="Teñidos"></div>
-        <span>Teñidos</span>
+      <div class="svc-card tenidos-card full-width" (click)="seleccionarSeccion('Teñidos')">
+        <img src="assets/imgs/portadas-03.jpg" alt="Teñidos">
+        <div class="svc-overlay"></div>
+        <span class="svc-label">Teñidos</span>
       </div>
 
     </div>
