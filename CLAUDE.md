@@ -327,7 +327,7 @@ After login, the user UID is stored in `localStorage` as `uid`. The app redirect
 - `seleccionarSugerencia()` — calls `placesService.getDetails()` with `address_components` field.
 - **Number validation**: if selected place has no `street_number` component AND `numero` field is empty → `noNumberError = true` → blocks selection, shows animated shake error message.
 - The hidden `<div #map id="map">` (height: 1px) must remain — `PlacesService` requires a map instance.
-- Google Maps bounds restricted to ±0.03° around business location (Zapopan, lat: 20.663930, lng: -103.414894).
+- **Geofence dinámico**: bounds de Google Places se cargan desde `GET /api/v2/configuracion` en `ngOnInit()`. Campos `geofenceCenter` y `geofenceRadio` reemplazan los valores hardcodeados. Default fallback: lat 20.663930, lng -103.414894, radio 0.03°.
 - After valid selection: fields go `readonly`, green confirmed-row appears with "Cambiar" button → calls `clearSeleccion()`.
 - `validarCampos()` checks: nombre, cp, tel, alias — marks missing ones with `'danger'` in `nuevaDireccionColores`.
 

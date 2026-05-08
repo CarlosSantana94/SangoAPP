@@ -1,6 +1,10 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID, NgModule } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+
+registerLocaleData(localeEs);
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -42,6 +46,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     Diagnostic,
     {provide: APP_CONFIG, useValue: BaseAppConfig},
+    {provide: LOCALE_ID, useValue: 'es'},
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true},
     CallNumber,

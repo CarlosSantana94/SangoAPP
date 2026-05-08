@@ -1,7 +1,6 @@
-// zona-de-cobertura.page.ts
 import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
-import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { Geolocation } from '@capacitor/geolocation';
+import { RESTService } from '../rest.service';
 
 declare var google;
 
@@ -13,21 +12,20 @@ declare var google;
 export class ZonaDeCoberturaPage implements OnInit {
   @ViewChild('map', { static: false }) mapElement: ElementRef;
   map: any;
-  address: string;
-  lat: string;
-  long: string;
-  coverageMessage: string = 'Solo la zona mostrada en verde tiene cobertura SANGO';
-  GoogleAutocomplete: any;
+
+  private geofencePolygon: { lat: number; lng: number }[] = [];
 
   constructor(
-    private nativeGeocoder: NativeGeocoder,
+    private rest: RESTService,
     public zone: NgZone,
-  ) {
-    this.GoogleAutocomplete = new google.maps.places.AutocompleteService();
-  }
+  ) {}
 
   ngOnInit() {
-    // Additional initialization logic if needed
+    this.rest.getConfiguracion().subscribe((config: any) => {
+      if (config?.polygonPoints) {
+        this.geofencePolygon = JSON.parse(config.polygonPoints);
+      }
+    });
   }
 
   ionViewDidEnter() {
@@ -35,111 +33,60 @@ export class ZonaDeCoberturaPage implements OnInit {
   }
 
   async loadMap() {
+    const fallback = { lat: 20.663930, lng: -103.414894 };
+    const center = this.geofencePolygon.length
+      ? this.geofencePolygon.reduce(
+          (acc, p) => ({ lat: acc.lat + p.lat / this.geofencePolygon.length, lng: acc.lng + p.lng / this.geofencePolygon.length }),
+          { lat: 0, lng: 0 }
+        )
+      : fallback;
+
+    this.map = new google.maps.Map(this.mapElement.nativeElement, {
+      center,
+      zoom: 13,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true,
+      zoomControl: true,
+    });
+
+    if (this.geofencePolygon.length) {
+      new google.maps.Polygon({
+        map: this.map,
+        paths: this.geofencePolygon,
+        strokeColor: '#1A6CF5',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#1A6CF5',
+        fillOpacity: 0.12,
+      });
+
+      const bounds = new google.maps.LatLngBounds();
+      this.geofencePolygon.forEach(p => bounds.extend(p));
+      this.map.fitBounds(bounds);
+    }
+
+    // Try to show user's location — silently skip if denied
     try {
       const permission = await Geolocation.requestPermissions();
       if (permission.location === 'granted') {
         const position = await Geolocation.getCurrentPosition();
-
-        const latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        const matrizUbicacion = { lat: 20.663930, lng: -103.414894 };
-
-        const defaultBounds = {
-          north: matrizUbicacion.lat + 0.03,
-          south: matrizUbicacion.lat - 0.03,
-          east: matrizUbicacion.lng + 0.03,
-          west: matrizUbicacion.lng - 0.03,
-        };
-
-        const mapOptions = {
-          center: matrizUbicacion,
-          zoom: 13,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-        };
-
-        this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-        // Add marker for the current location
+        const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         const userMarker = new google.maps.Marker({
           map: this.map,
-          animation: google.maps.Animation.DROP,
-          position: latLng,
+          position: userLatLng,
+          title: 'Tu ubicación',
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: '#1A6CF5',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+          },
         });
-
-        // Show an info window for the user's location
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<h5>Tu Ubicación</h5>`,
-        });
-        infoWindow.open(this.map, userMarker);
-
-        // Add marker for the defined center (coverage zone)
-        new google.maps.Marker({
-          map: this.map,
-          animation: google.maps.Animation.DROP,
-          position: matrizUbicacion,
-          icon: 'assets/imgs/pinMapa.png',
-        });
-
-        // Add rectangle overlay to define the coverage area
-        new google.maps.Rectangle({
-          strokeColor: '#3560ee',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#95ff52',
-          fillOpacity: 0.35,
-          map: this.map,
-          bounds: defaultBounds,
-        });
-
-        // Display the coverage message at the top of the map
-        const coverageDiv = document.createElement('div');
-        coverageDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
-        coverageDiv.style.color = 'white';
-        coverageDiv.style.padding = '10px';
-        coverageDiv.style.margin = '50px';
-        coverageDiv.style.borderRadius = '4px';
-        coverageDiv.innerText = this.coverageMessage;
-        this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(coverageDiv);
-
-        // Fetch the address of the user's location
-        this.getAddressFromCoords(position.coords.latitude, position.coords.longitude);
-      } else {
-        console.error('Location permission not granted');
+        new google.maps.InfoWindow({ content: '<span style="font-size:13px;font-weight:600">Tu ubicación</span>' })
+          .open(this.map, userMarker);
       }
-    } catch (error) {
-      console.error('Error requesting location permission or getting position', error);
-    }
-  }
-
-  getAddressFromCoords(latitude, longitude) {
-    let options: NativeGeocoderOptions = {
-      useLocale: true,
-      maxResults: 5,
-    };
-    this.nativeGeocoder.reverseGeocode(latitude, longitude, options)
-      .then((result: NativeGeocoderResult[]) => {
-        this.address = '';
-        let responseAddress = [];
-        for (let [key, value] of Object.entries(result[0])) {
-          if (value.length > 0) {
-            responseAddress.push(value);
-          }
-        }
-        responseAddress.reverse();
-        this.address = responseAddress.join(', ');
-
-        // Update info window content with the fetched address
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<h5>Your Location</h5><p>${this.address}</p>`,
-        });
-        infoWindow.setPosition({ lat: latitude, lng: longitude });
-        infoWindow.open(this.map);
-      })
-      .catch((error: any) => {
-        this.address = 'Address Not Available!';
-      });
-  }
-
-  ShowCords() {
-    alert('lat: ' + this.lat + ', long: ' + this.long);
+    } catch (_) {}
   }
 }

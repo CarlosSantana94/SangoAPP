@@ -78,6 +78,15 @@
       </div>
     </div>
 
+    <!-- Out of coverage error -->
+    <div class="no-coverage-msg" *ngIf="fueraDeCobertura">
+      <ion-icon name="warning-outline"></ion-icon>
+      <span>
+        Esta dirección está fuera de nuestra zona de cobertura.
+        <span class="zone-link" (click)="irAZonaDeCobertura()">Ver zona</span>
+      </span>
+    </div>
+
     <!-- Confirmed selection -->
     <div class="confirmed-row" *ngIf="nuevaDireccion.lat !== 0">
       <ion-icon name="checkmark-circle-outline" class="confirmed-icon"></ion-icon>

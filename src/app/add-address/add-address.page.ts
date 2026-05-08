@@ -21,11 +21,14 @@ export class AddAddressPage implements OnInit {
   map: any;
   markers = [];
 
+  private geofencePolygon: { lat: number; lng: number }[] = [];
+
   // ── Split-search state ───────────────────────────────────────
   calle: string = '';
   numero: string = '';
   suggestions: any[] = [];
   noNumberError: boolean = false;
+  fueraDeCobertura: boolean = false;
   debounceTimer: any = null;
   autocompleteService: any = null;
   placesService: any = null;
@@ -60,14 +63,19 @@ export class AddAddressPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    setTimeout(() => {
-      this.loadMap();
-    }, 1500);
+    this.rest.getConfiguracion().subscribe((config: any) => {
+      if (config?.polygonPoints) {
+        this.geofencePolygon = JSON.parse(config.polygonPoints);
+      }
+    });
+    setTimeout(() => { this.loadMap(); }, 1500);
   }
 
   async loadMap() {
-    const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
-    let coordinates = matrizUbicacion;
+    const centerFallback = { lat: 20.663930, lng: -103.414894 };
+    let coordinates = this.geofencePolygon.length
+      ? this.geofencePolygon.reduce((acc, p) => ({ lat: acc.lat + p.lat / this.geofencePolygon.length, lng: acc.lng + p.lng / this.geofencePolygon.length }), { lat: 0, lng: 0 })
+      : centerFallback;
 
     this.geolocation.getCurrentPosition().then((resp) => {
       coordinates = {lat: resp.coords.latitude, lng: resp.coords.longitude};
@@ -112,18 +120,23 @@ export class AddAddressPage implements OnInit {
     if (this.debounceTimer) clearTimeout(this.debounceTimer);
 
     this.debounceTimer = setTimeout(() => {
-      const matrizUbicacion = {lat: 20.663930, lng: -103.414894};
-      const bounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(matrizUbicacion.lat - 0.03, matrizUbicacion.lng - 0.03),
-        new google.maps.LatLng(matrizUbicacion.lat + 0.03, matrizUbicacion.lng + 0.03)
-      );
-
-      this.autocompleteService.getPlacePredictions({
+      const request: any = {
         input: this.searchQuery,
-        bounds,
-        componentRestrictions: {country: 'mx'},
-        types: ['address']
-      }, (predictions: any[], status: string) => {
+        componentRestrictions: { country: 'mx' },
+        types: ['address'],
+      };
+
+      if (this.geofencePolygon.length) {
+        const lats = this.geofencePolygon.map(p => p.lat);
+        const lngs = this.geofencePolygon.map(p => p.lng);
+        request.bounds = new google.maps.LatLngBounds(
+          new google.maps.LatLng(Math.min(...lats), Math.min(...lngs)),
+          new google.maps.LatLng(Math.max(...lats), Math.max(...lngs))
+        );
+        request.strictBounds = true;
+      }
+
+      this.autocompleteService.getPlacePredictions(request, (predictions: any[], status: string) => {
         this.zone.run(() => {
           if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
             this.suggestions = predictions;
@@ -157,9 +170,18 @@ export class AddAddressPage implements OnInit {
             return;
           }
 
+          // Validate that the address falls inside the geofence circle
+          const lat = place.geometry.location.lat();
+          const lng = place.geometry.location.lng();
+          if (!this.dentroDeGeofence(lat, lng)) {
+            this.fueraDeCobertura = true;
+            return;
+          }
+
           // Capture lat/lng and formatted address
-          this.nuevaDireccion.lat = place.geometry.location.lat();
-          this.nuevaDireccion.lng = place.geometry.location.lng();
+          this.fueraDeCobertura = false;
+          this.nuevaDireccion.lat = lat;
+          this.nuevaDireccion.lng = lng;
           this.direccionMapa = place.formatted_address || sugerencia.description;
 
           // Auto-fill numero field from Google if user hadn't typed one
@@ -171,12 +193,28 @@ export class AddAddressPage implements OnInit {
     );
   }
 
+  private dentroDeGeofence(lat: number, lng: number): boolean {
+    const poly = this.geofencePolygon;
+    if (!poly.length) { return true; }
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const iLat = poly[i].lat, iLng = poly[i].lng;
+      const jLat = poly[j].lat, jLng = poly[j].lng;
+      if (((iLng > lng) !== (jLng > lng)) &&
+          (lat < (jLat - iLat) * (lng - iLng) / (jLng - iLng) + iLat)) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
   // Reset address selection so user can start over
   clearSeleccion() {
     this.nuevaDireccion.lat = 0;
     this.nuevaDireccion.lng = 0;
     this.direccionMapa = '';
     this.noNumberError = false;
+    this.fueraDeCobertura = false;
     this.suggestions = [];
   }
 

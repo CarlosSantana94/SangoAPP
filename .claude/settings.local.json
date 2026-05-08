@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(grep -E \"\\\\.\\(md|txt\\)$|README|CLAUDE|cursor\")",
-      "Bash(grep -E \"\\\\.page\\\\.ts$\")"
+      "Bash(grep -E \"\\\\.page\\\\.ts$\")",
+      "Bash(Get-ChildItem -Path \"D:\\\\DEV\\\\sango-admin\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"D:\\\\DEV\\\\sango-api\" -Recurse -Depth 2)",
+      "Bash(Get-ChildItem *)"
     ]
   }
 }

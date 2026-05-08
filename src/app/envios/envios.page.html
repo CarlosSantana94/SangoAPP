@@ -61,9 +61,9 @@
           [style.animation-delay]="(i * 0.05) + 's'"
           (click)="escogerFechaRecoleccion(rec)">
 
-          <span class="dc-weekday">{{ rec.fecha | date:'EEE':'UTC' }}</span>
-          <span class="dc-day">{{ rec.fecha | date:'d':'UTC' }}</span>
-          <span class="dc-month">{{ rec.fecha | date:'MMM':'UTC' }}</span>
+          <span class="dc-weekday">{{ rec.weekday }}</span>
+          <span class="dc-day">{{ rec.day }}</span>
+          <span class="dc-month">{{ rec.month }}</span>
 
           <div class="dc-check" *ngIf="fechaRecoleccionSeleccionada?.fecha === rec.fecha">
             <ion-icon name="checkmark-outline"></ion-icon>
@@ -110,9 +110,9 @@
           [style.animation-delay]="(i * 0.05) + 's'"
           (click)="escogerFechaEntrega(ent)">
 
-          <span class="dc-weekday">{{ ent.fecha | date:'EEE':'UTC' }}</span>
-          <span class="dc-day">{{ ent.fecha | date:'d':'UTC' }}</span>
-          <span class="dc-month">{{ ent.fecha | date:'MMM':'UTC' }}</span>
+          <span class="dc-weekday">{{ ent.weekday }}</span>
+          <span class="dc-day">{{ ent.day }}</span>
+          <span class="dc-month">{{ ent.month }}</span>
 
           <div class="dc-check delivery-check" *ngIf="fechaEntregaSeleccionada?.fecha === ent.fecha">
             <ion-icon name="checkmark-outline"></ion-icon>

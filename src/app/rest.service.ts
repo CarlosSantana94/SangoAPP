@@ -166,4 +166,8 @@ export class RESTService {
   getDeshabilitarDireccion(direccionId: any) {
     return this.http.get(environment.url + 'direccion/disable/' + direccionId);
   }
+
+  getConfiguracion(): Observable<any> {
+    return this.http.get(environment.url + 'api/v2/configuracion');
+  }
 }
