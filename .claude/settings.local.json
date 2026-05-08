@@ -6,7 +6,8 @@
       "Bash(Get-ChildItem -Path \"D:\\\\DEV\\\\sango-admin\" -Recurse -Depth 2)",
       "Bash(Select-Object FullName)",
       "Bash(Get-ChildItem -Path \"D:\\\\DEV\\\\sango-api\" -Recurse -Depth 2)",
-      "Bash(Get-ChildItem *)"
+      "Bash(Get-ChildItem *)",
+      "PowerShell(New-Item *)"
     ]
   }
 }

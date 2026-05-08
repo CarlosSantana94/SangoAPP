@@ -1,5 +1,5 @@
 import {Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {AlertController, ModalController} from '@ionic/angular';
 import {AddressTitlePage} from '../address-title/address-title.page';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
@@ -17,9 +17,12 @@ declare const google;
 export class AddAddressPage implements OnInit {
   locations: Observable<any>;
   @ViewChild('map') mapElement: ElementRef;
+  @ViewChild('visibleMap') visibleMapElement: ElementRef;
 
   map: any;
   markers = [];
+  visibleMap: any;
+  draggableMarker: any;
 
   private geofencePolygon: { lat: number; lng: number }[] = [];
 
@@ -60,6 +63,7 @@ export class AddAddressPage implements OnInit {
               private geolocation: Geolocation,
               private nativeGeocoder: NativeGeocoder,
               public zone: NgZone,
+              private alertController: AlertController,
   ) {}
 
   ngOnInit() {
@@ -183,6 +187,7 @@ export class AddAddressPage implements OnInit {
           this.nuevaDireccion.lat = lat;
           this.nuevaDireccion.lng = lng;
           this.direccionMapa = place.formatted_address || sugerencia.description;
+          this.initVisibleMap();
 
           // Auto-fill numero field from Google if user hadn't typed one
           if (streetNumComp && !this.numero.trim()) {
@@ -216,6 +221,67 @@ export class AddAddressPage implements OnInit {
     this.noNumberError = false;
     this.fueraDeCobertura = false;
     this.suggestions = [];
+    if (this.draggableMarker) {
+      this.draggableMarker.setMap(null);
+      this.draggableMarker = null;
+    }
+    this.visibleMap = null;
+  }
+
+  initVisibleMap() {
+    setTimeout(() => {
+      if (!this.visibleMapElement?.nativeElement) { return; }
+      const center = { lat: this.nuevaDireccion.lat, lng: this.nuevaDireccion.lng };
+
+      this.visibleMap = new google.maps.Map(this.visibleMapElement.nativeElement, {
+        center,
+        zoom: 17,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        zoomControl: true,
+      });
+
+      this.draggableMarker = new google.maps.Marker({
+        position: center,
+        map: this.visibleMap,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+      });
+
+      this.draggableMarker.addListener('dragend', (event: any) => {
+        const newLat = event.latLng.lat();
+        const newLng = event.latLng.lng();
+        this.zone.run(() => { this.confirmarNuevaUbicacion(newLat, newLng); });
+      });
+    }, 300);
+  }
+
+  async confirmarNuevaUbicacion(newLat: number, newLng: number) {
+    const prevLat = this.nuevaDireccion.lat;
+    const prevLng = this.nuevaDireccion.lng;
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar ubicación',
+      message: '¿Quieres usar esta posición como tu dirección exacta?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            this.draggableMarker.setPosition({ lat: prevLat, lng: prevLng });
+            this.visibleMap.panTo({ lat: prevLat, lng: prevLng });
+          },
+        },
+        {
+          text: 'Confirmar',
+          handler: () => {
+            this.nuevaDireccion.lat = newLat;
+            this.nuevaDireccion.lng = newLng;
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   address_title() {

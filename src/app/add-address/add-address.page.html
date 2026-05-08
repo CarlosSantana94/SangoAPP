@@ -114,6 +114,24 @@
     <span>Selecciona tu dirección del desplegado para continuar</span>
   </div>
 
+  <!-- ─── Map pin adjustment ─── -->
+  <div class="map-adjust-card" *ngIf="nuevaDireccion.lat !== 0">
+    <div class="map-adjust-header">
+      <div class="map-adjust-icon">
+        <ion-icon name="pin-outline"></ion-icon>
+      </div>
+      <div class="map-adjust-labels">
+        <span class="map-adjust-step">Ajuste opcional</span>
+        <span class="map-adjust-title">Confirma la ubicación</span>
+      </div>
+    </div>
+    <div class="map-hint">
+      <ion-icon name="move-outline"></ion-icon>
+      <span>Mueve el pin para ajustar la ubicación exacta de tu domicilio</span>
+    </div>
+    <div #visibleMap id="visibleMap" class="visible-map"></div>
+  </div>
+
   <!-- ─── Step 2: Additional details ─── -->
   <div class="details-card" *ngIf="nuevaDireccion.lat !== 0 && nuevaDireccion.lng !== 0">
 

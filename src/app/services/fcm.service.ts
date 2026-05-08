@@ -20,6 +20,18 @@ export class FcmService {
 
   async initPushNotifications(userId: string) {
     try {
+      if (Capacitor.getPlatform() === 'android') {
+        await PushNotifications.createChannel({
+          id: 'sango-channel',
+          name: 'Sango Tintorería',
+          description: 'Notificaciones de pedidos',
+          importance: 5,
+          sound: 'sango_notif',   // nombre sin extensión → res/raw/sango_notif.mp3
+          visibility: 1,
+          vibration: true,
+        });
+      }
+
       const permissionStatus = await PushNotifications.requestPermissions();
 
       if (permissionStatus.receive === 'granted') {
