@@ -27,7 +27,7 @@
       [class.has-items]="prenda.cantidad > 0">
 
       <div class="prenda-img-wrap" (click)="abrirModal(prenda.img)">
-        <img [src]="prenda.img" class="prenda-img" />
+        <ion-img [src]="prenda.img" class="prenda-img"></ion-img>
         <div class="img-zoom-hint">
           <ion-icon name="expand-outline"></ion-icon>
         </div>
