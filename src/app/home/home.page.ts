@@ -46,9 +46,26 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.obtenerCarrito();
     this.nombre = localStorage.getItem('display');
-    this.rest.getServicios().subscribe(data => {
-      this.servicios = data;
+    this.rest.getServicios().subscribe((data: any) => {
+      this.servicios = (data || []).sort((a, b) => a.id - b.id);
     });
+  }
+
+  /** Acento de color e imagen local de respaldo por servicio (diseño original). */
+  private readonly serviciosMeta: { [id: number]: { clase: string, img: string } } = {
+    1: {clase: 'tintoreria-card', img: 'assets/imgs/portadas-06.jpg'},
+    2: {clase: 'planchado-card', img: 'assets/imgs/portadas-05.jpg'},
+    3: {clase: 'lavanderia-card', img: 'assets/imgs/portadas-02.jpg'},
+    4: {clase: 'blancos-card', img: 'assets/imgs/portadas-04.jpg'},
+    5: {clase: 'tenidos-card', img: 'assets/imgs/portadas-03.jpg'},
+  };
+
+  claseDe(servicio: any): string {
+    return this.serviciosMeta[servicio.id]?.clase || 'tintoreria-card';
+  }
+
+  imgDe(servicio: any): string {
+    return servicio.img || this.serviciosMeta[servicio.id]?.img || 'assets/imgs/portadas-06.jpg';
   }
 
   private cargarOrdenes(): Promise<void> {
@@ -151,11 +168,9 @@ export class HomePage implements OnInit {
     }).then(alert => alert.present());
   }
 
-  seleccionarSeccion(seccion: string) {
-    const idServicio = this.servicios.find(element => element.nombre === seccion);
-    console.log(idServicio);
-    sessionStorage.setItem('idServicio', idServicio.id);
-    sessionStorage.setItem('nombreServicio', idServicio.nombre);
+  seleccionarSeccion(servicio: any) {
+    sessionStorage.setItem('idServicio', String(servicio.id));
+    sessionStorage.setItem('nombreServicio', servicio.nombre);
     this.route.navigate(['./seccion']);
   }
 

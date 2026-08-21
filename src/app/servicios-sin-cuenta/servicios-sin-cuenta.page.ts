@@ -18,16 +18,27 @@ export class ServiciosSinCuentaPage implements OnInit {
   }
 
   ngOnInit() {
-    this.rest.getServicios().subscribe(data => {
-      this.servicios = data;
+    this.rest.getServicios().subscribe((data: any) => {
+      this.servicios = (data || []).sort((a, b) => a.id - b.id);
     });
   }
 
-  seleccionarSeccion(seccion: string) {
-    const idServicio = this.servicios.find(element => element.nombre === seccion);
-    console.log(idServicio);
-    sessionStorage.setItem('idServicio', idServicio.id);
-    sessionStorage.setItem('nombreServicio', idServicio.nombre);
+  /** Imagen local de respaldo por servicio (diseño original). */
+  private readonly imgsRespaldo: { [id: number]: string } = {
+    1: 'assets/imgs/portadas-06.jpg',
+    2: 'assets/imgs/portadas-05.jpg',
+    3: 'assets/imgs/portadas-02.jpg',
+    4: 'assets/imgs/portadas-04.jpg',
+    5: 'assets/imgs/portadas-03.jpg',
+  };
+
+  imgDe(servicio: any): string {
+    return servicio.img || this.imgsRespaldo[servicio.id] || 'assets/imgs/portadas-06.jpg';
+  }
+
+  seleccionarSeccion(servicio: any) {
+    sessionStorage.setItem('idServicio', String(servicio.id));
+    sessionStorage.setItem('nombreServicio', servicio.nombre);
     this.route.navigate(['./seccion']);
   }
 

@@ -42,34 +42,14 @@
     <h2 class="section-title">Servicios</h2>
     <div class="services-grid">
 
-      <div class="svc-card tintoreria-card" (click)="seleccionarSeccion('Tintoreria')">
-        <img src="assets/imgs/portadas-06.jpg" alt="Tintorería">
+      <div class="svc-card"
+           *ngFor="let s of servicios; let last = last"
+           [ngClass]="claseDe(s)"
+           [class.full-width]="last && servicios.length % 2 === 1"
+           (click)="seleccionarSeccion(s)">
+        <img [src]="imgDe(s)" [alt]="s.nombre">
         <div class="svc-overlay"></div>
-        <span class="svc-label">Tintorería</span>
-      </div>
-
-      <div class="svc-card planchado-card" (click)="seleccionarSeccion('Planchado')">
-        <img src="assets/imgs/portadas-05.jpg" alt="Planchado">
-        <div class="svc-overlay"></div>
-        <span class="svc-label">Planchado</span>
-      </div>
-
-      <div class="svc-card lavanderia-card" (click)="seleccionarSeccion('Lavanderia')">
-        <img src="assets/imgs/portadas-02.jpg" alt="Lavandería">
-        <div class="svc-overlay"></div>
-        <span class="svc-label">Lavandería</span>
-      </div>
-
-      <div class="svc-card blancos-card" (click)="seleccionarSeccion('Blancos y Hogar')">
-        <img src="assets/imgs/portadas-04.jpg" alt="Blancos y Hogar">
-        <div class="svc-overlay"></div>
-        <span class="svc-label">Blancos y Hogar</span>
-      </div>
-
-      <div class="svc-card tenidos-card full-width" (click)="seleccionarSeccion('Teñidos')">
-        <img src="assets/imgs/portadas-03.jpg" alt="Teñidos">
-        <div class="svc-overlay"></div>
-        <span class="svc-label">Teñidos</span>
+        <span class="svc-label">{{ s.nombre }}</span>
       </div>
 
     </div>

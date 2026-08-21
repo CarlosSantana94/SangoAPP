@@ -34,7 +34,8 @@
       *ngFor="let opc of filteredOpciones; let i = index"
       [style.animation-delay]="(i * 0.07) + 's'"
       (click)="seleccionarOpcionPrenda(opc)">
-      <div class="opc-img" [ngStyle]="{'background-image': 'url(' + opc.img + ')'}"></div>
+      <!-- Comillas obligatorias: una URL con espacios rompe url() sin comillas -->
+      <div class="opc-img" [ngStyle]="{'background-image': 'url(\'' + opc.img + '\')'}"></div>
       <div class="opc-overlay"></div>
       <span class="opc-name">{{ opc.nombre }}</span>
     </div>

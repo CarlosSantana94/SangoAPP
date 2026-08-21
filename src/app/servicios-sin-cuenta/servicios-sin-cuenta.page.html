@@ -14,38 +14,11 @@
 
 
     <div class="scroll-x">
-      <div class="service" (click)="seleccionarSeccion('Tintoreria')">
+      <div class="service" *ngFor="let s of servicios" (click)="seleccionarSeccion(s)">
         <div class="img_box">
-          <img src="assets/imgs/portadas-06.jpg">
-        </div>
-
-      </div>
-
-      <div class="service" (click)="seleccionarSeccion('Planchado')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-05.jpg">
-        </div>
-
-      </div>
-      <div class="service" (click)="seleccionarSeccion('Lavanderia')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-02.jpg">
+          <img [src]="imgDe(s)" [alt]="s.nombre">
         </div>
       </div>
-
-      <div class="service" (click)="seleccionarSeccion('Blancos y Hogar')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-04.jpg">
-        </div>
-      </div>
-
-
-      <div class="service" (click)="seleccionarSeccion('Teñidos')">
-        <div class="img_box">
-          <img src="assets/imgs/portadas-03.jpg">
-        </div>
-      </div>
-
     </div>
   </div>
 
